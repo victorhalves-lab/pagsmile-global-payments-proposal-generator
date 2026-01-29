@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -8,9 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Building2, User, DollarSign, Eye, FileText, Trash2 } from 'lucide-react';
+import QuestionnaireFilters from '@/components/proposal/QuestionnaireFilters';
 
 export default function QuestionnaireCenter() {
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    status: 'all',
+    tpvMin: '',
+    tpvMax: '',
+    hasPartner: 'all'
+  });
   const queryClient = useQueryClient();
 
   const { data: questionnaires = [], isLoading } = useQuery({
@@ -18,10 +26,52 @@ export default function QuestionnaireCenter() {
     queryFn: () => base44.entities.Questionnaire.list('-created_date')
   });
 
+  // Filtrar questionários
+  const filteredQuestionnaires = useMemo(() => {
+    return questionnaires.filter(q => {
+      const matchSearch = !filters.search || 
+        q.company_name?.toLowerCase().includes(filters.search.toLowerCase()) ||
+        q.contact_name?.toLowerCase().includes(filters.search.toLowerCase());
+      const matchStatus = filters.status === 'all' || q.pipeline_status === filters.status;
+      const matchTpvMin = !filters.tpvMin || (q.monthly_tpv || 0) >= parseFloat(filters.tpvMin);
+      const matchTpvMax = !filters.tpvMax || (q.monthly_tpv || 0) <= parseFloat(filters.tpvMax);
+      const matchPartner = filters.hasPartner === 'all' || 
+        (filters.hasPartner === 'yes' && q.has_current_partner) ||
+        (filters.hasPartner === 'no' && !q.has_current_partner);
+      return matchSearch && matchStatus && matchTpvMin && matchTpvMax && matchPartner;
+    });
+  }, [questionnaires, filters]);
+
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Questionnaire.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['questionnaires'] })
   });
+
+  const exportToCSV = () => {
+    const headers = ['Empresa', 'Contato', 'Email', 'Telefone', 'TPV Mensal', 'Ticket Médio', 'Transações/mês', 'Tem Parceiro', 'Taxa Atual', 'Status', 'Criado em'];
+    const rows = filteredQuestionnaires.map(q => [
+      q.company_name,
+      q.contact_name,
+      q.contact_email,
+      `${q.contact_phone_country_code || ''} ${q.contact_phone || ''}`,
+      q.monthly_tpv,
+      q.average_ticket,
+      q.monthly_transactions,
+      q.has_current_partner ? 'Sim' : 'Não',
+      q.current_rate_percentage ? `${q.current_rate_percentage}%` : '',
+      q.pipeline_status,
+      new Date(q.created_date).toLocaleDateString('pt-BR')
+    ]);
+    
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `questionarios_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -69,6 +119,8 @@ export default function QuestionnaireCenter() {
         <p className="text-white/60 mt-1">Gerencie todos os questionários recebidos</p>
       </div>
 
+      <QuestionnaireFilters filters={filters} setFilters={setFilters} onExport={exportToCSV} />
+
       {questionnaires.length === 0 ? (
         <Card className="bg-white/5 border-[#2bc196]/20">
           <CardContent className="py-12 text-center">
@@ -78,7 +130,7 @@ export default function QuestionnaireCenter() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {questionnaires.map(q => (
+          {filteredQuestionnaires.map(q => (
             <Card key={q.id} className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-4">
