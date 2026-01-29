@@ -50,6 +50,8 @@
 import Dashboard from './pages/Dashboard';
 import InterchangeViewer from './pages/InterchangeViewer';
 import QuestionnaireForm from './pages/QuestionnaireForm';
+import QuestionnaireCenter from './pages/QuestionnaireCenter';
+import ProposalCreation from './pages/ProposalCreation';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +59,8 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "InterchangeViewer": InterchangeViewer,
     "QuestionnaireForm": QuestionnaireForm,
+    "QuestionnaireCenter": QuestionnaireCenter,
+    "ProposalCreation": ProposalCreation,
 }
 
 export const pagesConfig = {
