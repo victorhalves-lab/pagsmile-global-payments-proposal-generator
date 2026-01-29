@@ -37,6 +37,20 @@ export default function PublicProposal() {
 
   const proposal = proposals[0];
 
+  // Rastrear visualização da proposta
+  React.useEffect(() => {
+    if (proposal && proposal.id) {
+      base44.analytics.track({
+        eventName: "proposal_viewed",
+        properties: {
+          proposal_id: proposal.id,
+          client_name: proposal.client_name || '',
+          token: token || ''
+        }
+      });
+    }
+  }, [proposal?.id]);
+
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Proposal.update(id, data),
     onSuccess: () => {

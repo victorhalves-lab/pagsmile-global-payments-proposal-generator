@@ -139,7 +139,7 @@ export default function ProposalCreation() {
         final_rate_percentage: finalRate,
         final_fixed_fee: finalFixedFee,
         valid_until: validUntil.toISOString().split('T')[0],
-        status: 'draft',
+        status: 'sent',
         public_link_token: token
       });
 
