@@ -75,7 +75,7 @@ export default function ProposalCenter() {
       
       return base44.entities.Proposal.create({
         ...proposalData,
-        status: 'draft',
+        status: 'sent',
         public_link_token: token,
         valid_until: validUntil.toISOString().split('T')[0],
         version: 1,
@@ -126,13 +126,12 @@ export default function ProposalCenter() {
 
   const getStatusBadge = (status) => {
     const config = {
-      draft: { icon: Clock, label: t('proposal.status.draft'), className: 'bg-gray-500/20 text-gray-300' },
       sent: { icon: Clock, label: t('proposal.status.sent'), className: 'bg-blue-500/20 text-blue-400' },
       accepted: { icon: CheckCircle, label: t('proposal.status.accepted'), className: 'bg-green-500/20 text-green-400' },
       counter_proposal: { icon: AlertCircle, label: t('proposal.status.counter_proposal'), className: 'bg-yellow-500/20 text-yellow-400' },
       rejected: { icon: XCircle, label: t('proposal.status.rejected'), className: 'bg-red-500/20 text-red-400' }
     };
-    const { icon: Icon, label, className } = config[status] || config.draft;
+    const { icon: Icon, label, className } = config[status] || config.sent;
     return (
       <Badge className={`${className} flex items-center gap-1`}>
         <Icon className="h-3 w-3" />
