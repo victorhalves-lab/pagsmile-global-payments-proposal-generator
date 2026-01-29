@@ -56,6 +56,7 @@ import PublicProposal from './pages/PublicProposal';
 import QuestionnaireCenter from './pages/QuestionnaireCenter';
 import QuestionnaireForm from './pages/QuestionnaireForm';
 import RevenueSimulator from './pages/RevenueSimulator';
+import HowItWorks from './pages/HowItWorks';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +70,7 @@ export const PAGES = {
     "QuestionnaireCenter": QuestionnaireCenter,
     "QuestionnaireForm": QuestionnaireForm,
     "RevenueSimulator": RevenueSimulator,
+    "HowItWorks": HowItWorks,
 }
 
 export const pagesConfig = {
