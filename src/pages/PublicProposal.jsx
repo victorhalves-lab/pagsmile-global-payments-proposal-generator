@@ -398,7 +398,7 @@ export default function PublicProposal() {
               <Button 
                 variant="outline" 
                 onClick={() => setRejectModalOpen(false)}
-                className="flex-1"
+                className="flex-1 text-[#2bc196] border-[#2bc196] hover:bg-[#2bc196]/10"
               >
                 Cancelar
               </Button>

@@ -80,7 +80,7 @@ export default function ProposalCenter() {
           <p className="text-white/60 mt-1">Gerencie todas as propostas criadas</p>
         </div>
         <Link to={createPageUrl('ProposalCreation')}>
-          <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]">
+          <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
             Nova Proposta
           </Button>
         </Link>
@@ -91,7 +91,7 @@ export default function ProposalCenter() {
           <CardContent className="py-12 text-center">
             <p className="text-white/60">Nenhuma proposta criada ainda.</p>
             <Link to={createPageUrl('ProposalCreation')}>
-              <Button className="mt-4 bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]">
+              <Button className="mt-4 bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
                 Criar Primeira Proposta
               </Button>
             </Link>

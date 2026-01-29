@@ -49,24 +49,24 @@
  */
 import Dashboard from './pages/Dashboard';
 import InterchangeViewer from './pages/InterchangeViewer';
-import QuestionnaireForm from './pages/QuestionnaireForm';
-import QuestionnaireCenter from './pages/QuestionnaireCenter';
-import ProposalCreation from './pages/ProposalCreation';
-import ProposalCenter from './pages/ProposalCenter';
-import PublicProposal from './pages/PublicProposal';
 import PipelineKanban from './pages/PipelineKanban';
+import ProposalCenter from './pages/ProposalCenter';
+import ProposalCreation from './pages/ProposalCreation';
+import PublicProposal from './pages/PublicProposal';
+import QuestionnaireCenter from './pages/QuestionnaireCenter';
+import QuestionnaireForm from './pages/QuestionnaireForm';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Dashboard": Dashboard,
     "InterchangeViewer": InterchangeViewer,
-    "QuestionnaireForm": QuestionnaireForm,
-    "QuestionnaireCenter": QuestionnaireCenter,
-    "ProposalCreation": ProposalCreation,
-    "ProposalCenter": ProposalCenter,
-    "PublicProposal": PublicProposal,
     "PipelineKanban": PipelineKanban,
+    "ProposalCenter": ProposalCenter,
+    "ProposalCreation": ProposalCreation,
+    "PublicProposal": PublicProposal,
+    "QuestionnaireCenter": QuestionnaireCenter,
+    "QuestionnaireForm": QuestionnaireForm,
 }
 
 export const pagesConfig = {
