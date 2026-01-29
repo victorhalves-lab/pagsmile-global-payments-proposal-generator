@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Dashboard from './pages/Dashboard';
+import HowItWorks from './pages/HowItWorks';
 import InterchangeViewer from './pages/InterchangeViewer';
 import PipelineKanban from './pages/PipelineKanban';
 import ProposalCenter from './pages/ProposalCenter';
@@ -56,12 +57,12 @@ import PublicProposal from './pages/PublicProposal';
 import QuestionnaireCenter from './pages/QuestionnaireCenter';
 import QuestionnaireForm from './pages/QuestionnaireForm';
 import RevenueSimulator from './pages/RevenueSimulator';
-import HowItWorks from './pages/HowItWorks';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Dashboard": Dashboard,
+    "HowItWorks": HowItWorks,
     "InterchangeViewer": InterchangeViewer,
     "PipelineKanban": PipelineKanban,
     "ProposalCenter": ProposalCenter,
@@ -70,7 +71,6 @@ export const PAGES = {
     "QuestionnaireCenter": QuestionnaireCenter,
     "QuestionnaireForm": QuestionnaireForm,
     "RevenueSimulator": RevenueSimulator,
-    "HowItWorks": HowItWorks,
 }
 
 export const pagesConfig = {
