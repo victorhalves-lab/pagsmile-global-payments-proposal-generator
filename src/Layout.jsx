@@ -15,20 +15,24 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import '@/components/i18n/i18n';
+import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   const navigation = [
-    { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
-    { name: 'Criar Proposta', page: 'ProposalCreation', icon: FileText },
-    { name: 'Central de Propostas', page: 'ProposalCenter', icon: ClipboardList },
-    { name: 'Questionários', page: 'QuestionnaireCenter', icon: ClipboardList },
-    { name: 'Pipeline', page: 'PipelineKanban', icon: Kanban },
-    { name: 'Simulador de Receita', page: 'RevenueSimulator', icon: Calculator },
-    { name: 'Taxas Interchange', page: 'InterchangeViewer', icon: Table2 },
+    { name: t('nav.dashboard'), page: 'Dashboard', icon: LayoutDashboard },
+    { name: t('nav.createProposal'), page: 'ProposalCreation', icon: FileText },
+    { name: t('nav.proposalCenter'), page: 'ProposalCenter', icon: ClipboardList },
+    { name: t('nav.questionnaires'), page: 'QuestionnaireCenter', icon: ClipboardList },
+    { name: t('nav.pipeline'), page: 'PipelineKanban', icon: Kanban },
+    { name: t('nav.revenueSimulator'), page: 'RevenueSimulator', icon: Calculator },
+    { name: t('nav.interchangeRates'), page: 'InterchangeViewer', icon: Table2 },
   ];
 
   const questionnaireLink = `${window.location.origin}${createPageUrl('QuestionnaireForm')}`;
@@ -101,16 +105,21 @@ export default function Layout({ children, currentPageName }) {
             })}
           </nav>
 
+          {/* Language Selector */}
+          <div className="p-4 border-t border-[#2bc196]/20">
+            <LanguageSelector />
+          </div>
+
           {/* Questionnaire Link */}
           <div className="p-4 border-t border-[#2bc196]/20">
-            <p className="text-white/60 text-xs mb-2">Link do Questionário:</p>
+            <p className="text-white/60 text-xs mb-2">{t('nav.questionnaireLink')}:</p>
             <Button
               onClick={copyQuestionnaireLink}
               variant="outline"
               className="w-full justify-start gap-2 bg-transparent border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
             >
               {copied ? <CheckCircle className="h-4 w-4 text-[#2bc196]" /> : <Copy className="h-4 w-4" />}
-              <span className="truncate text-sm">Copiar Link</span>
+              <span className="truncate text-sm">{t('nav.copyLink')}</span>
             </Button>
           </div>
         </div>
