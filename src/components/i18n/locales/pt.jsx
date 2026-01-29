@@ -36,7 +36,8 @@ const pt = {
     revenueSimulator: "Simulador de Receita",
     interchangeRates: "Taxas Interchange",
     questionnaireLink: "Link do Questionário",
-    copyLink: "Copiar Link"
+    copyLink: "Copiar Link",
+    howItWorks: "Como Funciona"
   },
   dashboard: {
     title: "Dashboard",

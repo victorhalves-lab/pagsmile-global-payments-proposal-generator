@@ -36,7 +36,8 @@ const en = {
     revenueSimulator: "Revenue Simulator",
     interchangeRates: "Interchange Rates",
     questionnaireLink: "Questionnaire Link",
-    copyLink: "Copy Link"
+    copyLink: "Copy Link",
+    howItWorks: "How It Works"
   },
   dashboard: {
     title: "Dashboard",
