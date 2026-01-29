@@ -22,6 +22,7 @@ import {
   CopyPlus
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import ProposalFilters from '@/components/proposal/ProposalFilters';
 import ProposalHistory from '@/components/proposal/ProposalHistory';
 
@@ -36,6 +37,7 @@ export default function ProposalCenter() {
   });
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: proposals = [], isLoading } = useQuery({
     queryKey: ['proposals'],
@@ -124,11 +126,11 @@ export default function ProposalCenter() {
 
   const getStatusBadge = (status) => {
     const config = {
-      draft: { icon: Clock, label: 'Rascunho', className: 'bg-gray-500/20 text-gray-300' },
-      sent: { icon: Clock, label: 'Enviada', className: 'bg-blue-500/20 text-blue-400' },
-      accepted: { icon: CheckCircle, label: 'Aceita', className: 'bg-green-500/20 text-green-400' },
-      counter_proposal: { icon: AlertCircle, label: 'Contraproposta', className: 'bg-yellow-500/20 text-yellow-400' },
-      rejected: { icon: XCircle, label: 'Recusada', className: 'bg-red-500/20 text-red-400' }
+      draft: { icon: Clock, label: t('proposal.status.draft'), className: 'bg-gray-500/20 text-gray-300' },
+      sent: { icon: Clock, label: t('proposal.status.sent'), className: 'bg-blue-500/20 text-blue-400' },
+      accepted: { icon: CheckCircle, label: t('proposal.status.accepted'), className: 'bg-green-500/20 text-green-400' },
+      counter_proposal: { icon: AlertCircle, label: t('proposal.status.counter_proposal'), className: 'bg-yellow-500/20 text-yellow-400' },
+      rejected: { icon: XCircle, label: t('proposal.status.rejected'), className: 'bg-red-500/20 text-red-400' }
     };
     const { icon: Icon, label, className } = config[status] || config.draft;
     return (
@@ -151,12 +153,12 @@ export default function ProposalCenter() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Central de Propostas</h1>
-          <p className="text-white/60 mt-1">Gerencie todas as propostas criadas</p>
+          <h1 className="text-3xl font-bold text-white">{t('proposal.title')}</h1>
+          <p className="text-white/60 mt-1">{t('proposal.subtitle')}</p>
         </div>
         <Link to={createPageUrl('ProposalCreation')}>
           <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
-            Nova Proposta
+            {t('proposal.newProposal')}
           </Button>
         </Link>
       </div>
@@ -166,10 +168,10 @@ export default function ProposalCenter() {
       {proposals.length === 0 ? (
         <Card className="bg-white/5 border-[#2bc196]/20">
           <CardContent className="py-12 text-center">
-            <p className="text-white/60">Nenhuma proposta criada ainda.</p>
+            <p className="text-white/60">{t('proposal.noProposals')}</p>
             <Link to={createPageUrl('ProposalCreation')}>
               <Button className="mt-4 bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
-                Criar Primeira Proposta
+                {t('proposal.createFirst')}
               </Button>
             </Link>
           </CardContent>
@@ -195,7 +197,7 @@ export default function ProposalCenter() {
                 {/* Taxas */}
                 <div className="bg-white/5 rounded-lg p-3 mb-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-white/60 text-sm">Taxa Final:</span>
+                    <span className="text-white/60 text-sm">{t('proposal.finalRate')}:</span>
                     <span className="text-[#2bc196] font-bold">
                       {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
                     </span>
@@ -205,7 +207,7 @@ export default function ProposalCenter() {
                 {/* MCCs */}
                 {proposal.mccs && proposal.mccs.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-white/60 text-xs mb-1">MCCs:</p>
+                    <p className="text-white/60 text-xs mb-1">{t('proposal.mccs')}:</p>
                     <div className="flex flex-wrap gap-1">
                       {proposal.mccs.slice(0, 5).map(mcc => (
                         <Badge key={mcc} variant="outline" className="border-[#2bc196]/30 text-white/70 text-xs">
@@ -223,7 +225,7 @@ export default function ProposalCenter() {
 
                 {/* Validade */}
                 <div className="flex items-center justify-between text-sm mb-4">
-                  <span className="text-white/60">Válida até:</span>
+                  <span className="text-white/60">{t('common.validUntil')}:</span>
                   <span className="text-white">
                     {proposal.valid_until ? new Date(proposal.valid_until).toLocaleDateString('pt-BR') : '-'}
                   </span>
@@ -297,62 +299,62 @@ export default function ProposalCenter() {
       <Dialog open={!!selectedProposal} onOpenChange={() => setSelectedProposal(null)}>
         <DialogContent className="bg-[#002443] border-[#2bc196]/20 text-white max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-[#2bc196]">Detalhes da Proposta</DialogTitle>
+            <DialogTitle className="text-[#2bc196]">{t('proposal.proposalDetails')}</DialogTitle>
           </DialogHeader>
           {selectedProposal && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-white/60 text-sm">Cliente</p>
+                  <p className="text-white/60 text-sm">{t('proposal.client')}</p>
                   <p className="text-white font-medium">{selectedProposal.client_name}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Contato</p>
+                  <p className="text-white/60 text-sm">{t('proposal.contact')}</p>
                   <p className="text-white font-medium">{selectedProposal.contact_name}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">E-mail</p>
+                  <p className="text-white/60 text-sm">{t('proposal.email')}</p>
                   <p className="text-white">{selectedProposal.contact_email}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Status</p>
+                  <p className="text-white/60 text-sm">{t('common.status')}</p>
                   {getStatusBadge(selectedProposal.status)}
                 </div>
               </div>
 
               <div className="border-t border-[#2bc196]/20 pt-4">
-                <h4 className="text-[#2bc196] font-medium mb-3">Taxas</h4>
+                <h4 className="text-[#2bc196] font-medium mb-3">{t('proposal.rates')}</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-white/60 text-sm">Taxa Final</p>
+                    <p className="text-white/60 text-sm">{t('proposal.finalRate')}</p>
                     <p className="text-white font-bold text-lg">{formatPercentage(selectedProposal.final_rate_percentage)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Fee Fixo</p>
+                    <p className="text-white/60 text-sm">{t('proposal.fixedFee')}</p>
                     <p className="text-white font-bold text-lg">{formatCurrency(selectedProposal.final_fixed_fee)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Setup Fee</p>
+                    <p className="text-white/60 text-sm">{t('proposal.setupFee')}</p>
                     <p className="text-white">{formatCurrency(selectedProposal.setup_fee)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Refund Fee</p>
+                    <p className="text-white/60 text-sm">{t('proposal.refundFee')}</p>
                     <p className="text-white">{formatCurrency(selectedProposal.refund_fee)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Chargeback Fee</p>
+                    <p className="text-white/60 text-sm">{t('proposal.chargebackFee')}</p>
                     <p className="text-white">{formatCurrency(selectedProposal.chargeback_fee)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Risk Control Fee</p>
+                    <p className="text-white/60 text-sm">{t('proposal.riskControlFee')}</p>
                     <p className="text-white">{formatCurrency(selectedProposal.risk_control_fee)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Rolling Reserve</p>
-                    <p className="text-white">{selectedProposal.rolling_reserve_percentage}% em {selectedProposal.rolling_reserve_days} dias</p>
+                    <p className="text-white/60 text-sm">{t('proposal.rollingReserve')}</p>
+                    <p className="text-white">{selectedProposal.rolling_reserve_percentage}% - {selectedProposal.rolling_reserve_days} {t('publicProposal.days')}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Prazo de Recebimento</p>
+                    <p className="text-white/60 text-sm">{t('proposal.settlement')}</p>
                     <p className="text-white">{selectedProposal.settlement_days}</p>
                   </div>
                 </div>
@@ -360,7 +362,7 @@ export default function ProposalCenter() {
 
               {selectedProposal.mccs && selectedProposal.mccs.length > 0 && (
                 <div className="border-t border-[#2bc196]/20 pt-4">
-                  <h4 className="text-[#2bc196] font-medium mb-3">MCCs Aplicáveis</h4>
+                  <h4 className="text-[#2bc196] font-medium mb-3">{t('proposal.mccApplicable')}</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedProposal.mccs.map(mcc => (
                       <Badge key={mcc} className="bg-white/10 text-white">{mcc}</Badge>
@@ -371,23 +373,23 @@ export default function ProposalCenter() {
 
               {selectedProposal.counter_proposal_rate && (
                 <div className="border-t border-[#2bc196]/20 pt-4">
-                  <h4 className="text-yellow-400 font-medium mb-3">Contraproposta do Cliente</h4>
+                  <h4 className="text-yellow-400 font-medium mb-3">{t('proposal.counterProposal')}</h4>
                   <div className="grid grid-cols-3 gap-4 bg-yellow-500/10 p-4 rounded-lg">
                     <div>
-                      <p className="text-white/60 text-sm">Taxa Proposta</p>
+                      <p className="text-white/60 text-sm">{t('proposal.proposedRate')}</p>
                       <p className="text-white">{formatPercentage(selectedProposal.counter_proposal_rate)}</p>
                     </div>
                     <div>
-                      <p className="text-white/60 text-sm">Fee Proposto</p>
+                      <p className="text-white/60 text-sm">{t('proposal.proposedFee')}</p>
                       <p className="text-white">{formatCurrency(selectedProposal.counter_proposal_fixed_fee)}</p>
                     </div>
                     <div>
-                      <p className="text-white/60 text-sm">Prazo Proposto</p>
+                      <p className="text-white/60 text-sm">{t('proposal.proposedSettlement')}</p>
                       <p className="text-white">{selectedProposal.counter_proposal_settlement_days}</p>
                     </div>
                     {selectedProposal.counter_proposal_notes && (
                       <div className="col-span-3">
-                        <p className="text-white/60 text-sm">Observações</p>
+                        <p className="text-white/60 text-sm">{t('proposal.observations')}</p>
                         <p className="text-white">{selectedProposal.counter_proposal_notes}</p>
                       </div>
                     )}
