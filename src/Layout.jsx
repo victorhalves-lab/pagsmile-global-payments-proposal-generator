@@ -26,6 +26,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Central de Propostas', page: 'ProposalCenter', icon: ClipboardList },
     { name: 'Questionários', page: 'QuestionnaireCenter', icon: ClipboardList },
     { name: 'Pipeline', page: 'PipelineKanban', icon: Kanban },
+    { name: 'Simulador de Receita', page: 'RevenueSimulator', icon: LayoutDashboard },
     { name: 'Taxas Interchange', page: 'InterchangeViewer', icon: Table2 },
   ];
 
