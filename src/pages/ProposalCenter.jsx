@@ -9,22 +9,35 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Building2, 
-  Edit, 
   Eye, 
-  Copy, 
-  FileDown, 
   Trash2,
   CheckCircle,
   XCircle,
   Clock,
   AlertCircle,
+  MoreVertical,
+  Share2,
+  Link2,
+  FileImage,
+  FileText,
+  Edit,
+  CopyPlus,
   History,
-  CopyPlus
+  ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import ProposalFilters from '@/components/proposal/ProposalFilters';
 import ProposalHistory from '@/components/proposal/ProposalHistory';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export default function ProposalCenter() {
   const [selectedProposal, setSelectedProposal] = useState(null);
@@ -121,6 +134,46 @@ export default function ProposalCenter() {
     toast.success('Link copiado para a área de transferência!');
   };
 
+  const downloadAsPNG = async (proposal) => {
+    const cardElement = document.getElementById(`proposal-card-${proposal.id}`);
+    if (!cardElement) return;
+    
+    toast.loading('Gerando imagem...');
+    const canvas = await html2canvas(cardElement, {
+      backgroundColor: '#002443',
+      scale: 2
+    });
+    toast.dismiss();
+    
+    const link = document.createElement('a');
+    link.download = `proposta-${proposal.client_name.replace(/\s+/g, '-')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast.success('Imagem baixada!');
+  };
+
+  const downloadAsPDF = async (proposal) => {
+    const cardElement = document.getElementById(`proposal-card-${proposal.id}`);
+    if (!cardElement) return;
+    
+    toast.loading('Gerando PDF...');
+    const canvas = await html2canvas(cardElement, {
+      backgroundColor: '#002443',
+      scale: 2
+    });
+    toast.dismiss();
+    
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+      unit: 'px',
+      format: [canvas.width, canvas.height]
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save(`proposta-${proposal.client_name.replace(/\s+/g, '-')}.pdf`);
+    toast.success('PDF baixado!');
+  };
+
   const formatCurrency = (value) => `$${(value || 0).toFixed(2)}`;
   const formatPercentage = (value) => `${(value || 0).toFixed(2)}%`;
 
@@ -178,7 +231,11 @@ export default function ProposalCenter() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProposals.map(proposal => (
-            <Card key={proposal.id} className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors">
+            <Card 
+              key={proposal.id} 
+              id={`proposal-card-${proposal.id}`}
+              className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors"
+            >
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -230,63 +287,105 @@ export default function ProposalCenter() {
                   </span>
                 </div>
 
-                {/* Ações */}
-                <div className="grid grid-cols-7 gap-1">
-                  <Link to={`${createPageUrl('ProposalCreation')}?editId=${proposal.id}`}>
-                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10" title="Editar">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                {/* Ações - Novo Layout */}
+                <div className="flex items-center gap-2 pt-2 border-t border-[#2bc196]/10">
+                  {/* Botão Ver Detalhes */}
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => setSelectedProposal(proposal)}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                    title="Ver detalhes"
+                    className="flex-1 text-white/70 hover:text-white hover:bg-white/10 gap-2"
                   >
                     <Eye className="h-4 w-4" />
+                    Detalhes
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => duplicateMutation.mutate(proposal)}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                    title="Duplicar proposta"
-                  >
-                    <CopyPlus className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setHistoryProposal(proposal)}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                    title="Histórico de versões"
-                  >
-                    <History className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => copyLink(proposal)}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                    title="Copiar link"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Link to={`${createPageUrl('PublicProposal')}?token=${proposal.public_link_token}`} target="_blank">
-                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10" title="Ver proposta">
-                      <FileDown className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => deleteMutation.mutate(proposal.id)}
-                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                    title="Excluir"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+
+                  {/* Menu Compartilhar */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 border-[#2bc196]/30 text-[#2bc196] hover:bg-[#2bc196]/20 gap-2"
+                      >
+                        <Share2 className="h-4 w-4" />
+                        Compartilhar
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-[#002443] border-[#2bc196]/20">
+                      <DropdownMenuItem 
+                        onClick={() => copyLink(proposal)}
+                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                      >
+                        <Link2 className="h-4 w-4" />
+                        Copiar Link Público
+                      </DropdownMenuItem>
+                      <Link to={`${createPageUrl('PublicProposal')}?token=${proposal.public_link_token}`} target="_blank">
+                        <DropdownMenuItem className="text-white hover:bg-white/10 cursor-pointer gap-2">
+                          <ExternalLink className="h-4 w-4" />
+                          Abrir Proposta
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuSeparator className="bg-[#2bc196]/20" />
+                      <DropdownMenuItem 
+                        onClick={() => downloadAsPNG(proposal)}
+                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                      >
+                        <FileImage className="h-4 w-4" />
+                        Baixar como PNG
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => downloadAsPDF(proposal)}
+                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                      >
+                        <FileText className="h-4 w-4" />
+                        Baixar como PDF
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Menu Ações */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-white/60 hover:text-white hover:bg-white/10"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-[#002443] border-[#2bc196]/20">
+                      <Link to={`${createPageUrl('ProposalCreation')}?editId=${proposal.id}`}>
+                        <DropdownMenuItem className="text-white hover:bg-white/10 cursor-pointer gap-2">
+                          <Edit className="h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuItem 
+                        onClick={() => duplicateMutation.mutate(proposal)}
+                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                      >
+                        <CopyPlus className="h-4 w-4" />
+                        Duplicar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => setHistoryProposal(proposal)}
+                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                      >
+                        <History className="h-4 w-4" />
+                        Histórico
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-[#2bc196]/20" />
+                      <DropdownMenuItem 
+                        onClick={() => deleteMutation.mutate(proposal.id)}
+                        className="text-red-400 hover:bg-red-500/10 cursor-pointer gap-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </CardContent>
             </Card>
