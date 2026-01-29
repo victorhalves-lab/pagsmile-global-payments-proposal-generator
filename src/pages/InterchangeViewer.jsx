@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 import { 
   VISA_INTERCHANGE_RATES, 
   MASTERCARD_INTERCHANGE_RATES, 
@@ -10,6 +11,7 @@ import {
 } from '@/components/interchange/InterchangeData';
 
 export default function InterchangeViewer() {
+  const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState('summary');
 
   const formatPercentage = (value) => `${value.toFixed(2)}%`;
@@ -74,8 +76,8 @@ export default function InterchangeViewer() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Taxas de Interchange</h1>
-        <p className="text-white/60 mt-1">Card Not Present - USA</p>
+        <h1 className="text-3xl font-bold text-white">{t('interchange.title')}</h1>
+        <p className="text-white/60 mt-1">{t('interchange.subtitle')}</p>
       </div>
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">

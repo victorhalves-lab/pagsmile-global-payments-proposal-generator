@@ -11,8 +11,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, XCircle, RefreshCw, AlertTriangle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import '@/components/i18n/i18n';
 
 export default function PublicProposal() {
+  const { t } = useTranslation();
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
   const queryClient = useQueryClient();
@@ -52,7 +55,7 @@ export default function PublicProposal() {
         pipeline_status: 'proposal_accepted'
       });
     }
-    toast.success('Proposta aceita com sucesso!');
+    toast.success(t('publicProposal.proposalAccepted'));
   };
 
   const handleReject = async () => {
@@ -67,7 +70,7 @@ export default function PublicProposal() {
       });
     }
     setRejectModalOpen(false);
-    toast.success('Proposta recusada');
+    toast.success(t('publicProposal.proposalRejected'));
   };
 
   const handleCounterProposal = async () => {
@@ -88,7 +91,7 @@ export default function PublicProposal() {
       });
     }
     setCounterModalOpen(false);
-    toast.success('Contraproposta enviada!');
+    toast.success(t('publicProposal.counterProposalSentSuccess'));
   };
 
   const formatCurrency = (value) => `$${(value || 0).toFixed(2)}`;
@@ -111,8 +114,8 @@ export default function PublicProposal() {
         <Card className="max-w-md w-full bg-white">
           <CardContent className="pt-8 text-center">
             <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-[#002443] mb-2">Proposta não encontrada</h2>
-            <p className="text-gray-600">O link da proposta é inválido ou expirou.</p>
+            <h2 className="text-xl font-bold text-[#002443] mb-2">{t('publicProposal.notFound')}</h2>
+            <p className="text-gray-600">{t('publicProposal.notFoundDesc')}</p>
           </CardContent>
         </Card>
       </div>
@@ -129,15 +132,15 @@ export default function PublicProposal() {
             alt="Pagsmile"
             className="h-12 mx-auto mb-6"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Pricing Proposal</h1>
-          <p className="text-white/70">Proposta personalizada para {proposal.client_name}</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('publicProposal.title')}</h1>
+          <p className="text-white/70">{t('publicProposal.subtitle')} {proposal.client_name}</p>
         </div>
 
         {/* Status Alerts */}
         {isExpired && (
           <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-4 mb-6 flex items-center gap-3">
             <Clock className="h-5 w-5 text-red-400" />
-            <p className="text-red-300">Esta proposta expirou em {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}.</p>
+            <p className="text-red-300">{t('publicProposal.expired')} {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}.</p>
           </div>
         )}
 
@@ -155,9 +158,9 @@ export default function PublicProposal() {
               proposal.status === 'rejected' ? 'text-red-300' :
               'text-yellow-300'
             }>
-              {proposal.status === 'accepted' && 'Esta proposta foi aceita.'}
-              {proposal.status === 'rejected' && 'Esta proposta foi recusada.'}
-              {proposal.status === 'counter_proposal' && 'Uma contraproposta foi enviada e está em análise.'}
+              {proposal.status === 'accepted' && t('publicProposal.alreadyAccepted')}
+              {proposal.status === 'rejected' && t('publicProposal.alreadyRejected')}
+              {proposal.status === 'counter_proposal' && t('publicProposal.counterProposalSent')}
             </p>
           </div>
         )}
@@ -167,12 +170,12 @@ export default function PublicProposal() {
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Proposta para</p>
+                <p className="text-gray-500 text-sm">{t('publicProposal.proposalFor')}</p>
                 <CardTitle className="text-[#002443]">{proposal.client_name}</CardTitle>
                 <p className="text-gray-600 text-sm">{proposal.contact_name} - {proposal.contact_email}</p>
               </div>
               <div className="text-right">
-                <p className="text-gray-500 text-sm">Válida até</p>
+                <p className="text-gray-500 text-sm">{t('publicProposal.validUntil')}</p>
                 <p className={`font-medium ${isExpired ? 'text-red-500' : 'text-[#002443]'}`}>
                   {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}
                 </p>
@@ -183,9 +186,9 @@ export default function PublicProposal() {
             {/* MCCs */}
             {proposal.mccs && proposal.mccs.length > 0 && (
               <div className="bg-[#002443]/5 rounded-lg p-4">
-                <p className="text-[#002443] font-semibold mb-2">⚠️ MCCs Aplicáveis</p>
+                <p className="text-[#002443] font-semibold mb-2">⚠️ {t('publicProposal.mccWarning')}</p>
                 <p className="text-gray-600 text-sm mb-3">
-                  Esta proposta é exclusivamente para os seguintes MCCs (Merchant Category Codes):
+                  {t('publicProposal.mccDescription')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {proposal.mccs.map(mcc => (
@@ -197,27 +200,27 @@ export default function PublicProposal() {
 
             {/* Payment Processing Fee */}
             <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">Payment Processing Fee</h3>
+              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.paymentProcessingFee')}</h3>
               <div className="border rounded-lg overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-[#2bc196]">
                     <tr>
-                      <th className="text-left text-white px-4 py-3">Payment Method</th>
-                      <th className="text-left text-white px-4 py-3">Description</th>
-                      <th className="text-right text-white px-4 py-3">Price</th>
+                      <th className="text-left text-white px-4 py-3">{t('publicProposal.paymentMethod')}</th>
+                      <th className="text-left text-white px-4 py-3">{t('publicProposal.description')}</th>
+                      <th className="text-right text-white px-4 py-3">{t('publicProposal.price')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b">
-                      <td className="px-4 py-3 font-medium">Credit & Debit Card</td>
-                      <td className="px-4 py-3 text-gray-600">Visa, MasterCard, Amex, Discover and Diners Club</td>
+                      <td className="px-4 py-3 font-medium">{t('publicProposal.creditDebit')}</td>
+                      <td className="px-4 py-3 text-gray-600">{t('publicProposal.creditDebitDesc')}</td>
                       <td className="px-4 py-3 text-right font-bold text-[#002443]">
                         {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
                       </td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-medium">Wallet</td>
-                      <td className="px-4 py-3 text-gray-600">Google Pay and Apple Pay</td>
+                      <td className="px-4 py-3 font-medium">{t('publicProposal.wallet')}</td>
+                      <td className="px-4 py-3 text-gray-600">{t('publicProposal.walletDesc')}</td>
                       <td className="px-4 py-3 text-right font-bold text-[#002443]">
                         {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
                       </td>
@@ -229,45 +232,44 @@ export default function PublicProposal() {
 
             {/* Other Fees */}
             <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">Other Fees</h3>
+              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.otherFees')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Setup Fee</span>
+                  <span className="text-gray-600">{t('publicProposal.setupFee')}</span>
                   <span className="font-medium">{formatCurrency(proposal.setup_fee)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Gateway Fee (per transaction)</span>
+                  <span className="text-gray-600">{t('publicProposal.gatewayFee')}</span>
                   <span className="font-medium">{formatCurrency(proposal.final_fixed_fee)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Refunds (per refund)</span>
+                  <span className="text-gray-600">{t('publicProposal.refundFee')}</span>
                   <span className="font-medium">{formatCurrency(proposal.refund_fee)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Chargeback Fee (per transaction)</span>
+                  <span className="text-gray-600">{t('publicProposal.chargebackFee')}</span>
                   <span className="font-medium">{formatCurrency(proposal.chargeback_fee)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Risk Control Fee (per transaction)</span>
+                  <span className="text-gray-600">{t('publicProposal.riskControlFee')}</span>
                   <span className="font-medium">{formatCurrency(proposal.risk_control_fee)}</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">Rolling Reserve</span>
-                  <span className="font-medium">{proposal.rolling_reserve_percentage}% on {proposal.rolling_reserve_days} days</span>
+                  <span className="text-gray-600">{t('publicProposal.rollingReserve')}</span>
+                  <span className="font-medium">{proposal.rolling_reserve_percentage}% {t('publicProposal.on')} {proposal.rolling_reserve_days} {t('publicProposal.days')}</span>
                 </div>
               </div>
             </div>
 
             {/* Settlement */}
             <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">Settlement</h3>
+              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.settlementTitle')}</h3>
               <div className="bg-[#002443]/5 rounded-lg p-4">
                 <p className="text-gray-700">
-                  After deducting the fees from the payments processed for merchant's website, 
-                  PAGSMILE will transfer the money to merchant's bank account.
+                  {t('publicProposal.settlementDesc')}
                 </p>
                 <p className="text-[#002443] font-medium mt-2">
-                  Settlement: <span className="text-[#2bc196]">{proposal.settlement_days}</span> in USD
+                  {t('publicProposal.settlementIn')} <span className="text-[#2bc196]">{proposal.settlement_days}</span> {t('publicProposal.inUSD')}
                 </p>
               </div>
             </div>
@@ -275,8 +277,7 @@ export default function PublicProposal() {
             {/* Disclaimer */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <p className="text-yellow-800 text-sm">
-                <strong>Disclaimer:</strong> Esta proposta está sujeita à aprovação do departamento de Compliance da Pagsmile. 
-                As taxas e condições apresentadas podem ser alteradas após análise de documentação e perfil de risco do merchant.
+                <strong>{t('publicProposal.disclaimer')}:</strong> {t('publicProposal.disclaimerText')}
               </p>
             </div>
           </CardContent>
@@ -291,7 +292,7 @@ export default function PublicProposal() {
               className="bg-green-600 hover:bg-green-700 text-white py-6"
             >
               <CheckCircle className="h-5 w-5 mr-2" />
-              Aceitar Proposta
+              {t('publicProposal.acceptProposal')}
             </Button>
             <Button 
               onClick={() => setCounterModalOpen(true)}
@@ -299,7 +300,7 @@ export default function PublicProposal() {
               className="bg-yellow-600 hover:bg-yellow-700 text-white py-6"
             >
               <RefreshCw className="h-5 w-5 mr-2" />
-              Fazer Contraproposta
+              {t('publicProposal.makeCounterProposal')}
             </Button>
             <Button 
               onClick={() => setRejectModalOpen(true)}
@@ -308,7 +309,7 @@ export default function PublicProposal() {
               className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-6"
             >
               <XCircle className="h-5 w-5 mr-2" />
-              Recusar Proposta
+              {t('publicProposal.rejectProposal')}
             </Button>
           </div>
         )}
@@ -325,11 +326,11 @@ export default function PublicProposal() {
       <Dialog open={counterModalOpen} onOpenChange={setCounterModalOpen}>
         <DialogContent className="bg-white">
           <DialogHeader>
-            <DialogTitle className="text-[#002443]">Fazer Contraproposta</DialogTitle>
+            <DialogTitle className="text-[#002443]">{t('publicProposal.counterProposalTitle')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <div>
-              <Label>Taxa proposta (%)</Label>
+              <Label>{t('publicProposal.proposedRate')}</Label>
               <Input 
                 type="number"
                 step="0.01"
@@ -339,7 +340,7 @@ export default function PublicProposal() {
               />
             </div>
             <div>
-              <Label>Fee fixo proposto (USD)</Label>
+              <Label>{t('publicProposal.proposedFee')}</Label>
               <Input 
                 type="number"
                 step="0.01"
@@ -349,13 +350,13 @@ export default function PublicProposal() {
               />
             </div>
             <div>
-              <Label>Prazo de recebimento</Label>
+              <Label>{t('publicProposal.proposedSettlement')}</Label>
               <Select 
                 value={counterForm.settlement_days} 
                 onValueChange={(v) => setCounterForm(prev => ({ ...prev, settlement_days: v }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione..." />
+                  <SelectValue placeholder="..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
@@ -365,11 +366,11 @@ export default function PublicProposal() {
               </Select>
             </div>
             <div>
-              <Label>Observações</Label>
+              <Label>{t('publicProposal.notes')}</Label>
               <Textarea 
                 value={counterForm.notes}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Adicione comentários sobre sua contraproposta..."
+                placeholder={t('publicProposal.notesPlaceholder')}
                 rows={3}
               />
             </div>
@@ -378,7 +379,7 @@ export default function PublicProposal() {
               disabled={updateMutation.isPending}
               className="w-full bg-[#2bc196] hover:bg-[#1a5a4c] text-white font-semibold"
             >
-              Enviar Contraproposta
+              {t('publicProposal.sendCounterProposal')}
             </Button>
           </div>
         </DialogContent>
@@ -388,11 +389,11 @@ export default function PublicProposal() {
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
         <DialogContent className="bg-white">
           <DialogHeader>
-            <DialogTitle className="text-[#002443]">Confirmar Recusa</DialogTitle>
+            <DialogTitle className="text-[#002443]">{t('publicProposal.confirmReject')}</DialogTitle>
           </DialogHeader>
           <div className="pt-4">
             <p className="text-gray-600 mb-6">
-              Tem certeza que deseja recusar esta proposta? Esta ação não pode ser desfeita.
+              {t('publicProposal.confirmRejectMessage')}
             </p>
             <div className="flex gap-3">
               <Button 
@@ -400,14 +401,14 @@ export default function PublicProposal() {
                 onClick={() => setRejectModalOpen(false)}
                 className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white border-[#2bc196]"
               >
-                Cancelar
+                {t('common.cancel')}
               </Button>
               <Button 
                 onClick={handleReject}
                 disabled={updateMutation.isPending}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white"
               >
-                Confirmar Recusa
+                {t('publicProposal.confirmRejectButton')}
               </Button>
             </div>
           </div>

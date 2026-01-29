@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import '@/components/i18n/i18n';
 
 const COUNTRIES = [
   { code: '+1', name: 'USA', flag: '🇺🇸' },
@@ -34,6 +36,7 @@ const COUNTRIES = [
 ];
 
 export default function QuestionnaireForm() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     contact_name: '',
@@ -95,9 +98,9 @@ export default function QuestionnaireForm() {
             <div className="w-16 h-16 bg-[#2bc196] rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="h-8 w-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-[#002443] mb-2">Obrigado!</h2>
+            <h2 className="text-2xl font-bold text-[#002443] mb-2">{t('questionnaireForm.successTitle')}</h2>
             <p className="text-gray-600">
-              Seu questionário foi enviado com sucesso. Nossa equipe entrará em contato em breve com uma proposta personalizada.
+              {t('questionnaireForm.successMessage')}
             </p>
           </CardContent>
         </Card>
@@ -115,8 +118,8 @@ export default function QuestionnaireForm() {
             alt="Pagsmile"
             className="h-12 mx-auto mb-6"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Questionário de Proposta</h1>
-          <p className="text-white/70">Preencha os dados abaixo para recebermos sua solicitação e prepararmos uma proposta personalizada.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('questionnaireForm.title')}</h1>
+          <p className="text-white/70">{t('questionnaireForm.subtitle')}</p>
         </div>
 
         <Card className="bg-white">
@@ -124,11 +127,11 @@ export default function QuestionnaireForm() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Dados do Contato */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Dados do Contato</h3>
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.contactSection')}</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="contact_name">Nome *</Label>
+                    <Label htmlFor="contact_name">{t('questionnaireForm.fullName')} *</Label>
                     <Input 
                       id="contact_name"
                       value={form.contact_name}
@@ -137,7 +140,7 @@ export default function QuestionnaireForm() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="contact_email">E-mail *</Label>
+                    <Label htmlFor="contact_email">{t('questionnaireForm.email')} *</Label>
                     <Input 
                       id="contact_email"
                       type="email"
@@ -150,7 +153,7 @@ export default function QuestionnaireForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Telefone</Label>
+                    <Label>{t('questionnaireForm.phone')}</Label>
                     <div className="flex gap-2">
                       <Select 
                         value={form.contact_phone_country_code} 
@@ -170,13 +173,12 @@ export default function QuestionnaireForm() {
                       <Input 
                         value={form.contact_phone}
                         onChange={(e) => updateForm('contact_phone', e.target.value)}
-                        placeholder="Número"
                         className="flex-1"
                       />
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="contact_role">Cargo</Label>
+                    <Label htmlFor="contact_role">{t('questionnaireForm.role')}</Label>
                     <Input 
                       id="contact_role"
                       value={form.contact_role}
@@ -188,10 +190,10 @@ export default function QuestionnaireForm() {
 
               {/* Dados da Empresa */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Dados da Empresa</h3>
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.companySection')}</h3>
                 
                 <div>
-                  <Label htmlFor="company_name">Nome da Empresa *</Label>
+                  <Label htmlFor="company_name">{t('questionnaireForm.companyName')} *</Label>
                   <Input 
                     id="company_name"
                     value={form.company_name}
@@ -202,7 +204,7 @@ export default function QuestionnaireForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="business_type">Tipo de Negócio</Label>
+                    <Label htmlFor="business_type">{t('questionnaireForm.businessType')}</Label>
                     <Input 
                       id="business_type"
                       value={form.business_type}
@@ -210,7 +212,7 @@ export default function QuestionnaireForm() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="business_model">Modelo de Negócio</Label>
+                    <Label htmlFor="business_model">{t('questionnaireForm.businessModel')}</Label>
                     <Input 
                       id="business_model"
                       value={form.business_model}
@@ -220,7 +222,7 @@ export default function QuestionnaireForm() {
                 </div>
 
                 <div>
-                  <Label htmlFor="products_services">Produtos/Serviços Comercializados</Label>
+                  <Label htmlFor="products_services">{t('questionnaireForm.products')}</Label>
                   <Textarea 
                     id="products_services"
                     value={form.products_services}
@@ -232,11 +234,11 @@ export default function QuestionnaireForm() {
 
               {/* Dados Financeiros */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Dados Financeiros</h3>
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.financialSection')}</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="monthly_tpv">TPV Mensal (USD) *</Label>
+                    <Label htmlFor="monthly_tpv">{t('questionnaireForm.monthlyTPV')} *</Label>
                     <Input 
                       id="monthly_tpv"
                       type="number"
@@ -246,7 +248,7 @@ export default function QuestionnaireForm() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="average_ticket">Ticket Médio (USD) *</Label>
+                    <Label htmlFor="average_ticket">{t('questionnaireForm.avgTicket')} *</Label>
                     <Input 
                       id="average_ticket"
                       type="number"
@@ -256,7 +258,7 @@ export default function QuestionnaireForm() {
                     />
                   </div>
                   <div>
-                    <Label>Volume Mensal de Transações</Label>
+                    <Label>{t('questionnaire.monthlyTransactions')}</Label>
                     <Input 
                       value={monthlyTransactions.toLocaleString()}
                       disabled
@@ -268,10 +270,10 @@ export default function QuestionnaireForm() {
 
               {/* Parceiro Atual */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Parceiro Atual</h3>
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.partnerSection')}</h3>
                 
                 <div>
-                  <Label>Já tem algum parceiro hoje?</Label>
+                  <Label>{t('questionnaireForm.hasPartner')}</Label>
                   <RadioGroup 
                     value={form.has_current_partner === true ? 'yes' : form.has_current_partner === false ? 'no' : ''}
                     onValueChange={(v) => updateForm('has_current_partner', v === 'yes')}
@@ -279,11 +281,11 @@ export default function QuestionnaireForm() {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id="yes" />
-                      <Label htmlFor="yes">Sim</Label>
+                      <Label htmlFor="yes">{t('common.yes')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="no" id="no" />
-                      <Label htmlFor="no">Não</Label>
+                      <Label htmlFor="no">{t('common.no')}</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -291,7 +293,7 @@ export default function QuestionnaireForm() {
                 {form.has_current_partner && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
                     <div>
-                      <Label htmlFor="current_rate_percentage">Taxa Atual (%)</Label>
+                      <Label htmlFor="current_rate_percentage">{t('questionnaireForm.currentRate')}</Label>
                       <Input 
                         id="current_rate_percentage"
                         type="number"
@@ -301,7 +303,7 @@ export default function QuestionnaireForm() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="current_fixed_fee">Fee Fixo Atual (USD)</Label>
+                      <Label htmlFor="current_fixed_fee">{t('questionnaireForm.currentFee')}</Label>
                       <Input 
                         id="current_fixed_fee"
                         type="number"
@@ -316,16 +318,16 @@ export default function QuestionnaireForm() {
 
               {/* Prazo de Recebimento */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Expectativas</h3>
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.expectedSettlement')}</h3>
                 
                 <div>
-                  <Label>Prazo de Recebimento Esperado</Label>
+                  <Label>{t('questionnaireForm.expectedSettlement')}</Label>
                   <Select 
                     value={form.expected_settlement_days} 
                     onValueChange={(v) => updateForm('expected_settlement_days', v)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione..." />
+                      <SelectValue placeholder="..." />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
@@ -341,7 +343,7 @@ export default function QuestionnaireForm() {
                 className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold py-6"
                 disabled={mutation.isPending}
               >
-                {mutation.isPending ? 'Enviando...' : 'Enviar Questionário'}
+                {mutation.isPending ? t('questionnaireForm.submitting') : t('questionnaireForm.submit')}
               </Button>
             </form>
           </CardContent>

@@ -23,8 +23,10 @@ import {
   Bar,
   Legend
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 export default function RevenueSimulator() {
+  const { t } = useTranslation();
   const [params, setParams] = useState({
     monthlyTPV: 100000,
     averageTicket: 50,
@@ -132,9 +134,9 @@ export default function RevenueSimulator() {
       <div>
         <h1 className="text-3xl font-bold text-white flex items-center gap-3">
           <Calculator className="h-8 w-8 text-[#2bc196]" />
-          Simulador de Receita
+          {t('simulator.title')}
         </h1>
-        <p className="text-white/60 mt-1">Simule o impacto de diferentes taxas e volumes na receita</p>
+        <p className="text-white/60 mt-1">{t('simulator.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
