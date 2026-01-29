@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   Copy,
-  CheckCircle
+  CheckCircle,
+  Calculator
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -26,7 +27,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Central de Propostas', page: 'ProposalCenter', icon: ClipboardList },
     { name: 'Questionários', page: 'QuestionnaireCenter', icon: ClipboardList },
     { name: 'Pipeline', page: 'PipelineKanban', icon: Kanban },
-    { name: 'Simulador de Receita', page: 'RevenueSimulator', icon: LayoutDashboard },
+    { name: 'Simulador de Receita', page: 'RevenueSimulator', icon: Calculator },
     { name: 'Taxas Interchange', page: 'InterchangeViewer', icon: Table2 },
   ];
 
