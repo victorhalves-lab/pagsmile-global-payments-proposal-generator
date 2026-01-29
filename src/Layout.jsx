@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
     { name: t('nav.pipeline'), page: 'PipelineKanban', icon: Kanban },
     { name: t('nav.revenueSimulator'), page: 'RevenueSimulator', icon: Calculator },
     { name: t('nav.interchangeRates'), page: 'InterchangeViewer', icon: Table2 },
-    { name: 'How It Works', page: 'HowItWorks', icon: BookOpen },
+    { name: t('nav.howItWorks'), page: 'HowItWorks', icon: BookOpen },
   ];
 
   const questionnaireLink = `${window.location.origin}${createPageUrl('QuestionnaireForm')}`;
