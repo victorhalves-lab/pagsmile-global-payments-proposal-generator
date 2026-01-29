@@ -54,6 +54,7 @@ import QuestionnaireCenter from './pages/QuestionnaireCenter';
 import ProposalCreation from './pages/ProposalCreation';
 import ProposalCenter from './pages/ProposalCenter';
 import PublicProposal from './pages/PublicProposal';
+import PipelineKanban from './pages/PipelineKanban';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "ProposalCreation": ProposalCreation,
     "ProposalCenter": ProposalCenter,
     "PublicProposal": PublicProposal,
+    "PipelineKanban": PipelineKanban,
 }
 
 export const pagesConfig = {
