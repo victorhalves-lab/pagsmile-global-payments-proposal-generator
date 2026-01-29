@@ -206,18 +206,18 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Link to={createPageUrl('ProposalCreation')} className="block">
-              <Button className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]">
+              <Button className="w-full bg-[#2bc196] hover:bg-[#25a882] text-[#002443] font-semibold">
                 <Plus className="h-4 w-4 mr-2" />
                 {t('nav.createProposal')}
               </Button>
             </Link>
             <Link to={createPageUrl('PipelineKanban')} className="block">
-              <Button variant="outline" className="w-full border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
+              <Button className="w-full bg-[#1a7a5c] hover:bg-[#156b50] text-white font-semibold">
                 {t('nav.pipeline')}
               </Button>
             </Link>
             <Link to={createPageUrl('InterchangeViewer')} className="block">
-              <Button variant="outline" className="w-full border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
+              <Button className="w-full bg-[#0d5a42] hover:bg-[#0a4a36] text-white font-semibold">
                 {t('nav.interchangeRates')}
               </Button>
             </Link>
