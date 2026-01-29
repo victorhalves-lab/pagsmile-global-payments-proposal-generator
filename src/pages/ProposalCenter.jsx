@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,18 +17,43 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  History,
+  CopyPlus
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ProposalFilters from '@/components/proposal/ProposalFilters';
+import ProposalHistory from '@/components/proposal/ProposalHistory';
 
 export default function ProposalCenter() {
   const [selectedProposal, setSelectedProposal] = useState(null);
+  const [historyProposal, setHistoryProposal] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    status: 'all',
+    dateFrom: '',
+    dateTo: ''
+  });
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: proposals = [], isLoading } = useQuery({
     queryKey: ['proposals'],
     queryFn: () => base44.entities.Proposal.list('-created_date')
   });
+
+  // Filtrar propostas
+  const filteredProposals = useMemo(() => {
+    return proposals.filter(p => {
+      const matchSearch = !filters.search || 
+        p.client_name?.toLowerCase().includes(filters.search.toLowerCase()) ||
+        p.contact_name?.toLowerCase().includes(filters.search.toLowerCase());
+      const matchStatus = filters.status === 'all' || p.status === filters.status;
+      const matchDateFrom = !filters.dateFrom || new Date(p.created_date) >= new Date(filters.dateFrom);
+      const matchDateTo = !filters.dateTo || new Date(p.created_date) <= new Date(filters.dateTo + 'T23:59:59');
+      return matchSearch && matchStatus && matchDateFrom && matchDateTo;
+    });
+  }, [proposals, filters]);
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Proposal.delete(id),
@@ -37,6 +62,56 @@ export default function ProposalCenter() {
       toast.success('Proposta excluída');
     }
   });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (proposal) => {
+      const token = crypto.randomUUID();
+      const validUntil = new Date();
+      validUntil.setDate(validUntil.getDate() + 15);
+      
+      const { id, created_date, updated_date, created_by, public_link_token, ...proposalData } = proposal;
+      
+      return base44.entities.Proposal.create({
+        ...proposalData,
+        status: 'draft',
+        public_link_token: token,
+        valid_until: validUntil.toISOString().split('T')[0],
+        version: 1,
+        parent_proposal_id: null,
+        change_notes: `Duplicado de proposta para ${proposal.client_name}`
+      });
+    },
+    onSuccess: (newProposal) => {
+      queryClient.invalidateQueries({ queryKey: ['proposals'] });
+      toast.success('Proposta duplicada com sucesso!');
+      navigate(`${createPageUrl('ProposalCreation')}?editId=${newProposal.id}`);
+    }
+  });
+
+  const exportToCSV = () => {
+    const headers = ['Cliente', 'Contato', 'Email', 'Taxa %', 'Fee Fixo', 'Status', 'Settlement', 'Criado em', 'Válido até'];
+    const rows = filteredProposals.map(p => [
+      p.client_name,
+      p.contact_name,
+      p.contact_email,
+      p.final_rate_percentage?.toFixed(2),
+      p.final_fixed_fee?.toFixed(2),
+      p.status,
+      p.settlement_days,
+      new Date(p.created_date).toLocaleDateString('pt-BR'),
+      p.valid_until ? new Date(p.valid_until).toLocaleDateString('pt-BR') : ''
+    ]);
+    
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `propostas_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success('Relatório exportado!');
+  };
 
   const copyLink = (proposal) => {
     const link = `${window.location.origin}${createPageUrl('PublicProposal')}?token=${proposal.public_link_token}`;
@@ -86,6 +161,8 @@ export default function ProposalCenter() {
         </Link>
       </div>
 
+      <ProposalFilters filters={filters} setFilters={setFilters} onExport={exportToCSV} />
+
       {proposals.length === 0 ? (
         <Card className="bg-white/5 border-[#2bc196]/20">
           <CardContent className="py-12 text-center">
@@ -99,7 +176,7 @@ export default function ProposalCenter() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {proposals.map(proposal => (
+          {filteredProposals.map(proposal => (
             <Card key={proposal.id} className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-4">
@@ -153,9 +230,9 @@ export default function ProposalCenter() {
                 </div>
 
                 {/* Ações */}
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-7 gap-1">
                   <Link to={`${createPageUrl('ProposalCreation')}?editId=${proposal.id}`}>
-                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10" title="Editar">
                       <Edit className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -164,19 +241,39 @@ export default function ProposalCenter() {
                     size="sm" 
                     onClick={() => setSelectedProposal(proposal)}
                     className="text-white/60 hover:text-white hover:bg-white/10"
+                    title="Ver detalhes"
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="sm" 
+                    onClick={() => duplicateMutation.mutate(proposal)}
+                    className="text-white/60 hover:text-white hover:bg-white/10"
+                    title="Duplicar proposta"
+                  >
+                    <CopyPlus className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setHistoryProposal(proposal)}
+                    className="text-white/60 hover:text-white hover:bg-white/10"
+                    title="Histórico de versões"
+                  >
+                    <History className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
                     onClick={() => copyLink(proposal)}
                     className="text-white/60 hover:text-white hover:bg-white/10"
+                    title="Copiar link"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
                   <Link to={`${createPageUrl('PublicProposal')}?token=${proposal.public_link_token}`} target="_blank">
-                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" size="sm" className="w-full text-white/60 hover:text-white hover:bg-white/10" title="Ver proposta">
                       <FileDown className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -185,6 +282,7 @@ export default function ProposalCenter() {
                     size="sm" 
                     onClick={() => deleteMutation.mutate(proposal.id)}
                     className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    title="Excluir"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -300,6 +398,13 @@ export default function ProposalCenter() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Modal de Histórico */}
+      <ProposalHistory 
+        proposal={historyProposal} 
+        open={!!historyProposal} 
+        onOpenChange={() => setHistoryProposal(null)} 
+      />
     </div>
   );
 }
