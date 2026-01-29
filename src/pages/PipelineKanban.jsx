@@ -6,17 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, DollarSign, Users, TrendingUp, TrendingDown, Percent } from 'lucide-react';
 import KPICard from '@/components/ui/KPICard';
-
-const COLUMNS = [
-  { id: 'leads', title: 'Leads', color: 'bg-gray-500' },
-  { id: 'proposal_made', title: 'Proposta Feita', color: 'bg-blue-500' },
-  { id: 'proposal_accepted', title: 'Proposta Aceita', color: 'bg-green-500' },
-  { id: 'counter_proposal', title: 'Contraproposta', color: 'bg-yellow-500' },
-  { id: 'proposal_lost', title: 'Propostas Perdidas', color: 'bg-red-500' },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function PipelineKanban() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const COLUMNS = [
+    { id: 'leads', title: t('pipeline.columns.leads'), color: 'bg-gray-500' },
+    { id: 'proposal_made', title: t('pipeline.columns.proposal_made'), color: 'bg-blue-500' },
+    { id: 'proposal_accepted', title: t('pipeline.columns.proposal_accepted'), color: 'bg-green-500' },
+    { id: 'counter_proposal', title: t('pipeline.columns.counter_proposal'), color: 'bg-yellow-500' },
+    { id: 'proposal_lost', title: t('pipeline.columns.proposal_lost'), color: 'bg-red-500' },
+  ];
 
   const { data: questionnaires = [], isLoading } = useQuery({
     queryKey: ['questionnaires'],
@@ -87,18 +89,18 @@ export default function PipelineKanban() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Pipeline</h1>
-        <p className="text-white/60 mt-1">Visualize e gerencie o funil de vendas</p>
+        <h1 className="text-3xl font-bold text-white">{t('pipeline.title')}</h1>
+        <p className="text-white/60 mt-1">{t('pipeline.subtitle')}</p>
       </div>
 
       {/* KPIs Globais */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <KPICard title="TPV Total" value={formatCurrency(totalTPV)} icon={DollarSign} />
-        <KPICard title="Receita Est. (1%)" value={formatCurrency(totalTPV * 0.01)} icon={TrendingUp} />
-        <KPICard title="Total de Leads" value={totalLeads} icon={Users} />
-        <KPICard title="TPV Ganho" value={formatCurrency(tpvGanho)} icon={TrendingUp} />
-        <KPICard title="TPV Perdido" value={formatCurrency(tpvPerdido)} icon={TrendingDown} />
-        <KPICard title="Win Rate" value={`${winRate}%`} icon={Percent} />
+        <KPICard title={t('pipeline.totalTPV')} value={formatCurrency(totalTPV)} icon={DollarSign} />
+        <KPICard title={t('pipeline.estimatedRevenue')} value={formatCurrency(totalTPV * 0.01)} icon={TrendingUp} />
+        <KPICard title={t('pipeline.totalLeads')} value={totalLeads} icon={Users} />
+        <KPICard title={t('pipeline.wonTPV')} value={formatCurrency(tpvGanho)} icon={TrendingUp} />
+        <KPICard title={t('pipeline.lostTPV')} value={formatCurrency(tpvPerdido)} icon={TrendingDown} />
+        <KPICard title={t('pipeline.winRate')} value={`${winRate}%`} icon={Percent} />
       </div>
 
       {/* Kanban */}

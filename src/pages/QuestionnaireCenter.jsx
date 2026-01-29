@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Building2, User, DollarSign, Eye, FileText, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import QuestionnaireFilters from '@/components/proposal/QuestionnaireFilters';
 
 export default function QuestionnaireCenter() {
@@ -20,6 +21,7 @@ export default function QuestionnaireCenter() {
     hasPartner: 'all'
   });
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { data: questionnaires = [], isLoading } = useQuery({
     queryKey: ['questionnaires'],
@@ -90,16 +92,9 @@ export default function QuestionnaireCenter() {
       counter_proposal: 'bg-yellow-500/20 text-yellow-400',
       proposal_lost: 'bg-red-500/20 text-red-400'
     };
-    const labels = {
-      leads: 'Lead',
-      proposal_made: 'Proposta Feita',
-      proposal_accepted: 'Aceita',
-      counter_proposal: 'Contraproposta',
-      proposal_lost: 'Perdida'
-    };
     return (
       <Badge className={styles[status] || styles.leads}>
-        {labels[status] || 'Lead'}
+        {t(`questionnaire.status.${status}`) || t('questionnaire.status.leads')}
       </Badge>
     );
   };
@@ -115,8 +110,8 @@ export default function QuestionnaireCenter() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Central de Questionários</h1>
-        <p className="text-white/60 mt-1">Gerencie todos os questionários recebidos</p>
+        <h1 className="text-3xl font-bold text-white">{t('questionnaire.title')}</h1>
+        <p className="text-white/60 mt-1">{t('questionnaire.subtitle')}</p>
       </div>
 
       <QuestionnaireFilters filters={filters} setFilters={setFilters} onExport={exportToCSV} />
@@ -124,8 +119,7 @@ export default function QuestionnaireCenter() {
       {questionnaires.length === 0 ? (
         <Card className="bg-white/5 border-[#2bc196]/20">
           <CardContent className="py-12 text-center">
-            <p className="text-white/60">Nenhum questionário recebido ainda.</p>
-            <p className="text-white/40 text-sm mt-2">Compartilhe o link do questionário para receber novos leads.</p>
+            <p className="text-white/60">{t('questionnaire.noQuestionnaires')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -151,18 +145,18 @@ export default function QuestionnaireCenter() {
 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">TPV Mensal:</span>
+                    <span className="text-white/60">{t('questionnaire.monthlyTPV')}:</span>
                     <span className="text-white font-medium flex items-center gap-1">
                       <DollarSign className="h-3 w-3 text-[#2bc196]" />
                       {formatCurrency(q.monthly_tpv)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">Ticket Médio:</span>
+                    <span className="text-white/60">{t('questionnaire.avgTicket')}:</span>
                     <span className="text-white">{formatCurrency(q.average_ticket)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">Transações/mês:</span>
+                    <span className="text-white/60">{t('questionnaire.monthlyTransactions')}:</span>
                     <span className="text-white">{(q.monthly_transactions || 0).toLocaleString()}</span>
                   </div>
                 </div>
@@ -174,7 +168,7 @@ export default function QuestionnaireCenter() {
                     className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white"
                   >
                     <Eye className="h-4 w-4 mr-1" />
-                    Detalhes
+                    {t('common.details')}
                   </Button>
                   {q.proposal_id ? (
                     <Link to={`${createPageUrl('ProposalCenter')}?id=${q.proposal_id}`} className="flex-1">
@@ -183,7 +177,7 @@ export default function QuestionnaireCenter() {
                         className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        Ver Proposta
+                        {t('proposal.viewProposal')}
                       </Button>
                     </Link>
                   ) : (
@@ -193,7 +187,7 @@ export default function QuestionnaireCenter() {
                         className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
                       >
                         <FileText className="h-4 w-4 mr-1" />
-                        Gerar Proposta
+                        {t('questionnaire.generateProposal')}
                       </Button>
                     </Link>
                   )}
@@ -217,59 +211,59 @@ export default function QuestionnaireCenter() {
         <DialogContent className="bg-[#002443] border-[#2bc196]/20 text-white max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-[#2bc196]">
-              Detalhes do Questionário
+              {t('questionnaire.questionnaireDetails')}
             </DialogTitle>
           </DialogHeader>
           {selectedQuestionnaire && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-white/60 text-sm">Empresa</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.company')}</p>
                   <p className="text-white font-medium">{selectedQuestionnaire.company_name}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Contato</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.contact')}</p>
                   <p className="text-white font-medium">{selectedQuestionnaire.contact_name}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">E-mail</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.email')}</p>
                   <p className="text-white">{selectedQuestionnaire.contact_email}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Telefone</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.phone')}</p>
                   <p className="text-white">{selectedQuestionnaire.contact_phone_country_code} {selectedQuestionnaire.contact_phone}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Cargo</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.role')}</p>
                   <p className="text-white">{selectedQuestionnaire.contact_role || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Tipo de Negócio</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.businessType')}</p>
                   <p className="text-white">{selectedQuestionnaire.business_type || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Modelo de Negócio</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.businessModel')}</p>
                   <p className="text-white">{selectedQuestionnaire.business_model || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-white/60 text-sm">Produtos/Serviços</p>
+                  <p className="text-white/60 text-sm">{t('questionnaire.products')}</p>
                   <p className="text-white">{selectedQuestionnaire.products_services || '-'}</p>
                 </div>
               </div>
 
               <div className="border-t border-[#2bc196]/20 pt-4">
-                <h4 className="text-[#2bc196] font-medium mb-3">Dados Financeiros</h4>
+                <h4 className="text-[#2bc196] font-medium mb-3">{t('questionnaire.financialInfo')}</h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-white/60 text-sm">TPV Mensal</p>
+                    <p className="text-white/60 text-sm">{t('questionnaire.monthlyTPV')}</p>
                     <p className="text-white font-medium">{formatCurrency(selectedQuestionnaire.monthly_tpv)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Ticket Médio</p>
+                    <p className="text-white/60 text-sm">{t('questionnaire.avgTicket')}</p>
                     <p className="text-white font-medium">{formatCurrency(selectedQuestionnaire.average_ticket)}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Transações/mês</p>
+                    <p className="text-white/60 text-sm">{t('questionnaire.monthlyTransactions')}</p>
                     <p className="text-white font-medium">{(selectedQuestionnaire.monthly_transactions || 0).toLocaleString()}</p>
                   </div>
                 </div>
@@ -277,14 +271,14 @@ export default function QuestionnaireCenter() {
 
               {selectedQuestionnaire.has_current_partner && (
                 <div className="border-t border-[#2bc196]/20 pt-4">
-                  <h4 className="text-[#2bc196] font-medium mb-3">Parceiro Atual</h4>
+                  <h4 className="text-[#2bc196] font-medium mb-3">{t('questionnaire.hasPartner')}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-white/60 text-sm">Taxa Atual</p>
+                      <p className="text-white/60 text-sm">{t('questionnaire.currentRate')}</p>
                       <p className="text-white font-medium">{selectedQuestionnaire.current_rate_percentage}%</p>
                     </div>
                     <div>
-                      <p className="text-white/60 text-sm">Fee Fixo Atual</p>
+                      <p className="text-white/60 text-sm">{t('questionnaire.currentFee')}</p>
                       <p className="text-white font-medium">${selectedQuestionnaire.current_fixed_fee}</p>
                     </div>
                   </div>
@@ -294,11 +288,11 @@ export default function QuestionnaireCenter() {
               <div className="border-t border-[#2bc196]/20 pt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-white/60 text-sm">Prazo Esperado</p>
+                    <p className="text-white/60 text-sm">{t('questionnaire.expectedSettlement')}</p>
                     <p className="text-white font-medium">{selectedQuestionnaire.expected_settlement_days || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm">Status</p>
+                    <p className="text-white/60 text-sm">{t('common.status')}</p>
                     {getStatusBadge(selectedQuestionnaire.pipeline_status)}
                   </div>
                 </div>

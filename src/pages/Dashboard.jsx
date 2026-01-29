@@ -17,8 +17,11 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
+  
   const { data: questionnaires = [], isLoading: loadingQ } = useQuery({
     queryKey: ['questionnaires'],
     queryFn: () => base44.entities.Questionnaire.list()
@@ -71,13 +74,13 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <p className="text-white/60 mt-1">Visão geral do seu pipeline de propostas</p>
+          <h1 className="text-3xl font-bold text-white">{t('dashboard.title')}</h1>
+          <p className="text-white/60 mt-1">{t('dashboard.subtitle')}</p>
         </div>
         <Link to={createPageUrl('ProposalCreation')}>
           <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
             <Plus className="h-5 w-5 mr-2" />
-            Nova Proposta
+            {t('proposal.newProposal')}
           </Button>
         </Link>
       </div>
@@ -85,32 +88,32 @@ export default function Dashboard() {
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <KPICard 
-          title="TPV Total" 
+          title={t('dashboard.totalTPV')} 
           value={formatCurrency(totalTPV)} 
           icon={DollarSign}
         />
         <KPICard 
-          title="Receita Estimada (1%)" 
+          title={t('dashboard.conversionRate')} 
           value={formatCurrency(estimatedRevenue)} 
           icon={TrendingUp}
         />
         <KPICard 
-          title="Total de Leads" 
+          title={t('pipeline.totalLeads')} 
           value={totalLeads} 
           icon={Users}
         />
         <KPICard 
-          title="TPV Ganho" 
+          title={t('pipeline.wonTPV')} 
           value={formatCurrency(tpvGanho)} 
           icon={CheckCircle}
         />
         <KPICard 
-          title="TPV Perdido" 
+          title={t('pipeline.lostTPV')} 
           value={formatCurrency(tpvPerdido)} 
           icon={XCircle}
         />
         <KPICard 
-          title="Win Rate" 
+          title={t('pipeline.winRate')} 
           value={`${winRate}%`} 
           icon={Percent}
         />
@@ -122,7 +125,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <FileText className="h-5 w-5 text-[#2bc196]" />
-              Propostas Recentes
+              {t('dashboard.recentProposals')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -140,17 +143,17 @@ export default function Dashboard() {
                       proposal.status === 'counter_proposal' ? 'bg-yellow-500/20 text-yellow-400' :
                       'bg-blue-500/20 text-blue-400'
                     }`}>
-                      {proposal.status}
+                      {t(`proposal.status.${proposal.status}`)}
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4">Nenhuma proposta ainda</p>
+              <p className="text-white/40 text-center py-4">{t('proposal.noProposals')}</p>
             )}
             <Link to={createPageUrl('ProposalCenter')}>
               <Button variant="ghost" className="w-full mt-4 text-[#2bc196] hover:text-[#5cf7cf] hover:bg-[#2bc196]/10">
-                Ver todas as propostas
+                {t('proposal.title')}
               </Button>
             </Link>
           </CardContent>
@@ -160,7 +163,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <ClipboardList className="h-5 w-5 text-[#2bc196]" />
-              Últimos Questionários
+              {t('dashboard.recentQuestionnaires')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -178,17 +181,17 @@ export default function Dashboard() {
                       q.pipeline_status === 'proposal_made' ? 'bg-blue-500/20 text-blue-400' :
                       'bg-gray-500/20 text-gray-400'
                     }`}>
-                      {q.pipeline_status}
+                      {t(`questionnaire.status.${q.pipeline_status}`)}
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4">Nenhum questionário ainda</p>
+              <p className="text-white/40 text-center py-4">{t('questionnaire.noQuestionnaires')}</p>
             )}
             <Link to={createPageUrl('QuestionnaireCenter')}>
               <Button variant="ghost" className="w-full mt-4 text-[#2bc196] hover:text-[#5cf7cf] hover:bg-[#2bc196]/10">
-                Ver todos os questionários
+                {t('questionnaire.title')}
               </Button>
             </Link>
           </CardContent>
@@ -198,24 +201,24 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-[#2bc196]" />
-              Ações Rápidas
+              {t('common.actions')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Link to={createPageUrl('ProposalCreation')} className="block">
               <Button className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]">
                 <Plus className="h-4 w-4 mr-2" />
-                Criar Nova Proposta
+                {t('nav.createProposal')}
               </Button>
             </Link>
             <Link to={createPageUrl('PipelineKanban')} className="block">
               <Button variant="outline" className="w-full border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
-                Ver Pipeline
+                {t('nav.pipeline')}
               </Button>
             </Link>
             <Link to={createPageUrl('InterchangeViewer')} className="block">
               <Button variant="outline" className="w-full border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
-                Ver Taxas Interchange
+                {t('nav.interchangeRates')}
               </Button>
             </Link>
           </CardContent>
