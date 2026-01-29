@@ -376,7 +376,7 @@ export default function PublicProposal() {
             <Button 
               onClick={handleCounterProposal}
               disabled={updateMutation.isPending}
-              className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
+              className="w-full bg-[#2bc196] hover:bg-[#1a5a4c] text-white font-semibold"
             >
               Enviar Contraproposta
             </Button>
@@ -398,7 +398,7 @@ export default function PublicProposal() {
               <Button 
                 variant="outline" 
                 onClick={() => setRejectModalOpen(false)}
-                className="flex-1 text-[#2bc196] border-[#2bc196] hover:bg-[#2bc196]/10"
+                className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white border-[#2bc196]"
               >
                 Cancelar
               </Button>

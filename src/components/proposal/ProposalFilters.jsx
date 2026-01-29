@@ -60,9 +60,8 @@ export default function ProposalFilters({ filters, setFilters, onExport }) {
         />
 
         <Button
-          variant="outline"
           onClick={handleReset}
-          className="border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
+          className="bg-[#1a5a4c] hover:bg-[#2bc196] text-white"
         >
           <X className="h-4 w-4 mr-1" />
           Limpar

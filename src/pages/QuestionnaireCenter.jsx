@@ -169,10 +169,9 @@ export default function QuestionnaireCenter() {
 
                 <div className="flex gap-2">
                   <Button 
-                    variant="outline" 
                     size="sm"
                     onClick={() => setSelectedQuestionnaire(q)}
-                    className="flex-1 border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
+                    className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white"
                   >
                     <Eye className="h-4 w-4 mr-1" />
                     Detalhes
