@@ -118,13 +118,17 @@ export default function ProposalCreation() {
   const finalRate = useMemo(() => {
     const baseCost = 0.5;
     const interchange = selectedInterchange.percentage;
-    const markup = parseFloat(form.markup_percentage) || 0;
+    // Converter vírgula para ponto antes de parsear
+    const rawMarkup = String(form.markup_percentage || '0').replace(',', '.');
+    const markup = parseFloat(rawMarkup) || 0;
     return baseCost + interchange + markup;
   }, [selectedInterchange, form.markup_percentage]);
 
   const finalFixedFee = useMemo(() => {
     const interchangeFixed = selectedInterchange.fixed;
-    const gatewayFee = (parseFloat(form.fixed_fee_per_transaction) || 0) / 100; // Converter centavos para dólares
+    // Converter vírgula para ponto e depois para número (centavos para dólares)
+    const rawValue = String(form.fixed_fee_per_transaction || '0').replace(',', '.');
+    const gatewayFee = (parseFloat(rawValue) || 0) / 100;
     return interchangeFixed + gatewayFee;
   }, [selectedInterchange, form.fixed_fee_per_transaction]);
 

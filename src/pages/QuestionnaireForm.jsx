@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { CheckCircle, AlertCircle, Building2, User, DollarSign, CreditCard, Percent, Clock, Send } from 'lucide-react';
 import OtherFeesInput from '@/components/questionnaire/OtherFeesInput';
 
@@ -535,20 +535,30 @@ export default function QuestionnaireForm() {
             
             <div className="mb-6">
               <Label className="text-gray-700 font-medium mb-3 block">Do you already have a payment partner? *</Label>
-              <RadioGroup 
-                value={form.has_current_partner === true ? 'yes' : form.has_current_partner === false ? 'no' : ''}
-                onValueChange={(v) => updateForm('has_current_partner', v === 'yes')}
-                className="flex gap-6"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="yes" className="border-gray-300" />
-                  <Label htmlFor="yes" className="text-gray-700 cursor-pointer">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="no" className="border-gray-300" />
-                  <Label htmlFor="no" className="text-gray-700 cursor-pointer">No</Label>
-                </div>
-              </RadioGroup>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  onClick={() => updateForm('has_current_partner', true)}
+                  className={`flex-1 h-12 text-base font-medium transition-all ${
+                    form.has_current_partner === true 
+                      ? 'bg-[#2bc196] hover:bg-[#25a882] text-white' 
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => updateForm('has_current_partner', false)}
+                  className={`flex-1 h-12 text-base font-medium transition-all ${
+                    form.has_current_partner === false 
+                      ? 'bg-[#2bc196] hover:bg-[#25a882] text-white' 
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
             {form.has_current_partner && (

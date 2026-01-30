@@ -175,7 +175,7 @@ export default function InterchangeSelector({
                 }
               `}
             >
-              <p className="text-xs font-medium truncate">{option.label}</p>
+              <p className="text-xs font-medium leading-tight min-h-[32px] flex items-center justify-center">{option.label}</p>
               <p className="text-lg font-bold mt-1">{formatPercentage(option.stats.percentage)}</p>
               <p className="text-xs opacity-70">+ {formatFixed(option.stats.fixed)}</p>
             </button>
@@ -322,12 +322,12 @@ export default function InterchangeSelector({
                                     onClick={() => handleSelectWeightedAverage({ ...option, stats })}
                                     className={`p-3 rounded-lg text-left transition-all border ${brandColors[option.brand]} hover:opacity-80`}
                                   >
-                                    <p className="font-medium text-sm">{option.name}</p>
-                                    <div className="flex items-baseline gap-2 mt-1">
+                                    <p className="font-medium text-sm leading-tight">{option.name}</p>
+                                    <div className="flex items-baseline gap-2 mt-2">
                                       <span className="text-lg font-bold">{formatPercentage(stats.avg.percentage)}</span>
                                       <span className="text-xs opacity-70">+ {formatFixed(stats.avg.fixed)}</span>
                                     </div>
-                                    <div className="flex gap-2 mt-1 text-xs opacity-60">
+                                    <div className="flex flex-wrap gap-2 mt-1 text-xs opacity-60">
                                       <span>Min: {formatPercentage(stats.low.percentage)}</span>
                                       <span>Max: {formatPercentage(stats.high.percentage)}</span>
                                     </div>
@@ -375,7 +375,7 @@ export default function InterchangeSelector({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {filteredVisaRates.slice(0, 20).map((rate, idx) => (
+                          {filteredVisaRates.map((rate, idx) => (
                             <TableRow key={idx} className="border-[#2bc196]/10 hover:bg-white/5">
                               <TableCell className="text-white text-sm">{rate.program_name}</TableCell>
                               <TableCell className="text-white/70 text-sm">{rate.card_type}</TableCell>
@@ -394,9 +394,9 @@ export default function InterchangeSelector({
                           ))}
                         </TableBody>
                       </Table>
-                      {filteredVisaRates.length > 20 && (
+                      {filteredVisaRates.length > 50 && (
                         <p className="text-white/50 text-sm text-center py-2">
-                          Mostrando 20 de {filteredVisaRates.length} taxas. Use a busca para filtrar.
+                          {filteredVisaRates.length} taxas encontradas. Use a busca para filtrar.
                         </p>
                       )}
                     </div>
@@ -419,7 +419,7 @@ export default function InterchangeSelector({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {filteredMasterRates.slice(0, 20).map((rate, idx) => (
+                          {filteredMasterRates.map((rate, idx) => (
                             <TableRow key={idx} className="border-[#2bc196]/10 hover:bg-white/5">
                               <TableCell className="text-white text-sm">{rate.program_name}</TableCell>
                               <TableCell className="text-white/70 text-sm">{rate.card_type}</TableCell>
@@ -438,9 +438,9 @@ export default function InterchangeSelector({
                           ))}
                         </TableBody>
                       </Table>
-                      {filteredMasterRates.length > 20 && (
+                      {filteredMasterRates.length > 50 && (
                         <p className="text-white/50 text-sm text-center py-2">
-                          Mostrando 20 de {filteredMasterRates.length} taxas. Use a busca para filtrar.
+                          {filteredMasterRates.length} taxas encontradas. Use a busca para filtrar.
                         </p>
                       )}
                     </div>
