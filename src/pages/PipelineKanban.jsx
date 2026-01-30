@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Building2, DollarSign, Users, TrendingUp, TrendingDown, Percent } from 'lucide-react';
+import { Building2, DollarSign, Users, TrendingUp, TrendingDown, Percent, FileText } from 'lucide-react';
 import KPICard from '@/components/ui/KPICard';
 import { useTranslation } from 'react-i18next';
 
@@ -20,14 +20,81 @@ export default function PipelineKanban() {
     { id: 'proposal_lost', title: t('pipeline.columns.proposal_lost'), color: 'bg-red-500' },
   ];
 
-  const { data: questionnaires = [], isLoading } = useQuery({
+  // Buscar questionários
+  const { data: questionnaires = [], isLoading: loadingQuestionnaires } = useQuery({
     queryKey: ['questionnaires'],
     queryFn: () => base44.entities.Questionnaire.list()
   });
 
-  const updateMutation = useMutation({
+  // Buscar propostas (para incluir as que não têm questionário vinculado)
+  const { data: proposals = [], isLoading: loadingProposals } = useQuery({
+    queryKey: ['proposals'],
+    queryFn: () => base44.entities.Proposal.list()
+  });
+
+  const isLoading = loadingQuestionnaires || loadingProposals;
+
+  // Mapear status da proposta para status do pipeline
+  const mapProposalStatusToPipeline = (status) => {
+    switch (status) {
+      case 'sent': return 'proposal_made';
+      case 'accepted': return 'proposal_accepted';
+      case 'counter_proposal': return 'counter_proposal';
+      case 'rejected': return 'proposal_lost';
+      default: return 'proposal_made';
+    }
+  };
+
+  // Encontrar propostas sem questionário vinculado
+  const proposalsWithoutQuestionnaire = proposals.filter(p => !p.questionnaire_id);
+
+  // Converter propostas sem questionário para formato de pipeline item
+  const proposalPipelineItems = proposalsWithoutQuestionnaire.map(p => ({
+    id: `proposal_${p.id}`,
+    originalId: p.id,
+    type: 'proposal',
+    company_name: p.client_name,
+    contact_name: p.contact_name,
+    contact_email: p.contact_email,
+    monthly_tpv: 0, // Propostas diretas não têm TPV estimado
+    pipeline_status: mapProposalStatusToPipeline(p.status),
+    final_rate: p.final_rate_percentage,
+    final_fixed_fee: p.final_fixed_fee,
+    created_date: p.created_date
+  }));
+
+  // Converter questionários para formato de pipeline item
+  const questionnairePipelineItems = questionnaires.map(q => ({
+    id: q.id,
+    originalId: q.id,
+    type: 'questionnaire',
+    company_name: q.company_name,
+    contact_name: q.contact_name,
+    contact_email: q.contact_email,
+    monthly_tpv: q.monthly_tpv || 0,
+    pipeline_status: q.pipeline_status || 'leads',
+    created_date: q.created_date
+  }));
+
+  // Combinar todos os itens do pipeline
+  const allPipelineItems = [...questionnairePipelineItems, ...proposalPipelineItems];
+
+  const updateQuestionnaireMutation = useMutation({
     mutationFn: ({ id, status }) => base44.entities.Questionnaire.update(id, { pipeline_status: status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['questionnaires'] })
+  });
+
+  const updateProposalMutation = useMutation({
+    mutationFn: ({ id, status }) => {
+      // Mapear status do pipeline de volta para status da proposta
+      const proposalStatus = status === 'proposal_made' ? 'sent' 
+        : status === 'proposal_accepted' ? 'accepted'
+        : status === 'counter_proposal' ? 'counter_proposal'
+        : status === 'proposal_lost' ? 'rejected'
+        : 'sent';
+      return base44.entities.Proposal.update(id, { status: proposalStatus });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['proposals'] })
   });
 
   const handleDragEnd = (result) => {
