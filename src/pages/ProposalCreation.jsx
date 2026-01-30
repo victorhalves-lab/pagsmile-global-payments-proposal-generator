@@ -516,17 +516,27 @@ export default function ProposalCreation() {
                 </div>
               </div>
               <div>
-                <Label className="text-white/80">Prazo de Recebimento</Label>
-                <Select value={form.settlement_days} onValueChange={(v) => updateForm('settlement_days', v)}>
-                  <SelectTrigger className="bg-white/10 border-[#2bc196]/30 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
-                    <SelectItem value="D+7">D+7</SelectItem>
-                    <SelectItem value="D+15">D+15</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-white/80 mb-3 block">Prazo de Recebimento</Label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { value: 'D+2/D+3', label: 'D+2 / D+3' },
+                    { value: 'D+7', label: 'D+7' },
+                    { value: 'D+15', label: 'D+15' },
+                  ].map((option) => (
+                    <Button
+                      key={option.value}
+                      type="button"
+                      onClick={() => updateForm('settlement_days', option.value)}
+                      className={`h-12 transition-all ${
+                        form.settlement_days === option.value 
+                          ? 'bg-[#2bc196] hover:bg-[#25a882] text-[#002443]' 
+                          : 'bg-white/10 hover:bg-white/20 text-white border border-[#2bc196]/30'
+                      }`}
+                    >
+                      <span className="font-bold">{option.label}</span>
+                    </Button>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
