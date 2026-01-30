@@ -229,8 +229,12 @@ export default function PipelineKanban() {
                                     }`}
                                   >
                                     <div className="flex items-center gap-2.5 mb-2">
-                                      <div className="w-8 h-8 bg-[#2bc196]/15 rounded-lg flex items-center justify-center border border-[#2bc196]/20">
-                                        <Building2 className="h-3.5 w-3.5 text-[#2bc196]" />
+                                      <div className={`w-8 h-8 ${item.type === 'proposal' ? 'bg-blue-500/15 border-blue-500/20' : 'bg-[#2bc196]/15 border-[#2bc196]/20'} rounded-lg flex items-center justify-center border`}>
+                                        {item.type === 'proposal' ? (
+                                          <FileText className="h-3.5 w-3.5 text-blue-400" />
+                                        ) : (
+                                          <Building2 className="h-3.5 w-3.5 text-[#2bc196]" />
+                                        )}
                                       </div>
                                       <div className="flex-1 min-w-0">
                                         <p className="text-white font-medium text-sm truncate">{item.company_name}</p>
@@ -238,8 +242,17 @@ export default function PipelineKanban() {
                                       </div>
                                     </div>
                                     <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.08]">
-                                      <span className="text-white/40">TPV:</span>
-                                      <span className="text-[#2bc196] font-semibold">{formatCurrency(item.monthly_tpv)}</span>
+                                      {item.type === 'proposal' ? (
+                                        <>
+                                          <span className="text-white/40">Taxa:</span>
+                                          <span className="text-blue-400 font-semibold">{item.final_rate?.toFixed(2)}% + ${item.final_fixed_fee?.toFixed(2)}</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span className="text-white/40">TPV:</span>
+                                          <span className="text-[#2bc196] font-semibold">{formatCurrency(item.monthly_tpv)}</span>
+                                        </>
+                                      )}
                                     </div>
                                   </div>
                                 )}
