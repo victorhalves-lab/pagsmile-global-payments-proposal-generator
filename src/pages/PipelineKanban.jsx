@@ -121,22 +121,22 @@ export default function PipelineKanban() {
     }).format(value || 0);
   };
 
-  // Calcular métricas globais
-  const totalTPV = questionnaires.reduce((sum, q) => sum + (q.monthly_tpv || 0), 0);
-  const totalLeads = questionnaires.length;
-  const tpvGanho = questionnaires
-    .filter(q => q.pipeline_status === 'proposal_accepted')
-    .reduce((sum, q) => sum + (q.monthly_tpv || 0), 0);
-  const tpvPerdido = questionnaires
-    .filter(q => q.pipeline_status === 'proposal_lost')
-    .reduce((sum, q) => sum + (q.monthly_tpv || 0), 0);
+  // Calcular métricas globais (usando todos os itens do pipeline)
+  const totalTPV = allPipelineItems.reduce((sum, item) => sum + (item.monthly_tpv || 0), 0);
+  const totalLeads = allPipelineItems.length;
+  const tpvGanho = allPipelineItems
+    .filter(item => item.pipeline_status === 'proposal_accepted')
+    .reduce((sum, item) => sum + (item.monthly_tpv || 0), 0);
+  const tpvPerdido = allPipelineItems
+    .filter(item => item.pipeline_status === 'proposal_lost')
+    .reduce((sum, item) => sum + (item.monthly_tpv || 0), 0);
   const winRate = (tpvGanho + tpvPerdido) > 0 
     ? ((tpvGanho / (tpvGanho + tpvPerdido)) * 100).toFixed(1) 
     : 0;
 
-  // Agrupar por status
+  // Agrupar por status (combinando questionários e propostas)
   const groupedData = COLUMNS.reduce((acc, col) => {
-    acc[col.id] = questionnaires.filter(q => q.pipeline_status === col.id);
+    acc[col.id] = allPipelineItems.filter(item => item.pipeline_status === col.id);
     return acc;
   }, {});
 
