@@ -71,10 +71,26 @@ export default function Layout({ children, currentPageName }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const isPublicPage = currentPageName === 'QuestionnaireForm' || currentPageName === 'PublicProposal';
-
+  // Página pública - renderiza sem verificação
   if (isPublicPage) {
     return <>{children}</>;
+  }
+
+  // Carregando autenticação
+  if (loadingAuth) {
+    return (
+      <div className="min-h-screen bg-[#002443] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 text-[#2bc196] animate-spin" />
+          <p className="text-white/60">Verificando autenticação...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Sem usuário logado (redirecionamento já foi feito no useEffect)
+  if (!user) {
+    return null;
   }
 
   return (
