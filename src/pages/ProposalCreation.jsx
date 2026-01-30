@@ -278,7 +278,7 @@ export default function ProposalCreation() {
                 <span>Taxa de Interchange</span>
                 <Dialog open={interchangeModalOpen} onOpenChange={setInterchangeModalOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
+                    <Button variant="outline" size="sm" className="bg-[#001a30] border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
                       <Table2 className="h-4 w-4 mr-2" />
                       Ver Tabela Completa
                     </Button>
