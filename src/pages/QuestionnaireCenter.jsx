@@ -246,6 +246,10 @@ export default function QuestionnaireCenter() {
                   <p className="text-white/60 text-sm">{t('questionnaire.products')}</p>
                   <p className="text-white">{selectedQuestionnaire.products_services || '-'}</p>
                 </div>
+                <div>
+                  <p className="text-white/60 text-sm">MCC</p>
+                  <p className="text-white">{selectedQuestionnaire.mcc || '-'}</p>
+                </div>
               </div>
 
               <div className="border-t border-[#2bc196]/20 pt-4">
