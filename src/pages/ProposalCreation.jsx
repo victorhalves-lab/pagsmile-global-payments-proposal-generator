@@ -292,12 +292,132 @@ export default function ProposalCreation() {
             <CardHeader>
               <CardTitle className="text-white">Taxa de Interchange</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              {/* Médias Rápidas - exibidas diretamente */}
+              <div className="space-y-4">
+                {/* Médias Combinadas Gerais */}
+                <div>
+                  <p className="text-white/60 text-sm mb-2">Médias Combinadas Gerais</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateForm('selected_interchange_type', 'combined_avg');
+                      }}
+                      className={`p-3 rounded-lg text-center transition-all border ${
+                        form.selected_interchange_type === 'combined_avg'
+                          ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+                          : 'bg-[#2bc196]/20 text-[#2bc196] border-[#2bc196]/30 hover:opacity-80'
+                      }`}
+                    >
+                      <p className="text-sm font-medium">Geral Médio</p>
+                      <p className="text-lg font-bold mt-1">{formatPercentage(INTERCHANGE_SUMMARY.combined.avg.percentage)}</p>
+                      <p className="text-xs opacity-70">+ {formatFixed(INTERCHANGE_SUMMARY.combined.avg.fixed)}</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateForm('selected_interchange_type', 'combined_high');
+                      }}
+                      className={`p-3 rounded-lg text-center transition-all border ${
+                        form.selected_interchange_type === 'combined_high'
+                          ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+                          : 'bg-[#2bc196]/20 text-[#2bc196] border-[#2bc196]/30 hover:opacity-80'
+                      }`}
+                    >
+                      <p className="text-sm font-medium">Geral Maior</p>
+                      <p className="text-lg font-bold mt-1">{formatPercentage(INTERCHANGE_SUMMARY.combined.high.percentage)}</p>
+                      <p className="text-xs opacity-70">+ {formatFixed(INTERCHANGE_SUMMARY.combined.high.fixed)}</p>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Por Tipo de Cartão */}
+                <div>
+                  <p className="text-white/60 text-sm mb-2">Por Tipo de Cartão</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'credit', name: 'Crédito', filter: (r) => r.card_type.includes('Consumer Credit') },
+                      { id: 'debit', name: 'Débito', filter: (r) => r.card_type.includes('Consumer Debit') },
+                      { id: 'prepaid', name: 'Pré-pago', filter: (r) => r.card_type.includes('Consumer Prepaid') },
+                    ].map(cardType => {
+                      const visaRates = VISA_INTERCHANGE_RATES.filter(cardType.filter);
+                      const masterRates = MASTERCARD_INTERCHANGE_RATES.filter(cardType.filter);
+                      const allRates = [...visaRates, ...masterRates];
+                      const avgPct = allRates.reduce((a, b) => a + b.rate_percentage, 0) / allRates.length;
+                      const avgFixed = allRates.reduce((a, b) => a + b.rate_fixed, 0) / allRates.length;
+                      const isSelected = form.selected_interchange_type === 'custom' && 
+                        Math.abs(customInterchange.percentage - avgPct) < 0.001;
+                      
+                      return (
+                        <button
+                          key={cardType.id}
+                          type="button"
+                          onClick={() => handleSelectCustomRate({ percentage: avgPct, fixed: avgFixed }, cardType.name)}
+                          className={`p-2 rounded-lg text-center transition-all border ${
+                            isSelected
+                              ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+                              : 'bg-[#2bc196]/20 text-[#2bc196] border-[#2bc196]/30 hover:opacity-80'
+                          }`}
+                        >
+                          <p className="text-xs font-medium">{cardType.name}</p>
+                          <p className="text-sm font-bold">{formatPercentage(avgPct)}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Por Segmento */}
+                <div>
+                  <p className="text-white/60 text-sm mb-2">Por Segmento</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { id: 'ecommerce', name: 'E-commerce', category: 'ecommerce' },
+                      { id: 'travel', name: 'Viagens', category: 'travel' },
+                      { id: 'restaurant', name: 'Restaurantes', category: 'restaurant' },
+                      { id: 'supermarket', name: 'Supermercados', category: 'supermarket' },
+                      { id: 'utility', name: 'Utilidades', category: 'utility' },
+                      { id: 'recurring', name: 'Recorrente', category: 'recurring' },
+                      { id: 'charity', name: 'Caridade', category: 'charity' },
+                      { id: 'government', name: 'Governo', category: 'government' },
+                    ].map(segment => {
+                      const visaRates = VISA_INTERCHANGE_RATES.filter(r => r.category === segment.category);
+                      const masterRates = MASTERCARD_INTERCHANGE_RATES.filter(r => r.category === segment.category);
+                      const allRates = [...visaRates, ...masterRates];
+                      if (allRates.length === 0) return null;
+                      const avgPct = allRates.reduce((a, b) => a + b.rate_percentage, 0) / allRates.length;
+                      const avgFixed = allRates.reduce((a, b) => a + b.rate_fixed, 0) / allRates.length;
+                      const isSelected = form.selected_interchange_type === 'custom' && 
+                        Math.abs(customInterchange.percentage - avgPct) < 0.001;
+                      
+                      return (
+                        <button
+                          key={segment.id}
+                          type="button"
+                          onClick={() => handleSelectCustomRate({ percentage: avgPct, fixed: avgFixed }, segment.name)}
+                          className={`p-2 rounded-lg text-center transition-all border ${
+                            isSelected
+                              ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+                              : 'bg-orange-500/20 text-orange-400 border-orange-500/30 hover:opacity-80'
+                          }`}
+                        >
+                          <p className="text-xs font-medium leading-tight">{segment.name}</p>
+                          <p className="text-sm font-bold">{formatPercentage(avgPct)}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Botão para ver todas as taxas individuais */}
               <InterchangeSelector
                 selectedType={form.selected_interchange_type}
                 customInterchange={customInterchange}
                 onSelectType={(type) => updateForm('selected_interchange_type', type)}
                 onSelectCustomRate={handleSelectCustomRate}
+                showQuickOptions={false}
               />
             </CardContent>
           </Card>

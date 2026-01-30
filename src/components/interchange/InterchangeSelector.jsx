@@ -47,7 +47,8 @@ export default function InterchangeSelector({
   selectedType, 
   customInterchange, 
   onSelectType, 
-  onSelectCustomRate 
+  onSelectCustomRate,
+  showQuickOptions = true 
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('quick');
@@ -202,9 +203,11 @@ export default function InterchangeSelector({
               className="flex-1 bg-[#001a30] border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
             >
               <Table2 className="h-4 w-4 mr-2" />
-              {selectedType === 'custom' 
-                ? `Personalizado: ${formatPercentage(customInterchange.percentage)} + ${formatFixed(customInterchange.fixed)}`
-                : `Selecionar Taxa de Interchange`
+              {showQuickOptions 
+                ? (selectedType === 'custom' 
+                    ? `Personalizado: ${formatPercentage(customInterchange.percentage)} + ${formatFixed(customInterchange.fixed)}`
+                    : `Selecionar Taxa de Interchange`)
+                : 'Ver todas as taxas individuais'
               }
               <ChevronRight className="h-4 w-4 ml-auto" />
             </Button>
@@ -214,8 +217,8 @@ export default function InterchangeSelector({
               <DialogTitle className="text-[#2bc196] text-xl">Selecionar Taxa de Interchange</DialogTitle>
             </DialogHeader>
             
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-              <TabsList className="bg-white/5 border-b border-[#2bc196]/20">
+            <Tabs value={showQuickOptions ? activeTab : 'individual'} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+              <TabsList className={`bg-white/5 border-b border-[#2bc196]/20 ${!showQuickOptions ? 'hidden' : ''}`}>
                 <TabsTrigger value="quick" className="data-[state=active]:bg-[#2bc196] data-[state=active]:text-[#002443]">
                   Médias Rápidas
                 </TabsTrigger>
@@ -228,7 +231,7 @@ export default function InterchangeSelector({
               </TabsList>
 
               {/* Tab: Médias Rápidas */}
-              <TabsContent value="quick" className="flex-1 overflow-auto p-4 space-y-6">
+              <TabsContent value="quick" className={`flex-1 overflow-auto p-4 space-y-6 ${!showQuickOptions ? 'hidden' : ''}`}>
                 {/* Médias Combinadas Gerais */}
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">

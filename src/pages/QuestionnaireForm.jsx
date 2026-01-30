@@ -609,9 +609,10 @@ export default function QuestionnaireForm() {
             <SectionHeader icon={Clock} title="Settlement Expectations" subtitle="When do you expect to receive funds?" />
             <div>
               <Label className="text-gray-700 font-medium mb-3 block">Expected Settlement Days *</Label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 {[
-                  { value: 'D+2/D+3', label: 'D+2 / D+3', sublabel: 'Fastest' },
+                  { value: 'D+1', label: 'D+1', sublabel: 'Express' },
+                  { value: 'D+2', label: 'D+2', sublabel: 'Fast' },
                   { value: 'D+7', label: 'D+7', sublabel: 'Standard' },
                   { value: 'D+15', label: 'D+15', sublabel: 'Extended' },
                 ].map((option) => (
