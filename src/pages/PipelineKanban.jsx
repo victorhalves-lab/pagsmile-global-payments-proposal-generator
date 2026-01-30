@@ -103,86 +103,90 @@ export default function PipelineKanban() {
         <KPICard title={t('pipeline.winRate')} value={`${winRate}%`} icon={Percent} />
       </div>
 
-      {/* Kanban */}
+      {/* Kanban - Layout Horizontal */}
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
-          {COLUMNS.map(column => {
-            const metrics = getColumnMetrics(column.id);
-            return (
-              <div key={column.id} className="min-w-[280px]">
-                <div className="rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl">
-                  <div className="p-4 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className={`w-2 h-2 rounded-full ${column.color} shadow-lg shadow-current/30`} />
-                        <span className="text-white font-semibold text-sm">{column.title}</span>
-                      </div>
-                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-white/[0.06] text-white/60 border border-white/[0.08]">{metrics.count}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-white/[0.03] rounded-xl p-2.5 border border-white/[0.05]">
-                        <p className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">TPV</p>
-                        <p className="text-white font-bold mt-1">{formatCurrency(metrics.tpv)}</p>
-                      </div>
-                      <div className="bg-[#2bc196]/[0.08] rounded-xl p-2.5 border border-[#2bc196]/20">
-                        <p className="text-[#2bc196]/60 text-[10px] font-semibold uppercase tracking-widest">Receita</p>
-                        <p className="text-[#2bc196] font-bold mt-1">{formatCurrency(metrics.revenue)}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <Droppable droppableId={column.id}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={`min-h-[200px] space-y-2.5 transition-all duration-300 rounded-xl p-2 ${
-                            snapshot.isDraggingOver ? 'bg-[#2bc196]/[0.08] border-2 border-dashed border-[#2bc196]/40 shadow-inner shadow-[#2bc196]/10' : 'border-2 border-transparent'
-                          }`}
-                        >
-                          {(groupedData[column.id] || []).map((item, index) => (
-                            <Draggable key={item.id} draggableId={item.id} index={index}>
-                              {(provided, snapshot) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className={`bg-white/[0.04] hover:bg-white/[0.08] rounded-xl p-3.5 cursor-grab transition-all duration-300 border border-white/[0.06] hover:border-white/10 ${
-                                    snapshot.isDragging ? 'shadow-2xl shadow-[#2bc196]/30 ring-2 ring-[#2bc196]/80 bg-[#001a30] scale-[1.02]' : ''
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-[#2bc196]/15 to-[#2bc196]/5 rounded-xl flex items-center justify-center border border-[#2bc196]/25">
-                                      <Building2 className="h-4 w-4 text-[#2bc196]" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <p className="text-white font-semibold text-sm truncate">
-                                        {item.company_name}
-                                      </p>
-                                      <p className="text-white/40 text-xs truncate mt-0.5">
-                                        {item.contact_name}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center justify-between text-xs pt-2.5 border-t border-white/[0.06]">
-                                    <span className="text-white/40 font-medium">TPV:</span>
-                                    <span className="text-[#2bc196] font-bold">
-                                      {formatCurrency(item.monthly_tpv)}
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
+        <div className="overflow-x-auto pb-4">
+          <div className="flex gap-4" style={{ minWidth: 'max-content' }}>
+            {COLUMNS.map(column => {
+              const metrics = getColumnMetrics(column.id);
+              return (
+                <div key={column.id} className="w-[280px] flex-shrink-0">
+                  <div className="rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl h-full flex flex-col">
+                    {/* Header da Coluna */}
+                    <div className="p-4 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-2.5 h-2.5 rounded-full ${column.color}`} />
+                          <span className="text-white font-semibold text-sm">{column.title}</span>
                         </div>
-                      )}
-                    </Droppable>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/[0.08] text-white/70">{metrics.count}</span>
+                      </div>
+                      <div className="flex gap-2 text-xs">
+                        <div className="flex-1 bg-white/[0.04] rounded-lg px-3 py-2 border border-white/[0.05]">
+                          <p className="text-white/40 text-[10px] uppercase tracking-wider">TPV</p>
+                          <p className="text-white font-semibold">{formatCurrency(metrics.tpv)}</p>
+                        </div>
+                        <div className="flex-1 bg-[#2bc196]/10 rounded-lg px-3 py-2 border border-[#2bc196]/20">
+                          <p className="text-[#2bc196]/60 text-[10px] uppercase tracking-wider">Receita</p>
+                          <p className="text-[#2bc196] font-semibold">{formatCurrency(metrics.revenue)}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Área de Cards */}
+                    <div className="flex-1 p-2">
+                      <Droppable droppableId={column.id}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={`min-h-[300px] max-h-[500px] overflow-y-auto space-y-2 p-2 rounded-xl transition-all ${
+                              snapshot.isDraggingOver ? 'bg-[#2bc196]/10 border-2 border-dashed border-[#2bc196]/30' : ''
+                            }`}
+                          >
+                            {(groupedData[column.id] || []).map((item, index) => (
+                              <Draggable key={item.id} draggableId={item.id} index={index}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className={`bg-white/[0.05] hover:bg-white/[0.08] rounded-xl p-3 cursor-grab transition-all border border-white/[0.08] hover:border-[#2bc196]/30 ${
+                                      snapshot.isDragging ? 'shadow-xl shadow-[#2bc196]/20 ring-2 ring-[#2bc196] bg-[#002443]' : ''
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2.5 mb-2">
+                                      <div className="w-8 h-8 bg-[#2bc196]/15 rounded-lg flex items-center justify-center border border-[#2bc196]/20">
+                                        <Building2 className="h-3.5 w-3.5 text-[#2bc196]" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-white font-medium text-sm truncate">{item.company_name}</p>
+                                        <p className="text-white/40 text-xs truncate">{item.contact_name}</p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.08]">
+                                      <span className="text-white/40">TPV:</span>
+                                      <span className="text-[#2bc196] font-semibold">{formatCurrency(item.monthly_tpv)}</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                            {(groupedData[column.id] || []).length === 0 && (
+                              <div className="flex items-center justify-center h-24 text-white/20 text-xs">
+                                Arraste cards aqui
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </DragDropContext>
     </div>
