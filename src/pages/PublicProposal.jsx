@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -9,10 +8,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, XCircle, RefreshCw, AlertTriangle, Clock } from 'lucide-react';
+import { 
+  CheckCircle, 
+  XCircle, 
+  RefreshCw, 
+  AlertTriangle, 
+  Clock, 
+  CreditCard, 
+  Wallet, 
+  Globe, 
+  Building2, 
+  FileText,
+  Shield,
+  Banknote,
+  ArrowRight,
+  Sparkles,
+  Calendar
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import '@/components/i18n/i18n';
+import { motion } from 'framer-motion';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -37,7 +53,6 @@ export default function PublicProposal() {
 
   const proposal = proposals[0];
 
-  // Rastrear visualização da proposta
   React.useEffect(() => {
     if (proposal && proposal.id) {
       base44.analytics.track({
@@ -116,263 +131,426 @@ export default function PublicProposal() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#002443] to-[#003366] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2bc196]"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-emerald-500/30 rounded-full animate-pulse"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-emerald-500 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-white/60 text-sm">Loading proposal...</p>
+        </div>
       </div>
     );
   }
 
   if (!proposal) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#002443] to-[#003366] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white">
-          <CardContent className="pt-8 text-center">
-            <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-[#002443] mb-2">{t('publicProposal.notFound')}</h2>
-            <p className="text-gray-600">{t('publicProposal.notFoundDesc')}</p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center"
+        >
+          <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle className="h-8 w-8 text-amber-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">{t('publicProposal.notFound')}</h2>
+          <p className="text-white/60">{t('publicProposal.notFoundDesc')}</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#002443] to-[#003366] py-8 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <img 
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
-            alt="Pagsmile"
-            className="h-12 mx-auto mb-6"
-          />
-          <h1 className="text-3xl font-bold text-white mb-2">{t('publicProposal.title')}</h1>
-          <p className="text-white/70">{t('publicProposal.subtitle')} {proposal.client_name}</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Decorative Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+      </div>
 
-        {/* Status Alerts */}
-        {isExpired && (
-          <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-4 mb-6 flex items-center gap-3">
-            <Clock className="h-5 w-5 text-red-400" />
-            <p className="text-red-300">{t('publicProposal.expired')} {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}.</p>
-          </div>
-        )}
+      <div className="relative z-10 py-8 px-4 md:py-12">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+          >
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
+              alt="Pagsmile"
+              className="h-10 md:h-12 mx-auto mb-8"
+            />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-400 text-sm font-medium">Pricing Proposal</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              {t('publicProposal.title')}
+            </h1>
+            <p className="text-white/60 text-lg">Prepared for <span className="text-white font-medium">{proposal.client_name}</span></p>
+          </motion.div>
 
-        {isAlreadyResponded && (
-          <div className={`rounded-lg p-4 mb-6 flex items-center gap-3 ${
-            proposal.status === 'accepted' ? 'bg-green-500/20 border border-green-500/40' :
-            proposal.status === 'rejected' ? 'bg-red-500/20 border border-red-500/40' :
-            'bg-yellow-500/20 border border-yellow-500/40'
-          }`}>
-            {proposal.status === 'accepted' && <CheckCircle className="h-5 w-5 text-green-400" />}
-            {proposal.status === 'rejected' && <XCircle className="h-5 w-5 text-red-400" />}
-            {proposal.status === 'counter_proposal' && <RefreshCw className="h-5 w-5 text-yellow-400" />}
-            <p className={
-              proposal.status === 'accepted' ? 'text-green-300' :
-              proposal.status === 'rejected' ? 'text-red-300' :
-              'text-yellow-300'
-            }>
-              {proposal.status === 'accepted' && t('publicProposal.alreadyAccepted')}
-              {proposal.status === 'rejected' && t('publicProposal.alreadyRejected')}
-              {proposal.status === 'counter_proposal' && t('publicProposal.counterProposalSent')}
-            </p>
-          </div>
-        )}
-
-        {/* Proposta */}
-        <Card className="bg-white mb-6">
-          <CardHeader className="border-b">
-            <div className="flex items-center justify-between">
+          {/* Status Alerts */}
+          {isExpired && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-500/10 backdrop-blur border border-red-500/30 rounded-2xl p-5 mb-6 flex items-center gap-4"
+            >
+              <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="h-6 w-6 text-red-400" />
+              </div>
               <div>
-                <p className="text-gray-500 text-sm">{t('publicProposal.proposalFor')}</p>
-                <CardTitle className="text-[#002443]">{proposal.client_name}</CardTitle>
-                <p className="text-gray-600 text-sm">{proposal.contact_name} - {proposal.contact_email}</p>
+                <p className="text-red-300 font-medium">This proposal has expired</p>
+                <p className="text-red-400/70 text-sm">Valid until {new Date(proposal.valid_until).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
-              <div className="text-right">
-                <p className="text-gray-500 text-sm">{t('publicProposal.validUntil')}</p>
-                <p className={`font-medium ${isExpired ? 'text-red-500' : 'text-[#002443]'}`}>
-                  {new Date(proposal.valid_until).toLocaleDateString('pt-BR')}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-6">
-            {/* MCCs */}
-            {proposal.mccs && proposal.mccs.length > 0 && (
-              <div className="bg-[#002443]/5 rounded-lg p-4">
-                <p className="text-[#002443] font-semibold mb-2">⚠️ {t('publicProposal.mccWarning')}</p>
-                <p className="text-gray-600 text-sm mb-3">
-                  {t('publicProposal.mccDescription')}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {proposal.mccs.map(mcc => (
-                    <Badge key={mcc} className="bg-[#2bc196] text-white">{mcc}</Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            </motion.div>
+          )}
 
-            {/* Payment Processing Fee */}
-            <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.paymentProcessingFee')}</h3>
-              <div className="border rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-[#2bc196]">
-                    <tr>
-                      <th className="text-left text-white px-4 py-3">{t('publicProposal.paymentMethod')}</th>
-                      <th className="text-left text-white px-4 py-3">{t('publicProposal.description')}</th>
-                      <th className="text-right text-white px-4 py-3">{t('publicProposal.price')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b">
-                      <td className="px-4 py-3 font-medium">{t('publicProposal.creditDebit')}</td>
-                      <td className="px-4 py-3 text-gray-600">{t('publicProposal.creditDebitDesc')}</td>
-                      <td className="px-4 py-3 text-right font-bold text-[#002443]">
-                        {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 font-medium">{t('publicProposal.wallet')}</td>
-                      <td className="px-4 py-3 text-gray-600">{t('publicProposal.walletDesc')}</td>
-                      <td className="px-4 py-3 text-right font-bold text-[#002443]">
-                        {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Other Fees */}
-            <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.otherFees')}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.setupFee')}</span>
-                  <span className="font-medium">{formatCurrency(proposal.setup_fee)}</span>
-                </div>
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.gatewayFee')}</span>
-                  <span className="font-medium">{formatCurrency(proposal.final_fixed_fee)}</span>
-                </div>
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.refundFee')}</span>
-                  <span className="font-medium">{formatCurrency(proposal.refund_fee)}</span>
-                </div>
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.chargebackFee')}</span>
-                  <span className="font-medium">{formatCurrency(proposal.chargeback_fee)}</span>
-                </div>
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.riskControlFee')}</span>
-                  <span className="font-medium">{formatCurrency(proposal.risk_control_fee)}</span>
-                </div>
-                <div className="flex justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-gray-600">{t('publicProposal.rollingReserve')}</span>
-                  <span className="font-medium">{proposal.rolling_reserve_percentage}% {t('publicProposal.on')} {proposal.rolling_reserve_days} {t('publicProposal.days')}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Settlement */}
-            <div>
-              <h3 className="text-[#002443] font-semibold text-lg mb-4">{t('publicProposal.settlementTitle')}</h3>
-              <div className="bg-[#002443]/5 rounded-lg p-4">
-                <p className="text-gray-700">
-                  {t('publicProposal.settlementDesc')}
-                </p>
-                <p className="text-[#002443] font-medium mt-2">
-                  {t('publicProposal.settlementIn')} <span className="text-[#2bc196]">{proposal.settlement_days}</span> {t('publicProposal.inUSD')}
-                </p>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-yellow-800 text-sm">
-                <strong>{t('publicProposal.disclaimer')}:</strong> {t('publicProposal.disclaimerText')}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Botões de Ação */}
-        {!isExpired && !isAlreadyResponded && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button 
-              onClick={handleAccept}
-              disabled={updateMutation.isPending}
-              className="bg-green-600 hover:bg-green-700 text-white py-6"
+          {isAlreadyResponded && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className={`backdrop-blur rounded-2xl p-5 mb-6 flex items-center gap-4 ${
+                proposal.status === 'accepted' ? 'bg-emerald-500/10 border border-emerald-500/30' :
+                proposal.status === 'rejected' ? 'bg-red-500/10 border border-red-500/30' :
+                'bg-amber-500/10 border border-amber-500/30'
+              }`}
             >
-              <CheckCircle className="h-5 w-5 mr-2" />
-              {t('publicProposal.acceptProposal')}
-            </Button>
-            <Button 
-              onClick={() => setCounterModalOpen(true)}
-              disabled={updateMutation.isPending}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white py-6"
-            >
-              <RefreshCw className="h-5 w-5 mr-2" />
-              {t('publicProposal.makeCounterProposal')}
-            </Button>
-            <Button 
-              onClick={() => setRejectModalOpen(true)}
-              disabled={updateMutation.isPending}
-              variant="outline"
-              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-6"
-            >
-              <XCircle className="h-5 w-5 mr-2" />
-              {t('publicProposal.rejectProposal')}
-            </Button>
-          </div>
-        )}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                proposal.status === 'accepted' ? 'bg-emerald-500/20' :
+                proposal.status === 'rejected' ? 'bg-red-500/20' : 'bg-amber-500/20'
+              }`}>
+                {proposal.status === 'accepted' && <CheckCircle className="h-6 w-6 text-emerald-400" />}
+                {proposal.status === 'rejected' && <XCircle className="h-6 w-6 text-red-400" />}
+                {proposal.status === 'counter_proposal' && <RefreshCw className="h-6 w-6 text-amber-400" />}
+              </div>
+              <div>
+                <p className={`font-medium ${
+                  proposal.status === 'accepted' ? 'text-emerald-300' :
+                  proposal.status === 'rejected' ? 'text-red-300' : 'text-amber-300'
+                }`}>
+                  {proposal.status === 'accepted' && t('publicProposal.alreadyAccepted')}
+                  {proposal.status === 'rejected' && t('publicProposal.alreadyRejected')}
+                  {proposal.status === 'counter_proposal' && t('publicProposal.counterProposalSent')}
+                </p>
+              </div>
+            </motion.div>
+          )}
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-white/60 text-sm">
-            Pagsmile Limited | www.pagsmile.com
-          </p>
+          {/* Main Proposal Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-6"
+          >
+            {/* Proposal Header */}
+            <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border-b border-white/10 p-6 md:p-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <p className="text-white/50 text-sm mb-1">Proposal for</p>
+                  <h2 className="text-2xl font-bold text-white">{proposal.client_name}</h2>
+                  <p className="text-white/60 mt-1">{proposal.contact_name} • {proposal.contact_email}</p>
+                </div>
+                <div className="flex items-center gap-3 bg-white/5 rounded-2xl px-5 py-3 border border-white/10">
+                  <Calendar className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-white/50 text-xs">Valid until</p>
+                    <p className={`font-semibold ${isExpired ? 'text-red-400' : 'text-white'}`}>
+                      {new Date(proposal.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8 space-y-8">
+              
+              {/* MCCs Section */}
+              {proposal.mccs && proposal.mccs.length > 0 && (
+                <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <AlertTriangle className="w-5 h-5 text-amber-400" />
+                    </div>
+                    <div>
+                      <p className="text-amber-300 font-semibold">{t('publicProposal.mccWarning')}</p>
+                      <p className="text-amber-400/70 text-sm mt-1">{t('publicProposal.mccDescription')}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 ml-13">
+                    {proposal.mccs.map(mcc => (
+                      <span key={mcc} className="px-3 py-1.5 bg-amber-500/20 text-amber-300 rounded-lg text-sm font-medium">
+                        {mcc}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Processing Countries Section */}
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <Globe className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">Processing Countries</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+                    <span className="text-2xl mb-2 block">🇺🇸</span>
+                    <p className="text-white font-medium">USA</p>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+                    <span className="text-2xl mb-2 block">🇪🇺</span>
+                    <p className="text-white font-medium">EU</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Processing Fee */}
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">{t('publicProposal.paymentProcessingFee')}</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  {/* Credit/Debit Card */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-xl flex items-center justify-center">
+                          <CreditCard className="w-6 h-6 text-violet-400" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold">{t('publicProposal.creditDebit')}</p>
+                          <p className="text-white/50 text-sm">{t('publicProposal.creditDebitDesc')}</p>
+                        </div>
+                      </div>
+                      <div className="text-right md:text-left">
+                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2">
+                          <span className="text-emerald-400 text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
+                          <span className="text-white/40">+</span>
+                          <span className="text-emerald-400 text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Wallet */}
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center">
+                          <Wallet className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold">{t('publicProposal.wallet')}</p>
+                          <p className="text-white/50 text-sm">{t('publicProposal.walletDesc')}</p>
+                        </div>
+                      </div>
+                      <div className="text-right md:text-left">
+                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2">
+                          <span className="text-emerald-400 text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
+                          <span className="text-white/40">+</span>
+                          <span className="text-emerald-400 text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Other Fees */}
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">{t('publicProposal.otherFees')}</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <FeeItem label={t('publicProposal.setupFee')} value={formatCurrency(proposal.setup_fee)} />
+                  <FeeItem label={t('publicProposal.gatewayFee')} value={formatCurrency(proposal.final_fixed_fee)} />
+                  <FeeItem label={t('publicProposal.refundFee')} value={formatCurrency(proposal.refund_fee)} />
+                  <FeeItem label={t('publicProposal.chargebackFee')} value={formatCurrency(proposal.chargeback_fee)} />
+                  <FeeItem label={t('publicProposal.riskControlFee')} value={formatCurrency(proposal.risk_control_fee)} />
+                  <FeeItem 
+                    label={t('publicProposal.rollingReserve')} 
+                    value={`${proposal.rolling_reserve_percentage}% for ${proposal.rolling_reserve_days} days`} 
+                  />
+                </div>
+              </div>
+
+              {/* Settlement Section */}
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                    <Banknote className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">Settlement</h3>
+                </div>
+                
+                <div className="bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-cyan-500/20 rounded-2xl p-6">
+                  <p className="text-white/80 leading-relaxed mb-6">
+                    After deducting the fees from the payments processed for merchant's website, PAGSMILE will transfer the money to merchant's bank account. The sums received will be withheld the related fees.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-3 border-b border-white/10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                          <ArrowRight className="w-4 h-4 text-cyan-400" />
+                        </div>
+                        <span className="text-white/70">Settlement Period</span>
+                      </div>
+                      <span className="text-cyan-400 font-bold text-lg">{proposal.settlement_days}</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between py-3 border-b border-white/10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                          <RefreshCw className="w-4 h-4 text-amber-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/70">FX Markup</span>
+                          <p className="text-white/40 text-xs">When order or settlement currency is other than USD</p>
+                        </div>
+                      </div>
+                      <span className="text-amber-400 font-bold text-lg">3%</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/70">Wire Transfer Fee</span>
+                          <p className="text-white/40 text-xs">For each international settlement transfer</p>
+                        </div>
+                      </div>
+                      <span className="text-purple-400 font-bold text-lg">$50.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-amber-300 font-medium mb-1">{t('publicProposal.disclaimer')}</p>
+                    <p className="text-amber-400/70 text-sm leading-relaxed">
+                      {t('publicProposal.disclaimerText')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Action Buttons */}
+          {!isExpired && !isAlreadyResponded && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              <Button 
+                onClick={handleAccept}
+                disabled={updateMutation.isPending}
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
+              >
+                <CheckCircle className="h-5 w-5 mr-2" />
+                {t('publicProposal.acceptProposal')}
+              </Button>
+              <Button 
+                onClick={() => setCounterModalOpen(true)}
+                disabled={updateMutation.isPending}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all"
+              >
+                <RefreshCw className="h-5 w-5 mr-2" />
+                {t('publicProposal.makeCounterProposal')}
+              </Button>
+              <Button 
+                onClick={() => setRejectModalOpen(true)}
+                disabled={updateMutation.isPending}
+                className="bg-white/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 py-7 rounded-2xl text-lg font-semibold transition-all"
+              >
+                <XCircle className="h-5 w-5 mr-2" />
+                {t('publicProposal.rejectProposal')}
+              </Button>
+            </motion.div>
+          )}
+
+          {/* Footer */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-center mt-12 pb-8"
+          >
+            <div className="inline-flex items-center gap-2 text-white/40 text-sm">
+              <Shield className="w-4 h-4" />
+              <span>Secure & Encrypted</span>
+            </div>
+            <p className="text-white/30 text-sm mt-2">
+              Pagsmile Limited • www.pagsmile.com
+            </p>
+          </motion.div>
         </div>
       </div>
 
-      {/* Modal Contraproposta */}
+      {/* Counter Proposal Modal */}
       <Dialog open={counterModalOpen} onOpenChange={setCounterModalOpen}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-slate-900 border border-white/10 rounded-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#002443]">{t('publicProposal.counterProposalTitle')}</DialogTitle>
+            <DialogTitle className="text-white text-xl">{t('publicProposal.counterProposalTitle')}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 pt-4">
+          <div className="space-y-5 pt-4">
             <div>
-              <Label>{t('publicProposal.proposedRate')}</Label>
+              <Label className="text-white/70 text-sm">{t('publicProposal.proposedRate')}</Label>
               <Input 
                 type="number"
                 step="0.01"
                 value={counterForm.rate}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, rate: e.target.value }))}
                 placeholder="Ex: 3.50"
+                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <div>
-              <Label>{t('publicProposal.proposedFee')}</Label>
+              <Label className="text-white/70 text-sm">{t('publicProposal.proposedFee')}</Label>
               <Input 
                 type="number"
                 step="0.01"
                 value={counterForm.fixed_fee}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, fixed_fee: e.target.value }))}
                 placeholder="Ex: 0.10"
+                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <div>
-              <Label>{t('publicProposal.proposedSettlement')}</Label>
+              <Label className="text-white/70 text-sm">{t('publicProposal.proposedSettlement')}</Label>
               <Select 
                 value={counterForm.settlement_days} 
                 onValueChange={(v) => setCounterForm(prev => ({ ...prev, settlement_days: v }))}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="..." />
+                <SelectTrigger className="mt-2 bg-white/5 border-white/10 text-white rounded-xl">
+                  <SelectValue placeholder="Select..." />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-800 border-white/10">
                   <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
                   <SelectItem value="D+7">D+7</SelectItem>
                   <SelectItem value="D+15">D+15</SelectItem>
@@ -380,18 +558,19 @@ export default function PublicProposal() {
               </Select>
             </div>
             <div>
-              <Label>{t('publicProposal.notes')}</Label>
+              <Label className="text-white/70 text-sm">{t('publicProposal.notes')}</Label>
               <Textarea 
                 value={counterForm.notes}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, notes: e.target.value }))}
                 placeholder={t('publicProposal.notesPlaceholder')}
                 rows={3}
+                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <Button 
               onClick={handleCounterProposal}
               disabled={updateMutation.isPending}
-              className="w-full bg-[#2bc196] hover:bg-[#1a5a4c] text-white font-semibold"
+              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 rounded-xl font-semibold"
             >
               {t('publicProposal.sendCounterProposal')}
             </Button>
@@ -399,28 +578,28 @@ export default function PublicProposal() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal Rejeição */}
+      {/* Reject Modal */}
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-slate-900 border border-white/10 rounded-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#002443]">{t('publicProposal.confirmReject')}</DialogTitle>
+            <DialogTitle className="text-white text-xl">{t('publicProposal.confirmReject')}</DialogTitle>
           </DialogHeader>
           <div className="pt-4">
-            <p className="text-gray-600 mb-6">
+            <p className="text-white/60 mb-6">
               {t('publicProposal.confirmRejectMessage')}
             </p>
             <div className="flex gap-3">
               <Button 
                 variant="outline" 
                 onClick={() => setRejectModalOpen(false)}
-                className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white border-[#2bc196]"
+                className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl py-5"
               >
                 {t('common.cancel')}
               </Button>
               <Button 
                 onClick={handleReject}
                 disabled={updateMutation.isPending}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl py-5"
               >
                 {t('publicProposal.confirmRejectButton')}
               </Button>
@@ -428,6 +607,15 @@ export default function PublicProposal() {
           </div>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function FeeItem({ label, value }) {
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between hover:bg-white/[0.07] transition-colors">
+      <span className="text-white/60 text-sm">{label}</span>
+      <span className="text-white font-semibold">{value}</span>
     </div>
   );
 }
