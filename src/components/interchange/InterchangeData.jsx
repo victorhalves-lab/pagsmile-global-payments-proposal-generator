@@ -348,6 +348,9 @@ export const WEIGHTED_AVERAGE_CATEGORIES = {
     name: 'Por Tipo de Cartão',
     description: 'Médias por tipo específico de cartão',
     options: [
+      { id: 'combined_credit', name: 'Crédito Combinado (Visa + Master)', brand: 'combined', filter: (r) => r.card_type.includes('Consumer Credit') },
+      { id: 'combined_debit', name: 'Débito Combinado (Visa + Master)', brand: 'combined', filter: (r) => r.card_type.includes('Consumer Debit') },
+      { id: 'combined_prepaid', name: 'Pré-pago Combinado (Visa + Master)', brand: 'combined', filter: (r) => r.card_type.includes('Consumer Prepaid') },
       { id: 'visa_credit', name: 'Visa Crédito', brand: 'visa', filter: (r) => r.card_type.includes('Consumer Credit') },
       { id: 'visa_debit', name: 'Visa Débito', brand: 'visa', filter: (r) => r.card_type.includes('Consumer Debit') },
       { id: 'visa_prepaid', name: 'Visa Pré-pago', brand: 'visa', filter: (r) => r.card_type.includes('Consumer Prepaid') },

@@ -32,6 +32,17 @@ import {
   getAllWeightedAverageOptions
 } from './InterchangeData';
 
+// Helper para obter stats de opção rápida
+const getQuickOptionStats = (option, customInterchange) => {
+  if (option.isWeighted) {
+    return option.stats;
+  }
+  const [brand, level] = option.value.split('_');
+  if (brand === 'visa') return INTERCHANGE_SUMMARY.visa[level];
+  if (brand === 'master') return INTERCHANGE_SUMMARY.master[level];
+  return INTERCHANGE_SUMMARY.combined[level];
+};
+
 // Ícones por categoria
 const categoryIcons = {
   brand: CreditCard,
@@ -64,13 +75,27 @@ export default function InterchangeSelector({
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   // Opções rápidas (as mais usadas)
-  const quickOptions = useMemo(() => [
-    { value: 'combined_avg', label: 'Combinado Médio', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.avg },
-    { value: 'combined_low', label: 'Combinado Menor', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.low },
-    { value: 'combined_high', label: 'Combinado Maior', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.high },
-    { value: 'visa_avg', label: 'Visa Médio', brand: 'visa', stats: INTERCHANGE_SUMMARY.visa.avg },
-    { value: 'master_avg', label: 'Mastercard Médio', brand: 'mastercard', stats: INTERCHANGE_SUMMARY.master.avg },
-  ], []);
+  const quickOptions = useMemo(() => {
+    const creditStats = calculateWeightedAverage('combined_credit');
+    const debitStats = calculateWeightedAverage('combined_debit');
+    const ecommerceStats = calculateWeightedAverage('ecommerce');
+    const travelStats = calculateWeightedAverage('travel');
+    const recurringStats = calculateWeightedAverage('recurring');
+    
+    return [
+      // Médias gerais
+      { value: 'combined_avg', label: 'Geral Médio', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.avg },
+      { value: 'combined_low', label: 'Geral Menor', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.low },
+      { value: 'combined_high', label: 'Geral Maior', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.high },
+      // Por tipo de cartão combinado
+      { value: 'combined_credit', label: 'Crédito (V+M)', brand: 'combined', stats: creditStats.avg, isWeighted: true },
+      { value: 'combined_debit', label: 'Débito (V+M)', brand: 'combined', stats: debitStats.avg, isWeighted: true },
+      // Por segmento
+      { value: 'ecommerce', label: 'E-commerce', brand: 'combined', stats: ecommerceStats.avg, isWeighted: true },
+      { value: 'travel', label: 'Viagens', brand: 'combined', stats: travelStats.avg, isWeighted: true },
+      { value: 'recurring', label: 'Recorrente', brand: 'combined', stats: recurringStats.avg, isWeighted: true },
+    ];
+  }, []);
 
   // Todas as opções de médias ponderadas
   const allWeightedOptions = useMemo(() => getAllWeightedAverageOptions(), []);
@@ -95,7 +120,11 @@ export default function InterchangeSelector({
   }, [searchTerm]);
 
   const handleSelectQuickOption = (option) => {
-    onSelectType(option.value);
+    if (option.isWeighted) {
+      onSelectCustomRate(option.stats, option.label);
+    } else {
+      onSelectType(option.value);
+    }
   };
 
   const handleSelectWeightedAverage = (option) => {
@@ -129,24 +158,29 @@ export default function InterchangeSelector({
   return (
     <div className="space-y-4">
       {/* Seleção Rápida */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-        {quickOptions.map(option => (
-          <button
-            key={option.value}
-            onClick={() => handleSelectQuickOption(option)}
-            className={`
-              p-3 rounded-lg text-center transition-all border
-              ${selectedType === option.value
-                ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
-                : `${brandColors[option.brand]} hover:opacity-80`
-              }
-            `}
-          >
-            <p className="text-xs font-medium truncate">{option.label}</p>
-            <p className="text-lg font-bold mt-1">{formatPercentage(option.stats.percentage)}</p>
-            <p className="text-xs opacity-70">+ {formatFixed(option.stats.fixed)}</p>
-          </button>
-        ))}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+        {quickOptions.map(option => {
+          const isSelected = option.isWeighted 
+            ? (selectedType === 'custom' && customInterchange.percentage === option.stats.percentage && customInterchange.fixed === option.stats.fixed)
+            : selectedType === option.value;
+          return (
+            <button
+              key={option.value}
+              onClick={() => handleSelectQuickOption(option)}
+              className={`
+                p-3 rounded-lg text-center transition-all border
+                ${isSelected
+                  ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+                  : `${brandColors[option.brand]} hover:opacity-80`
+                }
+              `}
+            >
+              <p className="text-xs font-medium truncate">{option.label}</p>
+              <p className="text-lg font-bold mt-1">{formatPercentage(option.stats.percentage)}</p>
+              <p className="text-xs opacity-70">+ {formatFixed(option.stats.fixed)}</p>
+            </button>
+          );
+        })}
       </div>
 
       {/* Botão para opções avançadas */}
