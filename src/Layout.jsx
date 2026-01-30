@@ -84,7 +84,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-1.5">
             {navigation.map((item) => {
               const isActive = currentPageName === item.page;
               return (
@@ -93,14 +93,14 @@ export default function Layout({ children, currentPageName }) {
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg transition-all
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                     ${isActive 
-                      ? 'bg-[#2bc196] text-white' 
-                      : 'text-white/70 hover:bg-[#2bc196]/20 hover:text-white'
+                      ? 'bg-[#2bc196] text-[#002443] shadow-lg shadow-[#2bc196]/20' 
+                      : 'text-white/60 hover:bg-white/5 hover:text-white'
                     }
                   `}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className={`h-5 w-5 ${isActive ? '' : 'opacity-70'}`} />
                   <span className="font-medium">{item.name}</span>
                 </Link>
               );
@@ -113,15 +113,16 @@ export default function Layout({ children, currentPageName }) {
           </div>
 
           {/* Questionnaire Link */}
-          <div className="p-4 border-t border-[#2bc196]/20">
-            <p className="text-white/60 text-xs mb-2">{t('nav.questionnaireLink')}:</p>
+          <div className="p-4 border-t border-white/10">
+            <p className="text-white/40 text-xs mb-2 uppercase tracking-wider">{t('nav.questionnaireLink')}:</p>
             <Button
               onClick={copyQuestionnaireLink}
               variant="outline"
-              className="w-full justify-start gap-2 bg-transparent border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
+              size="sm"
+              className="w-full justify-start"
             >
-              {copied ? <CheckCircle className="h-4 w-4 text-[#2bc196]" /> : <Copy className="h-4 w-4" />}
-              <span className="truncate text-sm">{t('nav.copyLink')}</span>
+              {copied ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              <span className="truncate">{t('nav.copyLink')}</span>
             </Button>
           </div>
         </div>

@@ -16,8 +16,8 @@ export default function QuestionnaireFilters({ filters, setFilters, onExport }) 
   };
 
   return (
-    <div className="bg-white/5 rounded-lg p-4 space-y-4">
-      <div className="flex flex-wrap gap-4">
+    <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 p-4">
+      <div className="flex flex-wrap gap-3">
         <div className="flex-1 min-w-[200px]">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -25,16 +25,16 @@ export default function QuestionnaireFilters({ filters, setFilters, onExport }) 
               placeholder="Buscar por empresa ou contato..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              className="pl-10 bg-white/10 border-[#2bc196]/30 text-white placeholder:text-white/40"
+              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl focus:border-[#2bc196]/50 focus:ring-[#2bc196]/20"
             />
           </div>
         </div>
         
         <Select value={filters.status} onValueChange={(v) => setFilters({ ...filters, status: v })}>
-          <SelectTrigger className="w-[180px] bg-white/10 border-[#2bc196]/30 text-white">
+          <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white rounded-xl">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-[#001a30] border-white/10">
             <SelectItem value="all">Todos os Status</SelectItem>
             <SelectItem value="leads">Leads</SelectItem>
             <SelectItem value="proposal_made">Proposta Feita</SelectItem>
@@ -45,10 +45,10 @@ export default function QuestionnaireFilters({ filters, setFilters, onExport }) 
         </Select>
 
         <Select value={filters.hasPartner} onValueChange={(v) => setFilters({ ...filters, hasPartner: v })}>
-          <SelectTrigger className="w-[180px] bg-white/10 border-[#2bc196]/30 text-white">
+          <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white rounded-xl">
             <SelectValue placeholder="Parceiro atual" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-[#001a30] border-white/10">
             <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="yes">Com parceiro</SelectItem>
             <SelectItem value="no">Sem parceiro</SelectItem>
@@ -60,7 +60,7 @@ export default function QuestionnaireFilters({ filters, setFilters, onExport }) 
           placeholder="TPV mínimo"
           value={filters.tpvMin}
           onChange={(e) => setFilters({ ...filters, tpvMin: e.target.value })}
-          className="w-[140px] bg-white/10 border-[#2bc196]/30 text-white placeholder:text-white/40"
+          className="w-[140px] bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl"
         />
 
         <Input
@@ -68,22 +68,19 @@ export default function QuestionnaireFilters({ filters, setFilters, onExport }) 
           placeholder="TPV máximo"
           value={filters.tpvMax}
           onChange={(e) => setFilters({ ...filters, tpvMax: e.target.value })}
-          className="w-[140px] bg-white/10 border-[#2bc196]/30 text-white placeholder:text-white/40"
+          className="w-[140px] bg-white/5 border-white/10 text-white placeholder:text-white/40 rounded-xl"
         />
 
         <Button
           onClick={handleReset}
-          className="bg-[#1a5a4c] hover:bg-[#2bc196] text-white"
+          variant="secondary"
         >
-          <X className="h-4 w-4 mr-1" />
+          <X className="h-4 w-4" />
           Limpar
         </Button>
 
-        <Button
-          onClick={onExport}
-          className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold"
-        >
-          <Download className="h-4 w-4 mr-1" />
+        <Button onClick={onExport}>
+          <Download className="h-4 w-4" />
           Exportar CSV
         </Button>
       </div>
