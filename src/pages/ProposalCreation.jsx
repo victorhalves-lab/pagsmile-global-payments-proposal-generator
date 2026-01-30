@@ -570,7 +570,7 @@ export default function ProposalCreation() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/60">Gateway Fee</span>
-                  <span className="text-white">{formatFixed((parseFloat(form.fixed_fee_per_transaction) || 0) / 100)}</span>
+                  <span className="text-white">{formatFixed(parseFloat(String(form.fixed_fee_per_transaction || '0').replace(',', '.')) || 0)}</span>
                 </div>
                 <div className="border-t border-[#2bc196]/30 pt-3 flex justify-between">
                   <span className="text-white font-medium">Fee Fixo Total</span>
