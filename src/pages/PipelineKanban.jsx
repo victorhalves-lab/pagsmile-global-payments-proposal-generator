@@ -103,7 +103,13 @@ export default function PipelineKanban() {
     const { draggableId, destination } = result;
     const newStatus = destination.droppableId;
     
-    updateMutation.mutate({ id: draggableId, status: newStatus });
+    // Verificar se é uma proposta ou questionário
+    if (draggableId.startsWith('proposal_')) {
+      const proposalId = draggableId.replace('proposal_', '');
+      updateProposalMutation.mutate({ id: proposalId, status: newStatus });
+    } else {
+      updateQuestionnaireMutation.mutate({ id: draggableId, status: newStatus });
+    }
   };
 
   const formatCurrency = (value) => {
