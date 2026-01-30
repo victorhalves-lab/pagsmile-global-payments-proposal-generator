@@ -266,6 +266,53 @@ export default function QuestionnaireCenter() {
                 </div>
               </div>
 
+              {/* Divisão de Transações */}
+              {(selectedQuestionnaire.credit_percentage > 0 || selectedQuestionnaire.visa_percentage > 0) && (
+                <div className="border-t border-[#2bc196]/20 pt-4">
+                  <h4 className="text-[#2bc196] font-medium mb-3">Divisão de Transações</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    {(selectedQuestionnaire.credit_percentage > 0 || selectedQuestionnaire.debit_percentage > 0) && (
+                      <div className="bg-white/5 p-3 rounded-lg">
+                        <p className="text-white/60 text-xs mb-2">Por Tipo de Cartão</p>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Crédito</span>
+                            <span className="text-white">{selectedQuestionnaire.credit_percentage || 0}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Débito</span>
+                            <span className="text-white">{selectedQuestionnaire.debit_percentage || 0}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {(selectedQuestionnaire.visa_percentage > 0 || selectedQuestionnaire.mastercard_percentage > 0) && (
+                      <div className="bg-white/5 p-3 rounded-lg">
+                        <p className="text-white/60 text-xs mb-2">Por Bandeira</p>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Visa</span>
+                            <span className="text-white">{selectedQuestionnaire.visa_percentage || 0}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Mastercard</span>
+                            <span className="text-white">{selectedQuestionnaire.mastercard_percentage || 0}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Amex</span>
+                            <span className="text-white">{selectedQuestionnaire.amex_percentage || 0}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Outras</span>
+                            <span className="text-white">{selectedQuestionnaire.other_brands_percentage || 0}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {selectedQuestionnaire.has_current_partner && (
                 <div className="border-t border-[#2bc196]/20 pt-4">
                   <h4 className="text-[#2bc196] font-medium mb-3">{t('questionnaire.hasPartner')}</h4>
@@ -279,6 +326,23 @@ export default function QuestionnaireCenter() {
                       <p className="text-white font-medium">${selectedQuestionnaire.current_fixed_fee}</p>
                     </div>
                   </div>
+                  
+                  {/* Outras Taxas */}
+                  {selectedQuestionnaire.other_current_fees?.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-white/60 text-sm mb-2">Outras Taxas do Parceiro Atual</p>
+                      <div className="bg-white/5 rounded-lg p-3 space-y-2">
+                        {selectedQuestionnaire.other_current_fees.map((fee, idx) => (
+                          <div key={idx} className="flex justify-between text-sm">
+                            <span className="text-white/70">{fee.name}</span>
+                            <span className="text-white">
+                              {fee.fee_type === 'percentage' ? `${fee.value}%` : `$${fee.value}`}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

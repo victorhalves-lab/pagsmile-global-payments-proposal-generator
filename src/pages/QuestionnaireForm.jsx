@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '@/components/i18n/i18n';
+import TransactionSplitInput from '@/components/questionnaire/TransactionSplitInput';
+import OtherFeesInput from '@/components/questionnaire/OtherFeesInput';
 
 const COUNTRIES = [
   { code: '+1', name: 'USA', flag: '🇺🇸' },
@@ -50,9 +52,16 @@ export default function QuestionnaireForm() {
     products_services: '',
     monthly_tpv: '',
     average_ticket: '',
+    credit_percentage: '',
+    debit_percentage: '',
+    visa_percentage: '',
+    mastercard_percentage: '',
+    amex_percentage: '',
+    other_brands_percentage: '',
     has_current_partner: null,
     current_rate_percentage: '',
     current_fixed_fee: '',
+    other_current_fees: [],
     expected_settlement_days: ''
   });
 
@@ -62,13 +71,29 @@ export default function QuestionnaireForm() {
         ? Math.round(data.monthly_tpv / data.average_ticket) 
         : 0;
       
+      // Processar outras taxas
+      const processedOtherFees = (data.other_current_fees || [])
+        .filter(fee => fee.name && fee.value)
+        .map(fee => ({
+          name: fee.name,
+          value: parseFloat(fee.value) || 0,
+          fee_type: fee.fee_type
+        }));
+      
       return base44.entities.Questionnaire.create({
         ...data,
         monthly_tpv: parseFloat(data.monthly_tpv) || 0,
         average_ticket: parseFloat(data.average_ticket) || 0,
         monthly_transactions: monthlyTransactions,
+        credit_percentage: parseFloat(data.credit_percentage) || 0,
+        debit_percentage: parseFloat(data.debit_percentage) || 0,
+        visa_percentage: parseFloat(data.visa_percentage) || 0,
+        mastercard_percentage: parseFloat(data.mastercard_percentage) || 0,
+        amex_percentage: parseFloat(data.amex_percentage) || 0,
+        other_brands_percentage: parseFloat(data.other_brands_percentage) || 0,
         current_rate_percentage: data.current_rate_percentage ? parseFloat(data.current_rate_percentage) : null,
         current_fixed_fee: data.current_fixed_fee ? parseFloat(data.current_fixed_fee) : null,
+        other_current_fees: processedOtherFees,
         pipeline_status: 'leads'
       });
     },
@@ -76,6 +101,13 @@ export default function QuestionnaireForm() {
       setSubmitted(true);
     }
   });
+
+  // Validações de porcentagem
+  const cardTypeTotal = (parseFloat(form.credit_percentage) || 0) + (parseFloat(form.debit_percentage) || 0);
+  const brandTotal = (parseFloat(form.visa_percentage) || 0) + (parseFloat(form.mastercard_percentage) || 0) + 
+                     (parseFloat(form.amex_percentage) || 0) + (parseFloat(form.other_brands_percentage) || 0);
+  const isCardTypeValid = cardTypeTotal === 0 || Math.abs(cardTypeTotal - 100) < 0.01;
+  const isBrandValid = brandTotal === 0 || Math.abs(brandTotal - 100) < 0.01;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -268,6 +300,109 @@ export default function QuestionnaireForm() {
                 </div>
               </div>
 
+              {/* Divisão de Transações */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Divisão das Transações</h3>
+                
+                {/* Por Tipo de Cartão */}
+                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-[#002443]">Por Tipo de Cartão</h4>
+                      <p className="text-xs text-gray-500">A soma deve ser 100%</p>
+                    </div>
+                    <div className={`flex items-center gap-1 text-sm ${isCardTypeValid ? 'text-green-600' : 'text-amber-600'}`}>
+                      {isCardTypeValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                      <span>Total: {cardTypeTotal.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-xs text-gray-500">Crédito (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.credit_percentage}
+                        onChange={(e) => updateForm('credit_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Débito (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.debit_percentage}
+                        onChange={(e) => updateForm('debit_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Por Bandeira */}
+                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-[#002443]">Por Bandeira</h4>
+                      <p className="text-xs text-gray-500">A soma deve ser 100%</p>
+                    </div>
+                    <div className={`flex items-center gap-1 text-sm ${isBrandValid ? 'text-green-600' : 'text-amber-600'}`}>
+                      {isBrandValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                      <span>Total: {brandTotal.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <Label className="text-xs text-gray-500">Visa (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.visa_percentage}
+                        onChange={(e) => updateForm('visa_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Mastercard (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.mastercard_percentage}
+                        onChange={(e) => updateForm('mastercard_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Amex (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.amex_percentage}
+                        onChange={(e) => updateForm('amex_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Outras (%)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={form.other_brands_percentage}
+                        onChange={(e) => updateForm('other_brands_percentage', e.target.value)}
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Parceiro Atual */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.partnerSection')}</h3>
@@ -291,25 +426,36 @@ export default function QuestionnaireForm() {
                 </div>
 
                 {form.has_current_partner && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div>
-                      <Label htmlFor="current_rate_percentage">{t('questionnaireForm.currentRate')}</Label>
-                      <Input 
-                        id="current_rate_percentage"
-                        type="number"
-                        step="0.01"
-                        value={form.current_rate_percentage}
-                        onChange={(e) => updateForm('current_rate_percentage', e.target.value)}
-                      />
+                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="current_rate_percentage">{t('questionnaireForm.currentRate')}</Label>
+                        <Input 
+                          id="current_rate_percentage"
+                          type="number"
+                          step="0.01"
+                          value={form.current_rate_percentage}
+                          onChange={(e) => updateForm('current_rate_percentage', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="current_fixed_fee">{t('questionnaireForm.currentFee')}</Label>
+                        <Input 
+                          id="current_fixed_fee"
+                          type="number"
+                          step="0.01"
+                          value={form.current_fixed_fee}
+                          onChange={(e) => updateForm('current_fixed_fee', e.target.value)}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <Label htmlFor="current_fixed_fee">{t('questionnaireForm.currentFee')}</Label>
-                      <Input 
-                        id="current_fixed_fee"
-                        type="number"
-                        step="0.01"
-                        value={form.current_fixed_fee}
-                        onChange={(e) => updateForm('current_fixed_fee', e.target.value)}
+                    
+                    {/* Outras Taxas */}
+                    <div className="pt-4 border-t border-gray-200">
+                      <Label className="text-sm font-medium mb-2 block">Outras Taxas do Parceiro Atual</Label>
+                      <OtherFeesInput 
+                        fees={form.other_current_fees}
+                        onChange={(fees) => updateForm('other_current_fees', fees)}
                       />
                     </div>
                   </div>

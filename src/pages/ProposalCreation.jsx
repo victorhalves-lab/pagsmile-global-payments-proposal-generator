@@ -66,8 +66,32 @@ export default function ProposalCreation() {
         ...prev,
         client_name: questionnaire.company_name || '',
         contact_name: questionnaire.contact_name || '',
-        contact_email: questionnaire.contact_email || ''
+        contact_email: questionnaire.contact_email || '',
+        // Pré-preencher com taxas do parceiro atual se existirem
+        settlement_days: questionnaire.expected_settlement_days || prev.settlement_days
       }));
+      
+      // Se o cliente tem parceiro atual, preencher markup com base na taxa atual dele
+      if (questionnaire.has_current_partner && questionnaire.current_rate_percentage) {
+        // Calcular markup sugerido (taxa atual - custo base - interchange médio)
+        const baseCost = 0.5;
+        const avgInterchange = INTERCHANGE_SUMMARY.combined.avg.percentage;
+        const suggestedMarkup = Math.max(0, questionnaire.current_rate_percentage - baseCost - avgInterchange);
+        
+        setForm(prev => ({
+          ...prev,
+          markup_percentage: suggestedMarkup.toFixed(2)
+        }));
+      }
+      
+      // Pré-preencher fixed fee se existir
+      if (questionnaire.has_current_partner && questionnaire.current_fixed_fee) {
+        // Converter para centavos (nosso campo é em centavos)
+        setForm(prev => ({
+          ...prev,
+          fixed_fee_per_transaction: (questionnaire.current_fixed_fee * 100).toFixed(0)
+        }));
+      }
     }
   }, [questionnaire]);
 
