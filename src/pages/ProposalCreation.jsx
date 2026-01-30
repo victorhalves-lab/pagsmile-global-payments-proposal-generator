@@ -21,6 +21,7 @@ import {
   VISA_INTERCHANGE_RATES,
   MASTERCARD_INTERCHANGE_RATES
 } from '@/components/interchange/InterchangeData';
+import InterchangeSelector from '@/components/interchange/InterchangeSelector';
 
 export default function ProposalCreation() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function ProposalCreation() {
     fixed: 0
   });
 
-  const [interchangeModalOpen, setInterchangeModalOpen] = useState(false);
+
 
   // Carregar dados do questionário se vier de um
   const { data: questionnaire } = useQuery({
@@ -114,15 +115,7 @@ export default function ProposalCreation() {
     }));
   };
 
-  const selectCustomRate = (rate, brand) => {
-    setCustomInterchange({
-      percentage: rate.rate_percentage,
-      fixed: rate.rate_fixed
-    });
-    setForm(prev => ({ ...prev, selected_interchange_type: 'custom' }));
-    setInterchangeModalOpen(false);
-    toast.success(`Taxa selecionada: ${rate.program_name} (${brand})`);
-  };
+
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
@@ -176,18 +169,11 @@ export default function ProposalCreation() {
   const formatPercentage = (value) => `${value.toFixed(2)}%`;
   const formatFixed = (value) => `$${value.toFixed(2)}`;
 
-  const interchangeOptions = [
-    { value: 'visa_low', label: 'Visa - Menor', color: 'text-blue-400' },
-    { value: 'visa_avg', label: 'Visa - Média', color: 'text-blue-400' },
-    { value: 'visa_high', label: 'Visa - Maior', color: 'text-blue-400' },
-    { value: 'master_low', label: 'Mastercard - Menor', color: 'text-orange-400' },
-    { value: 'master_avg', label: 'Mastercard - Média', color: 'text-orange-400' },
-    { value: 'master_high', label: 'Mastercard - Maior', color: 'text-orange-400' },
-    { value: 'combined_low', label: 'Combinado - Menor', color: 'text-[#2bc196]' },
-    { value: 'combined_avg', label: 'Combinado - Média', color: 'text-[#2bc196]' },
-    { value: 'combined_high', label: 'Combinado - Maior', color: 'text-[#2bc196]' },
-    { value: 'custom', label: 'Personalizado', color: 'text-purple-400' },
-  ];
+  const handleSelectCustomRate = (rate, label) => {
+    setCustomInterchange(rate);
+    setForm(prev => ({ ...prev, selected_interchange_type: 'custom' }));
+    toast.success(`Taxa selecionada: ${label}`);
+  };
 
   return (
     <div className="space-y-6">
@@ -274,132 +260,15 @@ export default function ProposalCreation() {
           {/* Seleção de Interchange */}
           <Card className="bg-white/5 border-[#2bc196]/20">
             <CardHeader>
-              <CardTitle className="text-white flex items-center justify-between">
-                <span>Taxa de Interchange</span>
-                <Dialog open={interchangeModalOpen} onOpenChange={setInterchangeModalOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="bg-[#001a30] border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20">
-                      <Table2 className="h-4 w-4 mr-2" />
-                      Ver Tabela Completa
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="bg-[#002443] border-[#2bc196]/20 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle className="text-[#2bc196]">Selecionar Taxa de Interchange</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="text-blue-400 font-medium mb-2">Visa</h4>
-                        <div className="overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="border-[#2bc196]/20">
-                                <TableHead className="text-white/60">Programa</TableHead>
-                                <TableHead className="text-white/60">Tipo</TableHead>
-                                <TableHead className="text-white/60 text-right">Taxa</TableHead>
-                                <TableHead className="text-white/60 text-right">Fixo</TableHead>
-                                <TableHead></TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {VISA_INTERCHANGE_RATES.slice(0, 15).map((rate, idx) => (
-                                <TableRow key={idx} className="border-[#2bc196]/10">
-                                  <TableCell className="text-white">{rate.program_name}</TableCell>
-                                  <TableCell className="text-white/70">{rate.card_type}</TableCell>
-                                  <TableCell className="text-white text-right">{formatPercentage(rate.rate_percentage)}</TableCell>
-                                  <TableCell className="text-white text-right">{formatFixed(rate.rate_fixed)}</TableCell>
-                                  <TableCell>
-                                    <Button 
-                                      size="sm" 
-                                      onClick={() => selectCustomRate(rate, 'Visa')}
-                                      className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
-                                    >
-                                      Selecionar
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="text-orange-400 font-medium mb-2">Mastercard</h4>
-                        <div className="overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="border-[#2bc196]/20">
-                                <TableHead className="text-white/60">Programa</TableHead>
-                                <TableHead className="text-white/60">Tipo</TableHead>
-                                <TableHead className="text-white/60 text-right">Taxa</TableHead>
-                                <TableHead className="text-white/60 text-right">Fixo</TableHead>
-                                <TableHead></TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {MASTERCARD_INTERCHANGE_RATES.slice(0, 15).map((rate, idx) => (
-                                <TableRow key={idx} className="border-[#2bc196]/10">
-                                  <TableCell className="text-white">{rate.program_name}</TableCell>
-                                  <TableCell className="text-white/70">{rate.card_type}</TableCell>
-                                  <TableCell className="text-white text-right">{formatPercentage(rate.rate_percentage)}</TableCell>
-                                  <TableCell className="text-white text-right">{formatFixed(rate.rate_fixed)}</TableCell>
-                                  <TableCell>
-                                    <Button 
-                                      size="sm" 
-                                      onClick={() => selectCustomRate(rate, 'Mastercard')}
-                                      className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
-                                    >
-                                      Selecionar
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </CardTitle>
+              <CardTitle className="text-white">Taxa de Interchange</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-                {interchangeOptions.map(option => (
-                  <div
-                    key={option.value}
-                    onClick={() => option.value !== 'custom' && updateForm('selected_interchange_type', option.value)}
-                    className={`
-                      cursor-pointer p-3 rounded-lg text-center transition-all
-                      ${form.selected_interchange_type === option.value
-                        ? 'bg-[#2bc196] text-[#002443]'
-                        : 'bg-white/10 text-white/70 hover:bg-white/20'
-                      }
-                      ${option.value === 'custom' ? 'opacity-60 cursor-not-allowed' : ''}
-                    `}
-                  >
-                    <p className="text-xs font-medium">{option.label}</p>
-                    {option.value !== 'custom' && (
-                      <p className="text-sm font-bold mt-1">
-                        {formatPercentage(
-                          option.value.startsWith('visa') 
-                            ? INTERCHANGE_SUMMARY.visa[option.value.split('_')[1]].percentage
-                            : option.value.startsWith('master')
-                            ? INTERCHANGE_SUMMARY.master[option.value.split('_')[1]].percentage
-                            : INTERCHANGE_SUMMARY.combined[option.value.split('_')[1]].percentage
-                        )}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {form.selected_interchange_type === 'custom' && (
-                <div className="mt-4 p-4 bg-purple-500/10 rounded-lg">
-                  <p className="text-purple-400 text-sm">
-                    Taxa personalizada selecionada: {formatPercentage(customInterchange.percentage)} + {formatFixed(customInterchange.fixed)}
-                  </p>
-                </div>
-              )}
+              <InterchangeSelector
+                selectedType={form.selected_interchange_type}
+                customInterchange={customInterchange}
+                onSelectType={(type) => updateForm('selected_interchange_type', type)}
+                onSelectCustomRate={handleSelectCustomRate}
+              />
             </CardContent>
           </Card>
 
