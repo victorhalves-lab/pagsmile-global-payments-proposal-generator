@@ -121,27 +121,29 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
-          <div className="p-5 border-b border-white/10">
-            <h3 className="text-white font-semibold flex items-center gap-2">
-              <FileText className="h-5 w-5 text-[#2bc196]" />
+        <div className="group rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl transition-all duration-500 hover:border-[#2bc196]/30 hover:shadow-xl hover:shadow-[#2bc196]/5">
+          <div className="p-5 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
+            <h3 className="text-white font-semibold flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#2bc196]/10 border border-[#2bc196]/20">
+                <FileText className="h-4 w-4 text-[#2bc196]" />
+              </div>
               {t('dashboard.recentProposals')}
             </h3>
           </div>
           <div className="p-5">
             {proposals.slice(0, 5).length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {proposals.slice(0, 5).map(proposal => (
-                  <div key={proposal.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div key={proposal.id} className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
                     <div>
                       <p className="text-white font-medium text-sm">{proposal.client_name}</p>
-                      <p className="text-white/50 text-xs mt-0.5">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
+                      <p className="text-white/40 text-xs mt-1 font-mono">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      proposal.status === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                      proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                      proposal.status === 'counter_proposal' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                      'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide ${
+                      proposal.status === 'accepted' ? 'bg-green-500/15 text-green-400 border border-green-500/25' :
+                      proposal.status === 'rejected' ? 'bg-red-500/15 text-red-400 border border-red-500/25' :
+                      proposal.status === 'counter_proposal' ? 'bg-yellow-500/15 text-yellow-400 border border-yellow-500/25' :
+                      'bg-blue-500/15 text-blue-400 border border-blue-500/25'
                     }`}>
                       {t(`proposal.status.${proposal.status}`)}
                     </span>
@@ -149,7 +151,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4 text-sm">{t('proposal.noProposals')}</p>
+              <p className="text-white/30 text-center py-8 text-sm">{t('proposal.noProposals')}</p>
             )}
             <Link to={createPageUrl('ProposalCenter')}>
               <Button variant="ghost" className="w-full mt-4">
@@ -159,27 +161,29 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
-          <div className="p-5 border-b border-white/10">
-            <h3 className="text-white font-semibold flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-[#2bc196]" />
+        <div className="group rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl transition-all duration-500 hover:border-[#2bc196]/30 hover:shadow-xl hover:shadow-[#2bc196]/5">
+          <div className="p-5 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
+            <h3 className="text-white font-semibold flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#2bc196]/10 border border-[#2bc196]/20">
+                <ClipboardList className="h-4 w-4 text-[#2bc196]" />
+              </div>
               {t('dashboard.recentQuestionnaires')}
             </h3>
           </div>
           <div className="p-5">
             {questionnaires.slice(0, 5).length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {questionnaires.slice(0, 5).map(q => (
-                  <div key={q.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div key={q.id} className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
                     <div>
                       <p className="text-white font-medium text-sm">{q.company_name}</p>
-                      <p className="text-white/50 text-xs mt-0.5">TPV: {formatCurrency(q.monthly_tpv)}</p>
+                      <p className="text-white/40 text-xs mt-1 font-mono">TPV: {formatCurrency(q.monthly_tpv)}</p>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      q.pipeline_status === 'proposal_accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                      q.pipeline_status === 'proposal_lost' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                      q.pipeline_status === 'proposal_made' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                      'bg-white/10 text-white/60 border border-white/20'
+                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide ${
+                      q.pipeline_status === 'proposal_accepted' ? 'bg-green-500/15 text-green-400 border border-green-500/25' :
+                      q.pipeline_status === 'proposal_lost' ? 'bg-red-500/15 text-red-400 border border-red-500/25' :
+                      q.pipeline_status === 'proposal_made' ? 'bg-blue-500/15 text-blue-400 border border-blue-500/25' :
+                      'bg-white/[0.06] text-white/50 border border-white/10'
                     }`}>
                       {t(`questionnaire.status.${q.pipeline_status}`)}
                     </span>
@@ -187,7 +191,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4 text-sm">{t('questionnaire.noQuestionnaires')}</p>
+              <p className="text-white/30 text-center py-8 text-sm">{t('questionnaire.noQuestionnaires')}</p>
             )}
             <Link to={createPageUrl('QuestionnaireCenter')}>
               <Button variant="ghost" className="w-full mt-4">
@@ -197,27 +201,29 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
-          <div className="p-5 border-b border-white/10">
-            <h3 className="text-white font-semibold flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[#2bc196]" />
+        <div className="group rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl transition-all duration-500 hover:border-[#2bc196]/30 hover:shadow-xl hover:shadow-[#2bc196]/5">
+          <div className="p-5 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
+            <h3 className="text-white font-semibold flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#2bc196]/10 border border-[#2bc196]/20">
+                <TrendingUp className="h-4 w-4 text-[#2bc196]" />
+              </div>
               {t('common.actions')}
             </h3>
           </div>
           <div className="p-5 space-y-3">
             <Link to={createPageUrl('ProposalCreation')} className="block">
-              <Button className="w-full">
+              <Button className="w-full justify-center gap-2 h-12 text-sm font-semibold">
                 <Plus className="h-4 w-4" />
                 {t('nav.createProposal')}
               </Button>
             </Link>
             <Link to={createPageUrl('PipelineKanban')} className="block">
-              <Button variant="secondary" className="w-full">
+              <Button variant="secondary" className="w-full justify-center h-11 text-sm">
                 {t('nav.pipeline')}
               </Button>
             </Link>
             <Link to={createPageUrl('InterchangeViewer')} className="block">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full justify-center h-11 text-sm">
                 {t('nav.interchangeRates')}
               </Button>
             </Link>

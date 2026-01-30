@@ -110,23 +110,23 @@ export default function PipelineKanban() {
             const metrics = getColumnMetrics(column.id);
             return (
               <div key={column.id} className="min-w-[280px]">
-                <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
-                  <div className="p-4 border-b border-white/10">
+                <div className="rounded-2xl bg-[#001a30]/80 border border-white/[0.08] overflow-hidden backdrop-blur-xl">
+                  <div className="p-4 border-b border-white/[0.06] bg-gradient-to-r from-white/[0.02] to-transparent">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2.5 h-2.5 rounded-full ${column.color}`} />
-                        <span className="text-white font-medium text-sm">{column.title}</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-2 h-2 rounded-full ${column.color} shadow-lg shadow-current/30`} />
+                        <span className="text-white font-semibold text-sm">{column.title}</span>
                       </div>
-                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70 border border-white/10">{metrics.count}</span>
+                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-white/[0.06] text-white/60 border border-white/[0.08]">{metrics.count}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
-                        <p className="text-white/50 text-[10px] uppercase tracking-wider">TPV</p>
-                        <p className="text-white font-semibold mt-0.5">{formatCurrency(metrics.tpv)}</p>
+                      <div className="bg-white/[0.03] rounded-xl p-2.5 border border-white/[0.05]">
+                        <p className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">TPV</p>
+                        <p className="text-white font-bold mt-1">{formatCurrency(metrics.tpv)}</p>
                       </div>
-                      <div className="bg-[#2bc196]/10 rounded-lg p-2.5 border border-[#2bc196]/20">
-                        <p className="text-[#2bc196]/70 text-[10px] uppercase tracking-wider">Receita (1%)</p>
-                        <p className="text-[#2bc196] font-semibold mt-0.5">{formatCurrency(metrics.revenue)}</p>
+                      <div className="bg-[#2bc196]/[0.08] rounded-xl p-2.5 border border-[#2bc196]/20">
+                        <p className="text-[#2bc196]/60 text-[10px] font-semibold uppercase tracking-widest">Receita</p>
+                        <p className="text-[#2bc196] font-bold mt-1">{formatCurrency(metrics.revenue)}</p>
                       </div>
                     </div>
                   </div>
@@ -136,8 +136,8 @@ export default function PipelineKanban() {
                         <div
                           ref={provided.innerRef}
                           {...provided.droppableProps}
-                          className={`min-h-[200px] space-y-2 transition-all rounded-xl p-2 ${
-                            snapshot.isDraggingOver ? 'bg-[#2bc196]/10 border-2 border-dashed border-[#2bc196]/30' : 'border-2 border-transparent'
+                          className={`min-h-[200px] space-y-2.5 transition-all duration-300 rounded-xl p-2 ${
+                            snapshot.isDraggingOver ? 'bg-[#2bc196]/[0.08] border-2 border-dashed border-[#2bc196]/40 shadow-inner shadow-[#2bc196]/10' : 'border-2 border-transparent'
                           }`}
                         >
                           {(groupedData[column.id] || []).map((item, index) => (
@@ -147,26 +147,26 @@ export default function PipelineKanban() {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  className={`bg-white/[0.06] hover:bg-white/[0.1] rounded-xl p-3 cursor-grab transition-all border border-white/10 ${
-                                    snapshot.isDragging ? 'shadow-xl shadow-[#2bc196]/20 ring-2 ring-[#2bc196] bg-[#002443]' : ''
+                                  className={`bg-white/[0.04] hover:bg-white/[0.08] rounded-xl p-3.5 cursor-grab transition-all duration-300 border border-white/[0.06] hover:border-white/10 ${
+                                    snapshot.isDragging ? 'shadow-2xl shadow-[#2bc196]/30 ring-2 ring-[#2bc196]/80 bg-[#001a30] scale-[1.02]' : ''
                                   }`}
                                 >
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-9 h-9 bg-[#2bc196]/10 rounded-xl flex items-center justify-center border border-[#2bc196]/20">
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-[#2bc196]/15 to-[#2bc196]/5 rounded-xl flex items-center justify-center border border-[#2bc196]/25">
                                       <Building2 className="h-4 w-4 text-[#2bc196]" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-white font-medium text-sm truncate">
+                                      <p className="text-white font-semibold text-sm truncate">
                                         {item.company_name}
                                       </p>
-                                      <p className="text-white/50 text-xs truncate">
+                                      <p className="text-white/40 text-xs truncate mt-0.5">
                                         {item.contact_name}
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center justify-between text-xs pt-2 border-t border-white/10">
-                                    <span className="text-white/50">TPV:</span>
-                                    <span className="text-[#2bc196] font-semibold">
+                                  <div className="flex items-center justify-between text-xs pt-2.5 border-t border-white/[0.06]">
+                                    <span className="text-white/40 font-medium">TPV:</span>
+                                    <span className="text-[#2bc196] font-bold">
                                       {formatCurrency(item.monthly_tpv)}
                                     </span>
                                   </div>
