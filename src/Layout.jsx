@@ -30,7 +30,7 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const isPublicPage = currentPageName === 'PublicProposal';
+  const isPublicPage = currentPageName === 'PublicProposal' || currentPageName === 'QuestionnaireForm';
 
   useEffect(() => {
     const checkAuth = async () => {

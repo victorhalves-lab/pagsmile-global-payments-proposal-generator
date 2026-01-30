@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CheckCircle, AlertCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import '@/components/i18n/i18n';
-import TransactionSplitInput from '@/components/questionnaire/TransactionSplitInput';
+import { CheckCircle, AlertCircle, Building2, User, DollarSign, CreditCard, Percent, Clock, Send } from 'lucide-react';
 import OtherFeesInput from '@/components/questionnaire/OtherFeesInput';
 
 const COUNTRIES = [
@@ -37,8 +33,72 @@ const COUNTRIES = [
   { code: '+971', name: 'UAE', flag: '🇦🇪' },
 ];
 
+const MCC_OPTIONS = [
+  { value: '5411', label: '5411 - Grocery Stores, Supermarkets' },
+  { value: '5812', label: '5812 - Eating Places, Restaurants' },
+  { value: '5814', label: '5814 - Fast Food Restaurants' },
+  { value: '5912', label: '5912 - Drug Stores and Pharmacies' },
+  { value: '5999', label: '5999 - Miscellaneous and Specialty Retail' },
+  { value: '7011', label: '7011 - Hotels, Motels, Resorts' },
+  { value: '7230', label: '7230 - Beauty and Barber Shops' },
+  { value: '7299', label: '7299 - Miscellaneous Recreation Services' },
+  { value: '7399', label: '7399 - Business Services' },
+  { value: '7832', label: '7832 - Motion Picture Theaters' },
+  { value: '7941', label: '7941 - Sports Clubs, Fields, Promoters' },
+  { value: '7995', label: '7995 - Betting/Casino Gambling' },
+  { value: '7999', label: '7999 - Recreation Services' },
+  { value: '8011', label: '8011 - Doctors' },
+  { value: '8021', label: '8021 - Dentists, Orthodontists' },
+  { value: '8099', label: '8099 - Medical Services' },
+  { value: '8999', label: '8999 - Professional Services' },
+  { value: '5816', label: '5816 - Digital Goods: Games' },
+  { value: '5817', label: '5817 - Digital Goods: Applications' },
+  { value: '5818', label: '5818 - Digital Goods: Large Volume' },
+  { value: '6012', label: '6012 - Financial Institutions' },
+  { value: '6051', label: '6051 - Non-FI Money Orders' },
+  { value: '6211', label: '6211 - Security Brokers/Dealers' },
+  { value: '6300', label: '6300 - Insurance Sales' },
+  { value: '4814', label: '4814 - Telecommunication Services' },
+  { value: '4816', label: '4816 - Computer Network Services' },
+  { value: '4899', label: '4899 - Cable and Other Pay TV' },
+  { value: '5045', label: '5045 - Computers and Peripherals' },
+  { value: '5734', label: '5734 - Computer Software Stores' },
+  { value: '5735', label: '5735 - Record Stores' },
+  { value: '5942', label: '5942 - Book Stores' },
+  { value: '5944', label: '5944 - Jewelry Stores' },
+  { value: '5945', label: '5945 - Hobby, Toy, and Game Shops' },
+  { value: '5946', label: '5946 - Camera and Photographic Supply' },
+  { value: '5947', label: '5947 - Gift, Card, Novelty Stores' },
+  { value: '5948', label: '5948 - Luggage and Leather Goods' },
+  { value: '5651', label: '5651 - Family Clothing Stores' },
+  { value: '5691', label: '5691 - Mens and Womens Clothing' },
+  { value: '5699', label: '5699 - Miscellaneous Apparel' },
+  { value: 'other', label: 'Other (specify in products/services)' },
+];
+
+function SectionHeader({ icon: Icon, title, subtitle }) {
+  return (
+    <div className="flex items-center gap-4 mb-6">
+      <div className="w-12 h-12 bg-gradient-to-br from-[#2bc196] to-[#25a882] rounded-xl flex items-center justify-center shadow-lg shadow-[#2bc196]/20">
+        <Icon className="h-6 w-6 text-white" />
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-[#002443]">{title}</h3>
+        {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
+function FormSection({ children, className = '' }) {
+  return (
+    <div className={`bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-6 md:p-8 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 export default function QuestionnaireForm() {
-  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     contact_name: '',
@@ -50,6 +110,7 @@ export default function QuestionnaireForm() {
     business_type: '',
     business_model: '',
     products_services: '',
+    mcc: '',
     monthly_tpv: '',
     average_ticket: '',
     credit_percentage: '',
@@ -71,7 +132,6 @@ export default function QuestionnaireForm() {
         ? Math.round(data.monthly_tpv / data.average_ticket) 
         : 0;
       
-      // Processar outras taxas
       const processedOtherFees = (data.other_current_fees || [])
         .filter(fee => fee.name && fee.value)
         .map(fee => ({
@@ -102,15 +162,28 @@ export default function QuestionnaireForm() {
     }
   });
 
-  // Validações de porcentagem
   const cardTypeTotal = (parseFloat(form.credit_percentage) || 0) + (parseFloat(form.debit_percentage) || 0);
   const brandTotal = (parseFloat(form.visa_percentage) || 0) + (parseFloat(form.mastercard_percentage) || 0) + 
                      (parseFloat(form.amex_percentage) || 0) + (parseFloat(form.other_brands_percentage) || 0);
-  const isCardTypeValid = cardTypeTotal === 0 || Math.abs(cardTypeTotal - 100) < 0.01;
-  const isBrandValid = brandTotal === 0 || Math.abs(brandTotal - 100) < 0.01;
+  const isCardTypeValid = Math.abs(cardTypeTotal - 100) < 0.01;
+  const isBrandValid = Math.abs(brandTotal - 100) < 0.01;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!isCardTypeValid) {
+      alert('A soma de Crédito e Débito deve ser 100%');
+      return;
+    }
+    if (!isBrandValid) {
+      alert('A soma das bandeiras deve ser 100%');
+      return;
+    }
+    if (form.has_current_partner === null) {
+      alert('Por favor, indique se você já possui um parceiro de pagamentos');
+      return;
+    }
+    
     mutation.mutate(form);
   };
 
@@ -124,376 +197,445 @@ export default function QuestionnaireForm() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#002443] to-[#003366] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-white">
-          <CardContent className="pt-8 text-center">
-            <div className="w-16 h-16 bg-[#2bc196] rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-[#002443] mb-2">{t('questionnaireForm.successTitle')}</h2>
-            <p className="text-gray-600">
-              {t('questionnaireForm.successMessage')}
-            </p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-[#002443] via-[#003366] to-[#002443] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#2bc196] to-[#25a882] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#2bc196]/30">
+            <CheckCircle className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-[#002443] mb-3">Thank You!</h2>
+          <p className="text-gray-600 text-lg">
+            Your questionnaire has been successfully submitted. Our team will contact you shortly with a customized proposal.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#002443] to-[#003366] py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#002443] via-[#003366] to-[#002443]">
+      {/* Header */}
+      <div className="bg-[#002443]/50 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-4 py-6">
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
             alt="Pagsmile"
-            className="h-12 mx-auto mb-6"
+            className="h-10 mx-auto"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">{t('questionnaireForm.title')}</h1>
-          <p className="text-white/70">{t('questionnaireForm.subtitle')}</p>
         </div>
+      </div>
 
-        <Card className="bg-white">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Dados do Contato */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.contactSection')}</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact_name">{t('questionnaireForm.fullName')} *</Label>
-                    <Input 
-                      id="contact_name"
-                      value={form.contact_name}
-                      onChange={(e) => updateForm('contact_name', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact_email">{t('questionnaireForm.email')} *</Label>
-                    <Input 
-                      id="contact_email"
-                      type="email"
-                      value={form.contact_email}
-                      onChange={(e) => updateForm('contact_email', e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
+      {/* Hero Section */}
+      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          Payment Solutions <span className="text-[#2bc196]">Questionnaire</span>
+        </h1>
+        <p className="text-white/70 text-lg max-w-2xl mx-auto">
+          Complete the form below so we can understand your business and create a customized payment proposal for you.
+        </p>
+      </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>{t('questionnaireForm.phone')}</Label>
-                    <div className="flex gap-2">
-                      <Select 
-                        value={form.contact_phone_country_code} 
-                        onValueChange={(v) => updateForm('contact_phone_country_code', v)}
-                      >
-                        <SelectTrigger className="w-28">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {COUNTRIES.map(c => (
-                            <SelectItem key={c.code} value={c.code}>
-                              {c.flag} {c.code}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input 
-                        value={form.contact_phone}
-                        onChange={(e) => updateForm('contact_phone', e.target.value)}
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="contact_role">{t('questionnaireForm.role')}</Label>
-                    <Input 
-                      id="contact_role"
-                      value={form.contact_role}
-                      onChange={(e) => updateForm('contact_role', e.target.value)}
-                    />
-                  </div>
+      {/* Form */}
+      <div className="max-w-4xl mx-auto px-4 pb-16">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          
+          {/* Contact Information */}
+          <FormSection>
+            <SectionHeader icon={User} title="Contact Information" subtitle="Tell us who we should contact" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label className="text-gray-700 font-medium">Full Name *</Label>
+                <Input 
+                  value={form.contact_name}
+                  onChange={(e) => updateForm('contact_name', e.target.value)}
+                  required
+                  className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Email *</Label>
+                <Input 
+                  type="email"
+                  value={form.contact_email}
+                  onChange={(e) => updateForm('contact_email', e.target.value)}
+                  required
+                  className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                  placeholder="john@company.com"
+                />
+              </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Phone *</Label>
+                <div className="flex gap-2 mt-1.5">
+                  <Select 
+                    value={form.contact_phone_country_code} 
+                    onValueChange={(v) => updateForm('contact_phone_country_code', v)}
+                  >
+                    <SelectTrigger className="w-32 h-12 border-gray-200">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COUNTRIES.map(c => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.flag} {c.code}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    value={form.contact_phone}
+                    onChange={(e) => updateForm('contact_phone', e.target.value)}
+                    required
+                    className="flex-1 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="(555) 123-4567"
+                  />
                 </div>
               </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Role/Position *</Label>
+                <Input 
+                  value={form.contact_role}
+                  onChange={(e) => updateForm('contact_role', e.target.value)}
+                  required
+                  className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                  placeholder="CEO, CFO, etc."
+                />
+              </div>
+            </div>
+          </FormSection>
 
-              {/* Dados da Empresa */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.companySection')}</h3>
-                
+          {/* Company Information */}
+          <FormSection>
+            <SectionHeader icon={Building2} title="Company Information" subtitle="Tell us about your business" />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="company_name">{t('questionnaireForm.companyName')} *</Label>
+                  <Label className="text-gray-700 font-medium">Company Name *</Label>
                   <Input 
-                    id="company_name"
                     value={form.company_name}
                     onChange={(e) => updateForm('company_name', e.target.value)}
                     required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="Your Company LLC"
                   />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="business_type">{t('questionnaireForm.businessType')}</Label>
-                    <Input 
-                      id="business_type"
-                      value={form.business_type}
-                      onChange={(e) => updateForm('business_type', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="business_model">{t('questionnaireForm.businessModel')}</Label>
-                    <Input 
-                      id="business_model"
-                      value={form.business_model}
-                      onChange={(e) => updateForm('business_model', e.target.value)}
-                    />
-                  </div>
-                </div>
-
                 <div>
-                  <Label htmlFor="products_services">{t('questionnaireForm.products')}</Label>
-                  <Textarea 
-                    id="products_services"
-                    value={form.products_services}
-                    onChange={(e) => updateForm('products_services', e.target.value)}
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              {/* Dados Financeiros */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.financialSection')}</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="monthly_tpv">{t('questionnaireForm.monthlyTPV')} *</Label>
-                    <Input 
-                      id="monthly_tpv"
-                      type="number"
-                      value={form.monthly_tpv}
-                      onChange={(e) => updateForm('monthly_tpv', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="average_ticket">{t('questionnaireForm.avgTicket')} *</Label>
-                    <Input 
-                      id="average_ticket"
-                      type="number"
-                      value={form.average_ticket}
-                      onChange={(e) => updateForm('average_ticket', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label>{t('questionnaire.monthlyTransactions')}</Label>
-                    <Input 
-                      value={monthlyTransactions.toLocaleString()}
-                      disabled
-                      className="bg-gray-100"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Divisão de Transações */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">Divisão das Transações</h3>
-                
-                {/* Por Tipo de Cartão */}
-                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-[#002443]">Por Tipo de Cartão</h4>
-                      <p className="text-xs text-gray-500">A soma deve ser 100%</p>
-                    </div>
-                    <div className={`flex items-center gap-1 text-sm ${isCardTypeValid ? 'text-green-600' : 'text-amber-600'}`}>
-                      {isCardTypeValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                      <span>Total: {cardTypeTotal.toFixed(0)}%</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-xs text-gray-500">Crédito (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.credit_percentage}
-                        onChange={(e) => updateForm('credit_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-500">Débito (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.debit_percentage}
-                        onChange={(e) => updateForm('debit_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Por Bandeira */}
-                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-[#002443]">Por Bandeira</h4>
-                      <p className="text-xs text-gray-500">A soma deve ser 100%</p>
-                    </div>
-                    <div className={`flex items-center gap-1 text-sm ${isBrandValid ? 'text-green-600' : 'text-amber-600'}`}>
-                      {isBrandValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                      <span>Total: {brandTotal.toFixed(0)}%</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <Label className="text-xs text-gray-500">Visa (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.visa_percentage}
-                        onChange={(e) => updateForm('visa_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-500">Mastercard (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.mastercard_percentage}
-                        onChange={(e) => updateForm('mastercard_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-500">Amex (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.amex_percentage}
-                        onChange={(e) => updateForm('amex_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-500">Outras (%)</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={form.other_brands_percentage}
-                        onChange={(e) => updateForm('other_brands_percentage', e.target.value)}
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Parceiro Atual */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.partnerSection')}</h3>
-                
-                <div>
-                  <Label>{t('questionnaireForm.hasPartner')}</Label>
-                  <RadioGroup 
-                    value={form.has_current_partner === true ? 'yes' : form.has_current_partner === false ? 'no' : ''}
-                    onValueChange={(v) => updateForm('has_current_partner', v === 'yes')}
-                    className="flex gap-4 mt-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="yes" />
-                      <Label htmlFor="yes">{t('common.yes')}</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="no" />
-                      <Label htmlFor="no">{t('common.no')}</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {form.has_current_partner && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="current_rate_percentage">{t('questionnaireForm.currentRate')}</Label>
-                        <Input 
-                          id="current_rate_percentage"
-                          type="number"
-                          step="0.01"
-                          value={form.current_rate_percentage}
-                          onChange={(e) => updateForm('current_rate_percentage', e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="current_fixed_fee">{t('questionnaireForm.currentFee')}</Label>
-                        <Input 
-                          id="current_fixed_fee"
-                          type="number"
-                          step="0.01"
-                          value={form.current_fixed_fee}
-                          onChange={(e) => updateForm('current_fixed_fee', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Outras Taxas */}
-                    <div className="pt-4 border-t border-gray-200">
-                      <Label className="text-sm font-medium mb-2 block">Outras Taxas do Parceiro Atual</Label>
-                      <OtherFeesInput 
-                        fees={form.other_current_fees}
-                        onChange={(fees) => updateForm('other_current_fees', fees)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Prazo de Recebimento */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#002443] border-b pb-2">{t('questionnaireForm.expectedSettlement')}</h3>
-                
-                <div>
-                  <Label>{t('questionnaireForm.expectedSettlement')}</Label>
+                  <Label className="text-gray-700 font-medium">MCC (Merchant Category Code) *</Label>
                   <Select 
-                    value={form.expected_settlement_days} 
-                    onValueChange={(v) => updateForm('expected_settlement_days', v)}
+                    value={form.mcc} 
+                    onValueChange={(v) => updateForm('mcc', v)}
+                    required
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="..." />
+                    <SelectTrigger className="mt-1.5 h-12 border-gray-200">
+                      <SelectValue placeholder="Select your MCC" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
-                      <SelectItem value="D+7">D+7</SelectItem>
-                      <SelectItem value="D+15">D+15</SelectItem>
+                    <SelectContent className="max-h-80">
+                      {MCC_OPTIONS.map(mcc => (
+                        <SelectItem key={mcc.value} value={mcc.value}>
+                          {mcc.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-gray-700 font-medium">Business Type *</Label>
+                  <Input 
+                    value={form.business_type}
+                    onChange={(e) => updateForm('business_type', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="E-commerce, SaaS, etc."
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 font-medium">Business Model *</Label>
+                  <Input 
+                    value={form.business_model}
+                    onChange={(e) => updateForm('business_model', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="B2B, B2C, Marketplace, etc."
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Products/Services Description *</Label>
+                <Textarea 
+                  value={form.products_services}
+                  onChange={(e) => updateForm('products_services', e.target.value)}
+                  required
+                  rows={3}
+                  className="mt-1.5 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                  placeholder="Describe your main products or services..."
+                />
+              </div>
+            </div>
+          </FormSection>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold py-6"
-                disabled={mutation.isPending}
+          {/* Financial Information */}
+          <FormSection>
+            <SectionHeader icon={DollarSign} title="Financial Information" subtitle="Help us understand your volume" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <Label className="text-gray-700 font-medium">Estimated Monthly TPV (USD) *</Label>
+                <div className="relative mt-1.5">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                  <Input 
+                    type="number"
+                    value={form.monthly_tpv}
+                    onChange={(e) => updateForm('monthly_tpv', e.target.value)}
+                    required
+                    className="h-12 pl-8 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="100,000"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Average Ticket (USD) *</Label>
+                <div className="relative mt-1.5">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                  <Input 
+                    type="number"
+                    value={form.average_ticket}
+                    onChange={(e) => updateForm('average_ticket', e.target.value)}
+                    required
+                    className="h-12 pl-8 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="50"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-gray-700 font-medium">Monthly Transactions</Label>
+                <Input 
+                  value={monthlyTransactions.toLocaleString()}
+                  disabled
+                  className="mt-1.5 h-12 bg-gray-50 border-gray-200 text-gray-600"
+                />
+              </div>
+            </div>
+          </FormSection>
+
+          {/* Transaction Split */}
+          <FormSection>
+            <SectionHeader icon={CreditCard} title="Transaction Split" subtitle="How are your transactions distributed?" />
+            
+            {/* Card Type Split */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold text-gray-800">By Card Type *</h4>
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+                  isCardTypeValid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {isCardTypeValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                  Total: {cardTypeTotal.toFixed(0)}%
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-gray-600">Credit (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.credit_percentage}
+                    onChange={(e) => updateForm('credit_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="70"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Debit (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.debit_percentage}
+                    onChange={(e) => updateForm('debit_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="30"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Brand Split */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold text-gray-800">By Card Brand *</h4>
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+                  isBrandValid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {isBrandValid ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                  Total: {brandTotal.toFixed(0)}%
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <Label className="text-gray-600">Visa (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.visa_percentage}
+                    onChange={(e) => updateForm('visa_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="40"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Mastercard (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.mastercard_percentage}
+                    onChange={(e) => updateForm('mastercard_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="35"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Amex (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.amex_percentage}
+                    onChange={(e) => updateForm('amex_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="15"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Others (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={form.other_brands_percentage}
+                    onChange={(e) => updateForm('other_brands_percentage', e.target.value)}
+                    required
+                    className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
+                    placeholder="10"
+                  />
+                </div>
+              </div>
+            </div>
+          </FormSection>
+
+          {/* Current Partner */}
+          <FormSection>
+            <SectionHeader icon={Percent} title="Current Payment Partner" subtitle="Do you currently have a payment processor?" />
+            
+            <div className="mb-6">
+              <Label className="text-gray-700 font-medium mb-3 block">Do you already have a payment partner? *</Label>
+              <RadioGroup 
+                value={form.has_current_partner === true ? 'yes' : form.has_current_partner === false ? 'no' : ''}
+                onValueChange={(v) => updateForm('has_current_partner', v === 'yes')}
+                className="flex gap-6"
               >
-                {mutation.isPending ? t('questionnaireForm.submitting') : t('questionnaireForm.submit')}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="yes" id="yes" className="border-gray-300" />
+                  <Label htmlFor="yes" className="text-gray-700 cursor-pointer">Yes</Label>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="no" id="no" className="border-gray-300" />
+                  <Label htmlFor="no" className="text-gray-700 cursor-pointer">No</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {form.has_current_partner && (
+              <div className="bg-gray-50 rounded-xl p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="text-gray-700 font-medium">Current Rate (%) *</Label>
+                    <Input 
+                      type="number"
+                      step="0.01"
+                      value={form.current_rate_percentage}
+                      onChange={(e) => updateForm('current_rate_percentage', e.target.value)}
+                      required
+                      className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196] bg-white"
+                      placeholder="2.50"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-700 font-medium">Fixed Fee per Transaction (USD) *</Label>
+                    <div className="relative mt-1.5">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                      <Input 
+                        type="number"
+                        step="0.01"
+                        value={form.current_fixed_fee}
+                        onChange={(e) => updateForm('current_fixed_fee', e.target.value)}
+                        required
+                        className="h-12 pl-8 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196] bg-white"
+                        placeholder="0.30"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-4 border-t border-gray-200">
+                  <Label className="text-gray-700 font-medium mb-3 block">Other Fees (optional)</Label>
+                  <OtherFeesInput 
+                    fees={form.other_current_fees}
+                    onChange={(fees) => updateForm('other_current_fees', fees)}
+                  />
+                </div>
+              </div>
+            )}
+          </FormSection>
+
+          {/* Settlement Days */}
+          <FormSection>
+            <SectionHeader icon={Clock} title="Settlement Expectations" subtitle="When do you expect to receive funds?" />
+            <div>
+              <Label className="text-gray-700 font-medium">Expected Settlement Days *</Label>
+              <Select 
+                value={form.expected_settlement_days} 
+                onValueChange={(v) => updateForm('expected_settlement_days', v)}
+                required
+              >
+                <SelectTrigger className="mt-1.5 h-12 border-gray-200">
+                  <SelectValue placeholder="Select settlement days" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="D+2/D+3">D+2 / D+3 (Fastest)</SelectItem>
+                  <SelectItem value="D+7">D+7 (Standard)</SelectItem>
+                  <SelectItem value="D+15">D+15 (Extended)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </FormSection>
+
+          {/* Submit */}
+          <Button 
+            type="submit" 
+            disabled={mutation.isPending}
+            className="w-full h-14 bg-gradient-to-r from-[#2bc196] to-[#25a882] hover:from-[#25a882] hover:to-[#1f8d6d] text-white font-bold text-lg rounded-xl shadow-lg shadow-[#2bc196]/30 transition-all duration-300"
+          >
+            {mutation.isPending ? (
+              <span className="flex items-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Submitting...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Send className="h-5 w-5" />
+                Submit Questionnaire
+              </span>
+            )}
+          </Button>
+        </form>
       </div>
     </div>
   );
