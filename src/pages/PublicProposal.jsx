@@ -29,6 +29,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import '@/components/i18n/i18n';
 import { motion } from 'framer-motion';
+import i18n from '@/components/i18n/i18n';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -55,6 +56,11 @@ export default function PublicProposal() {
 
   React.useEffect(() => {
     if (proposal && proposal.id) {
+      // Set the language based on proposal
+      if (proposal.language) {
+        i18n.changeLanguage(proposal.language);
+      }
+      
       base44.analytics.track({
         eventName: "proposal_viewed",
         properties: {
@@ -64,7 +70,7 @@ export default function PublicProposal() {
         }
       });
     }
-  }, [proposal?.id]);
+  }, [proposal?.id, proposal?.language]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Proposal.update(id, data),

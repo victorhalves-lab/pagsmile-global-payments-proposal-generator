@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, FileText, Link as LinkIcon, Download, Table2 } from 'lucide-react';
+import { Calculator, FileText, Link as LinkIcon, Download, Table2, Languages } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
   INTERCHANGE_SUMMARY, 
@@ -33,6 +33,7 @@ export default function ProposalCreation() {
     client_name: '',
     contact_name: '',
     contact_email: '',
+    language: 'en',
     mccs: [],
     markup_percentage: 0,
     fixed_fee_per_transaction: 0,
@@ -249,6 +250,28 @@ export default function ProposalCreation() {
                   onChange={(e) => updateForm('contact_email', e.target.value)}
                   className="bg-white/10 border-[#2bc196]/30 text-white"
                 />
+              </div>
+              <div>
+                <Label className="text-white/80 flex items-center gap-2">
+                  <Languages className="h-4 w-4" />
+                  Idioma da Proposta *
+                </Label>
+                <Select 
+                  value={form.language} 
+                  onValueChange={(v) => updateForm('language', v)}
+                >
+                  <SelectTrigger className="bg-white/10 border-[#2bc196]/30 text-white">
+                    <SelectValue placeholder="Selecione o idioma" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">🇺🇸 English</SelectItem>
+                    <SelectItem value="pt">🇧🇷 Português</SelectItem>
+                    <SelectItem value="zh">🇨🇳 中文 (Chinês)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-white/50 text-xs mt-1">
+                  A proposta será exibida neste idioma para o cliente
+                </p>
               </div>
             </CardContent>
           </Card>

@@ -319,7 +319,8 @@ const pt = {
   language: {
     select: "Idioma",
     pt: "Português",
-    en: "English"
+    en: "English",
+    zh: "中文"
   },
   howItWorks: {
     pageTitle: "Documentação Completa",
