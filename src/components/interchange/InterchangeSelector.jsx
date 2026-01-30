@@ -9,19 +9,10 @@ import { Input } from '@/components/ui/input';
 import { 
   CreditCard, 
   Building2, 
-  Plane, 
-  ShoppingCart, 
-  Repeat, 
-  Heart, 
-  Landmark,
-  Zap,
   ChevronRight,
   Search,
-  Check,
   Table2,
   TrendingUp,
-  TrendingDown,
-  Minus
 } from 'lucide-react';
 import { 
   INTERCHANGE_SUMMARY,
@@ -31,17 +22,6 @@ import {
   calculateWeightedAverage,
   getAllWeightedAverageOptions
 } from './InterchangeData';
-
-// Helper para obter stats de opção rápida
-const getQuickOptionStats = (option, customInterchange) => {
-  if (option.isWeighted) {
-    return option.stats;
-  }
-  const [brand, level] = option.value.split('_');
-  if (brand === 'visa') return INTERCHANGE_SUMMARY.visa[level];
-  if (brand === 'master') return INTERCHANGE_SUMMARY.master[level];
-  return INTERCHANGE_SUMMARY.combined[level];
-};
 
 // Ícones por categoria
 const categoryIcons = {
@@ -74,27 +54,54 @@ export default function InterchangeSelector({
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategory, setExpandedCategory] = useState(null);
 
-  // Opções rápidas (as mais usadas)
+  // Opções organizadas por categoria
   const quickOptions = useMemo(() => {
-    const creditStats = calculateWeightedAverage('combined_credit');
-    const debitStats = calculateWeightedAverage('combined_debit');
-    const ecommerceStats = calculateWeightedAverage('ecommerce');
-    const travelStats = calculateWeightedAverage('travel');
-    const recurringStats = calculateWeightedAverage('recurring');
-    
-    return [
-      // Médias gerais
+    const allWeightedOptions = getAllWeightedAverageOptions();
+
+    const generalAverages = [
       { value: 'combined_avg', label: 'Geral Médio', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.avg },
-      { value: 'combined_low', label: 'Geral Menor', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.low },
       { value: 'combined_high', label: 'Geral Maior', brand: 'combined', stats: INTERCHANGE_SUMMARY.combined.high },
-      // Por tipo de cartão combinado
-      { value: 'combined_credit', label: 'Crédito (V+M)', brand: 'combined', stats: creditStats.avg, isWeighted: true },
-      { value: 'combined_debit', label: 'Débito (V+M)', brand: 'combined', stats: debitStats.avg, isWeighted: true },
-      // Por segmento
-      { value: 'ecommerce', label: 'E-commerce', brand: 'combined', stats: ecommerceStats.avg, isWeighted: true },
-      { value: 'travel', label: 'Viagens', brand: 'combined', stats: travelStats.avg, isWeighted: true },
-      { value: 'recurring', label: 'Recorrente', brand: 'combined', stats: recurringStats.avg, isWeighted: true },
     ];
+
+    const cardTypeSegments = allWeightedOptions.filter(opt => opt.categoryId === 'cardType').map(opt => ({
+      value: opt.id,
+      label: opt.name,
+      brand: opt.brand,
+      stats: opt.stats.avg,
+      isWeighted: true,
+    }));
+
+    const industrySegments = allWeightedOptions.filter(opt => opt.categoryId === 'industry').map(opt => ({
+      value: opt.id,
+      label: opt.name,
+      brand: opt.brand,
+      stats: opt.stats.avg,
+      isWeighted: true,
+    }));
+
+    const largeTicketSegments = allWeightedOptions.filter(opt => opt.categoryId === 'largeTicket').map(opt => ({
+      value: opt.id,
+      label: opt.name,
+      brand: opt.brand,
+      stats: opt.stats.avg,
+      isWeighted: true,
+    }));
+
+    const businessSegments = allWeightedOptions.filter(opt => opt.categoryId === 'business').map(opt => ({
+      value: opt.id,
+      label: opt.name,
+      brand: opt.brand,
+      stats: opt.stats.avg,
+      isWeighted: true,
+    }));
+    
+    return {
+      generalAverages,
+      cardTypeSegments,
+      industrySegments,
+      largeTicketSegments,
+      businessSegments,
+    };
   }, []);
 
   // Todas as opções de médias ponderadas
@@ -125,6 +132,7 @@ export default function InterchangeSelector({
     } else {
       onSelectType(option.value);
     }
+    setModalOpen(false);
   };
 
   const handleSelectWeightedAverage = (option) => {
@@ -155,35 +163,37 @@ export default function InterchangeSelector({
 
   const currentValue = getCurrentValue();
 
+  // Componente de botão de opção reutilizável
+  const OptionButton = ({ option, isSelected }) => (
+    <button
+      onClick={() => handleSelectQuickOption(option)}
+      className={`
+        p-3 rounded-lg text-center transition-all border
+        ${isSelected
+          ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
+          : `${brandColors[option.brand]} hover:opacity-80`
+        }
+      `}
+    >
+      <p className="text-sm font-medium leading-tight min-h-[32px] flex items-center justify-center">{option.label}</p>
+      <p className="text-lg font-bold mt-1">{formatPercentage(option.stats.percentage)}</p>
+      <p className="text-xs opacity-70">+ {formatFixed(option.stats.fixed)}</p>
+    </button>
+  );
+
+  // Verificar se uma opção está selecionada
+  const isOptionSelected = (option) => {
+    if (option.isWeighted) {
+      return selectedType === 'custom' && 
+        customInterchange.percentage === option.stats.percentage && 
+        customInterchange.fixed === option.stats.fixed;
+    }
+    return selectedType === option.value;
+  };
+
   return (
     <div className="space-y-4">
-      {/* Seleção Rápida */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
-        {quickOptions.map(option => {
-          const isSelected = option.isWeighted 
-            ? (selectedType === 'custom' && customInterchange.percentage === option.stats.percentage && customInterchange.fixed === option.stats.fixed)
-            : selectedType === option.value;
-          return (
-            <button
-              key={option.value}
-              onClick={() => handleSelectQuickOption(option)}
-              className={`
-                p-3 rounded-lg text-center transition-all border
-                ${isSelected
-                  ? 'bg-[#2bc196] text-[#002443] border-[#2bc196]'
-                  : `${brandColors[option.brand]} hover:opacity-80`
-                }
-              `}
-            >
-              <p className="text-xs font-medium leading-tight min-h-[32px] flex items-center justify-center">{option.label}</p>
-              <p className="text-lg font-bold mt-1">{formatPercentage(option.stats.percentage)}</p>
-              <p className="text-xs opacity-70">+ {formatFixed(option.stats.fixed)}</p>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Botão para opções avançadas */}
+      {/* Botão para abrir modal */}
       <div className="flex items-center gap-3">
         <Dialog open={modalOpen} onOpenChange={setModalOpen}>
           <DialogTrigger asChild>
@@ -192,7 +202,10 @@ export default function InterchangeSelector({
               className="flex-1 bg-[#001a30] border-[#2bc196]/40 text-white hover:bg-[#2bc196]/20"
             >
               <Table2 className="h-4 w-4 mr-2" />
-              Mais Opções de Interchange
+              {selectedType === 'custom' 
+                ? `Personalizado: ${formatPercentage(customInterchange.percentage)} + ${formatFixed(customInterchange.fixed)}`
+                : `Selecionar Taxa de Interchange`
+              }
               <ChevronRight className="h-4 w-4 ml-auto" />
             </Button>
           </DialogTrigger>
@@ -215,79 +228,70 @@ export default function InterchangeSelector({
               </TabsList>
 
               {/* Tab: Médias Rápidas */}
-              <TabsContent value="quick" className="flex-1 overflow-auto p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Visa */}
-                  <Card className="bg-blue-500/10 border-blue-500/30">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-blue-400 text-lg flex items-center gap-2">
-                        <CreditCard className="h-5 w-5" />
-                        Visa
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {['low', 'avg', 'high'].map(level => (
-                        <button
-                          key={`visa_${level}`}
-                          onClick={() => { onSelectType(`visa_${level}`); setModalOpen(false); }}
-                          className={`w-full p-3 rounded-lg flex justify-between items-center transition-all
-                            ${selectedType === `visa_${level}` ? 'bg-blue-500 text-white' : 'bg-white/5 hover:bg-white/10'}
-                          `}
-                        >
-                          <span className="capitalize">{level === 'low' ? 'Menor' : level === 'avg' ? 'Média' : 'Maior'}</span>
-                          <span className="font-bold">{formatPercentage(INTERCHANGE_SUMMARY.visa[level].percentage)}</span>
-                        </button>
-                      ))}
-                    </CardContent>
-                  </Card>
+              <TabsContent value="quick" className="flex-1 overflow-auto p-4 space-y-6">
+                {/* Médias Combinadas Gerais */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-[#2bc196]" />
+                    Médias Combinadas Gerais
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {quickOptions.generalAverages.map(option => (
+                      <OptionButton key={option.value} option={option} isSelected={isOptionSelected(option)} />
+                    ))}
+                  </div>
+                </div>
 
-                  {/* Mastercard */}
-                  <Card className="bg-orange-500/10 border-orange-500/30">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-orange-400 text-lg flex items-center gap-2">
-                        <CreditCard className="h-5 w-5" />
-                        Mastercard
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {['low', 'avg', 'high'].map(level => (
-                        <button
-                          key={`master_${level}`}
-                          onClick={() => { onSelectType(`master_${level}`); setModalOpen(false); }}
-                          className={`w-full p-3 rounded-lg flex justify-between items-center transition-all
-                            ${selectedType === `master_${level}` ? 'bg-orange-500 text-white' : 'bg-white/5 hover:bg-white/10'}
-                          `}
-                        >
-                          <span className="capitalize">{level === 'low' ? 'Menor' : level === 'avg' ? 'Média' : 'Maior'}</span>
-                          <span className="font-bold">{formatPercentage(INTERCHANGE_SUMMARY.master[level].percentage)}</span>
-                        </button>
-                      ))}
-                    </CardContent>
-                  </Card>
+                {/* Por Tipo de Cartão */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-[#2bc196]" />
+                    Por Tipo de Cartão
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {quickOptions.cardTypeSegments.map(option => (
+                      <OptionButton key={option.value} option={option} isSelected={isOptionSelected(option)} />
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Por Segmento de Indústria */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-[#2bc196]" />
+                    Por Segmento de Indústria
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {quickOptions.industrySegments.map(option => (
+                      <OptionButton key={option.value} option={option} isSelected={isOptionSelected(option)} />
+                    ))}
+                  </div>
+                </div>
 
-                  {/* Combinado */}
-                  <Card className="bg-[#2bc196]/10 border-[#2bc196]/30">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-[#2bc196] text-lg flex items-center gap-2">
-                        <CreditCard className="h-5 w-5" />
-                        Combinado
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      {['low', 'avg', 'high'].map(level => (
-                        <button
-                          key={`combined_${level}`}
-                          onClick={() => { onSelectType(`combined_${level}`); setModalOpen(false); }}
-                          className={`w-full p-3 rounded-lg flex justify-between items-center transition-all
-                            ${selectedType === `combined_${level}` ? 'bg-[#2bc196] text-[#002443]' : 'bg-white/5 hover:bg-white/10'}
-                          `}
-                        >
-                          <span className="capitalize">{level === 'low' ? 'Menor' : level === 'avg' ? 'Média' : 'Maior'}</span>
-                          <span className="font-bold">{formatPercentage(INTERCHANGE_SUMMARY.combined[level].percentage)}</span>
-                        </button>
-                      ))}
-                    </CardContent>
-                  </Card>
+                {/* Transações de Grande Valor */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-[#2bc196]" />
+                    Transações de Grande Valor
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {quickOptions.largeTicketSegments.map(option => (
+                      <OptionButton key={option.value} option={option} isSelected={isOptionSelected(option)} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cartões Empresariais */}
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-[#2bc196]" />
+                    Cartões Empresariais
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {quickOptions.businessSegments.map(option => (
+                      <OptionButton key={option.value} option={option} isSelected={isOptionSelected(option)} />
+                    ))}
+                  </div>
                 </div>
               </TabsContent>
 
@@ -394,11 +398,6 @@ export default function InterchangeSelector({
                           ))}
                         </TableBody>
                       </Table>
-                      {filteredVisaRates.length > 50 && (
-                        <p className="text-white/50 text-sm text-center py-2">
-                          {filteredVisaRates.length} taxas encontradas. Use a busca para filtrar.
-                        </p>
-                      )}
                     </div>
                   </div>
 
@@ -438,11 +437,6 @@ export default function InterchangeSelector({
                           ))}
                         </TableBody>
                       </Table>
-                      {filteredMasterRates.length > 50 && (
-                        <p className="text-white/50 text-sm text-center py-2">
-                          {filteredMasterRates.length} taxas encontradas. Use a busca para filtrar.
-                        </p>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -451,11 +445,11 @@ export default function InterchangeSelector({
           </DialogContent>
         </Dialog>
 
-        {/* Indicador de taxa personalizada */}
+        {/* Indicador de taxa selecionada */}
         {selectedType === 'custom' && (
           <div className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg">
             <p className="text-purple-400 text-sm font-medium">
-              Personalizado: {formatPercentage(customInterchange.percentage)} + {formatFixed(customInterchange.fixed)}
+              {formatPercentage(customInterchange.percentage)} + {formatFixed(customInterchange.fixed)}
             </p>
           </div>
         )}

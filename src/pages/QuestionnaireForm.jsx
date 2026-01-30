@@ -608,21 +608,30 @@ export default function QuestionnaireForm() {
           <FormSection>
             <SectionHeader icon={Clock} title="Settlement Expectations" subtitle="When do you expect to receive funds?" />
             <div>
-              <Label className="text-gray-700 font-medium">Expected Settlement Days *</Label>
-              <Select 
-                value={form.expected_settlement_days} 
-                onValueChange={(v) => updateForm('expected_settlement_days', v)}
-                required
-              >
-                <SelectTrigger className="mt-1.5 h-12 border-gray-200">
-                  <SelectValue placeholder="Select settlement days" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="D+2/D+3">D+2 / D+3 (Fastest)</SelectItem>
-                  <SelectItem value="D+7">D+7 (Standard)</SelectItem>
-                  <SelectItem value="D+15">D+15 (Extended)</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-gray-700 font-medium mb-3 block">Expected Settlement Days *</Label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { value: 'D+2/D+3', label: 'D+2 / D+3', sublabel: 'Fastest' },
+                  { value: 'D+7', label: 'D+7', sublabel: 'Standard' },
+                  { value: 'D+15', label: 'D+15', sublabel: 'Extended' },
+                ].map((option) => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateForm('expected_settlement_days', option.value)}
+                    className={`h-auto py-4 flex flex-col items-center gap-1 transition-all ${
+                      form.expected_settlement_days === option.value 
+                        ? 'bg-[#2bc196] hover:bg-[#25a882] text-white' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                  >
+                    <span className="text-lg font-bold">{option.label}</span>
+                    <span className={`text-xs ${form.expected_settlement_days === option.value ? 'text-white/80' : 'text-gray-500'}`}>
+                      {option.sublabel}
+                    </span>
+                  </Button>
+                ))}
+              </div>
             </div>
           </FormSection>
 
