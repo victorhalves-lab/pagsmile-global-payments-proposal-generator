@@ -440,7 +440,7 @@ export default function ProposalCreation() {
                   />
                 </div>
                 <div>
-                  <Label className="text-white/80">Fixed Fee / Gateway Fee (centavos USD)</Label>
+                  <Label className="text-white/80">Fixed Fee / Gateway Fee (USD)</Label>
                   <Input 
                     type="number"
                     value={form.fixed_fee_per_transaction}
