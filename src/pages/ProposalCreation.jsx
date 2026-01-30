@@ -126,9 +126,9 @@ export default function ProposalCreation() {
 
   const finalFixedFee = useMemo(() => {
     const interchangeFixed = selectedInterchange.fixed;
-    // Converter vírgula para ponto e depois para número (centavos para dólares)
+    // Converter vírgula para ponto e depois para número (valor já está em dólares, não centavos)
     const rawValue = String(form.fixed_fee_per_transaction || '0').replace(',', '.');
-    const gatewayFee = (parseFloat(rawValue) || 0) / 100;
+    const gatewayFee = parseFloat(rawValue) || 0;
     return interchangeFixed + gatewayFee;
   }, [selectedInterchange, form.fixed_fee_per_transaction]);
 
