@@ -137,11 +137,11 @@ export default function PublicProposal() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-[#002443] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-emerald-500/30 rounded-full animate-pulse"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-emerald-500 rounded-full animate-spin"></div>
+            <div className="w-16 h-16 border-4 border-[#2bc196]/30 rounded-full animate-pulse"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-[#2bc196] rounded-full animate-spin"></div>
           </div>
           <p className="text-white/60 text-sm">Loading proposal...</p>
         </div>
@@ -151,16 +151,16 @@ export default function PublicProposal() {
 
   if (!proposal) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#002443] flex items-center justify-center p-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center"
+          className="max-w-md w-full bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-[#2bc196]/20 text-center"
         >
           <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-3">{t('publicProposal.notFound')}</h2>
+          <h2 className="text-2xl font-bold text-[#2bc196] mb-3">{t('publicProposal.notFound')}</h2>
           <p className="text-white/60">{t('publicProposal.notFoundDesc')}</p>
         </motion.div>
       </div>
@@ -168,11 +168,11 @@ export default function PublicProposal() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-[#002443]">
       {/* Decorative Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#2bc196]/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#5cf7cf]/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 py-8 px-4 md:py-12">
@@ -189,14 +189,14 @@ export default function PublicProposal() {
               alt="Pagsmile"
               className="h-10 md:h-12 mx-auto mb-8"
             />
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-6">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-400 text-sm font-medium">Pricing Proposal</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2bc196]/10 border border-[#2bc196]/30 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-[#2bc196]" />
+              <span className="text-[#2bc196] text-sm font-medium">Pricing Proposal</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#2bc196] mb-3">
               {t('publicProposal.title')}
             </h1>
-            <p className="text-white/60 text-lg">Prepared for <span className="text-white font-medium">{proposal.client_name}</span></p>
+            <p className="text-white/60 text-lg">Prepared for <span className="text-[#5cf7cf] font-medium">{proposal.client_name}</span></p>
           </motion.div>
 
           {/* Status Alerts */}
@@ -221,22 +221,22 @@ export default function PublicProposal() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className={`backdrop-blur rounded-2xl p-5 mb-6 flex items-center gap-4 ${
-                proposal.status === 'accepted' ? 'bg-emerald-500/10 border border-emerald-500/30' :
+                proposal.status === 'accepted' ? 'bg-[#2bc196]/10 border border-[#2bc196]/30' :
                 proposal.status === 'rejected' ? 'bg-red-500/10 border border-red-500/30' :
                 'bg-amber-500/10 border border-amber-500/30'
               }`}
             >
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                proposal.status === 'accepted' ? 'bg-emerald-500/20' :
+                proposal.status === 'accepted' ? 'bg-[#2bc196]/20' :
                 proposal.status === 'rejected' ? 'bg-red-500/20' : 'bg-amber-500/20'
               }`}>
-                {proposal.status === 'accepted' && <CheckCircle className="h-6 w-6 text-emerald-400" />}
+                {proposal.status === 'accepted' && <CheckCircle className="h-6 w-6 text-[#2bc196]" />}
                 {proposal.status === 'rejected' && <XCircle className="h-6 w-6 text-red-400" />}
                 {proposal.status === 'counter_proposal' && <RefreshCw className="h-6 w-6 text-amber-400" />}
               </div>
               <div>
                 <p className={`font-medium ${
-                  proposal.status === 'accepted' ? 'text-emerald-300' :
+                  proposal.status === 'accepted' ? 'text-[#2bc196]' :
                   proposal.status === 'rejected' ? 'text-red-300' : 'text-amber-300'
                 }`}>
                   {proposal.status === 'accepted' && t('publicProposal.alreadyAccepted')}
@@ -252,20 +252,20 @@ export default function PublicProposal() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-6"
+            className="bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-[#2bc196]/20 overflow-hidden mb-6"
           >
             {/* Proposal Header */}
-            <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border-b border-white/10 p-6 md:p-8">
+            <div className="bg-gradient-to-r from-[#2bc196]/10 to-[#5cf7cf]/5 border-b border-[#2bc196]/20 p-6 md:p-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <p className="text-white/50 text-sm mb-1">Proposal for</p>
-                  <h2 className="text-2xl font-bold text-white">{proposal.client_name}</h2>
+                  <p className="text-[#2bc196]/70 text-sm mb-1">Proposal for</p>
+                  <h2 className="text-2xl font-bold text-[#2bc196]">{proposal.client_name}</h2>
                   <p className="text-white/60 mt-1">{proposal.contact_name} • {proposal.contact_email}</p>
                 </div>
-                <div className="flex items-center gap-3 bg-white/5 rounded-2xl px-5 py-3 border border-white/10">
-                  <Calendar className="w-5 h-5 text-emerald-400" />
+                <div className="flex items-center gap-3 bg-[#2bc196]/10 rounded-2xl px-5 py-3 border border-[#2bc196]/30">
+                  <Calendar className="w-5 h-5 text-[#2bc196]" />
                   <div>
-                    <p className="text-white/50 text-xs">Valid until</p>
+                    <p className="text-[#2bc196]/70 text-xs">Valid until</p>
                     <p className={`font-semibold ${isExpired ? 'text-red-400' : 'text-white'}`}>
                       {new Date(proposal.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
@@ -301,17 +301,17 @@ export default function PublicProposal() {
               {/* Processing Countries Section */}
               <div>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-blue-400" />
+                  <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                    <Globe className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white">Processing Countries</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">Processing Countries</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
                     <span className="text-2xl mb-2 block">🇺🇸</span>
                     <p className="text-white font-medium">USA</p>
                   </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
                     <span className="text-2xl mb-2 block">🇪🇺</span>
                     <p className="text-white font-medium">EU</p>
                   </div>
@@ -321,19 +321,19 @@ export default function PublicProposal() {
               {/* Payment Processing Fee */}
               <div>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-emerald-400" />
+                  <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white">{t('publicProposal.paymentProcessingFee')}</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.paymentProcessingFee')}</h3>
                 </div>
                 
                 <div className="space-y-3">
                   {/* Credit/Debit Card */}
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors">
+                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-2xl p-5 hover:bg-[#2bc196]/10 transition-colors">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-xl flex items-center justify-center">
-                          <CreditCard className="w-6 h-6 text-violet-400" />
+                        <div className="w-12 h-12 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                          <CreditCard className="w-6 h-6 text-[#2bc196]" />
                         </div>
                         <div>
                           <p className="text-white font-semibold">{t('publicProposal.creditDebit')}</p>
@@ -341,21 +341,21 @@ export default function PublicProposal() {
                         </div>
                       </div>
                       <div className="text-right md:text-left">
-                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2">
-                          <span className="text-emerald-400 text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
+                        <div className="inline-flex items-center gap-2 bg-[#2bc196]/10 border border-[#2bc196]/40 rounded-xl px-4 py-2">
+                          <span className="text-[#5cf7cf] text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
                           <span className="text-white/40">+</span>
-                          <span className="text-emerald-400 text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
+                          <span className="text-[#5cf7cf] text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Wallet */}
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors">
+                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-2xl p-5 hover:bg-[#2bc196]/10 transition-colors">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center">
-                          <Wallet className="w-6 h-6 text-blue-400" />
+                        <div className="w-12 h-12 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                          <Wallet className="w-6 h-6 text-[#2bc196]" />
                         </div>
                         <div>
                           <p className="text-white font-semibold">{t('publicProposal.wallet')}</p>
@@ -363,10 +363,10 @@ export default function PublicProposal() {
                         </div>
                       </div>
                       <div className="text-right md:text-left">
-                        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2">
-                          <span className="text-emerald-400 text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
+                        <div className="inline-flex items-center gap-2 bg-[#2bc196]/10 border border-[#2bc196]/40 rounded-xl px-4 py-2">
+                          <span className="text-[#5cf7cf] text-xl font-bold">{formatPercentage(proposal.final_rate_percentage)}</span>
                           <span className="text-white/40">+</span>
-                          <span className="text-emerald-400 text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
+                          <span className="text-[#5cf7cf] text-xl font-bold">{formatCurrency(proposal.final_fixed_fee)}</span>
                         </div>
                       </div>
                     </div>
@@ -377,10 +377,10 @@ export default function PublicProposal() {
               {/* Other Fees */}
               <div>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-purple-400" />
+                  <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white">{t('publicProposal.otherFees')}</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.otherFees')}</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -399,52 +399,52 @@ export default function PublicProposal() {
               {/* Settlement Section */}
               <div>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
-                    <Banknote className="w-5 h-5 text-cyan-400" />
+                  <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                    <Banknote className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white">Settlement</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">Settlement</h3>
                 </div>
                 
-                <div className="bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-cyan-500/20 rounded-2xl p-6">
+                <div className="bg-gradient-to-br from-[#2bc196]/5 to-[#5cf7cf]/5 border border-[#2bc196]/20 rounded-2xl p-6">
                   <p className="text-white/80 leading-relaxed mb-6">
                     After deducting the fees from the payments processed for merchant's website, PAGSMILE will transfer the money to merchant's bank account. The sums received will be withheld the related fees.
                   </p>
                   
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-white/10">
+                    <div className="flex items-center justify-between py-3 border-b border-[#2bc196]/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                          <ArrowRight className="w-4 h-4 text-cyan-400" />
+                        <div className="w-8 h-8 bg-[#2bc196]/20 rounded-lg flex items-center justify-center">
+                          <ArrowRight className="w-4 h-4 text-[#2bc196]" />
                         </div>
                         <span className="text-white/70">Settlement Period</span>
                       </div>
-                      <span className="text-cyan-400 font-bold text-lg">{proposal.settlement_days}</span>
+                      <span className="text-[#5cf7cf] font-bold text-lg">{proposal.settlement_days}</span>
                     </div>
                     
-                    <div className="flex items-center justify-between py-3 border-b border-white/10">
+                    <div className="flex items-center justify-between py-3 border-b border-[#2bc196]/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                          <RefreshCw className="w-4 h-4 text-amber-400" />
+                        <div className="w-8 h-8 bg-[#2bc196]/20 rounded-lg flex items-center justify-center">
+                          <RefreshCw className="w-4 h-4 text-[#2bc196]" />
                         </div>
                         <div>
                           <span className="text-white/70">FX Markup</span>
                           <p className="text-white/40 text-xs">When order or settlement currency is other than USD</p>
                         </div>
                       </div>
-                      <span className="text-amber-400 font-bold text-lg">3%</span>
+                      <span className="text-[#5cf7cf] font-bold text-lg">3%</span>
                     </div>
                     
                     <div className="flex items-center justify-between py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                          <Building2 className="w-4 h-4 text-purple-400" />
+                        <div className="w-8 h-8 bg-[#2bc196]/20 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-4 h-4 text-[#2bc196]" />
                         </div>
                         <div>
                           <span className="text-white/70">Wire Transfer Fee</span>
                           <p className="text-white/40 text-xs">For each international settlement transfer</p>
                         </div>
                       </div>
-                      <span className="text-purple-400 font-bold text-lg">$50.00</span>
+                      <span className="text-[#5cf7cf] font-bold text-lg">$50.00</span>
                     </div>
                   </div>
                 </div>
@@ -476,7 +476,7 @@ export default function PublicProposal() {
               <Button 
                 onClick={handleAccept}
                 disabled={updateMutation.isPending}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
+                className="bg-gradient-to-r from-[#2bc196] to-[#25a882] hover:from-[#5cf7cf] hover:to-[#2bc196] text-[#002443] py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-[#2bc196]/25 hover:shadow-[#2bc196]/40 transition-all"
               >
                 <CheckCircle className="h-5 w-5 mr-2" />
                 {t('publicProposal.acceptProposal')}
@@ -507,11 +507,11 @@ export default function PublicProposal() {
             transition={{ delay: 0.3 }}
             className="text-center mt-12 pb-8"
           >
-            <div className="inline-flex items-center gap-2 text-white/40 text-sm">
+            <div className="inline-flex items-center gap-2 text-[#2bc196]/60 text-sm">
               <Shield className="w-4 h-4" />
               <span>Secure & Encrypted</span>
             </div>
-            <p className="text-white/30 text-sm mt-2">
+            <p className="text-[#2bc196]/40 text-sm mt-2">
               Pagsmile Limited • www.pagsmile.com
             </p>
           </motion.div>
@@ -520,9 +520,9 @@ export default function PublicProposal() {
 
       {/* Counter Proposal Modal */}
       <Dialog open={counterModalOpen} onOpenChange={setCounterModalOpen}>
-        <DialogContent className="bg-slate-900 border border-white/10 rounded-2xl max-w-md">
+        <DialogContent className="bg-[#002443] border border-[#2bc196]/30 rounded-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-white text-xl">{t('publicProposal.counterProposalTitle')}</DialogTitle>
+            <DialogTitle className="text-[#2bc196] text-xl">{t('publicProposal.counterProposalTitle')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-5 pt-4">
             <div>
@@ -533,7 +533,7 @@ export default function PublicProposal() {
                 value={counterForm.rate}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, rate: e.target.value }))}
                 placeholder="Ex: 3.50"
-                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                className="mt-2 bg-white/5 border-[#2bc196]/30 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <div>
@@ -544,7 +544,7 @@ export default function PublicProposal() {
                 value={counterForm.fixed_fee}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, fixed_fee: e.target.value }))}
                 placeholder="Ex: 0.10"
-                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                className="mt-2 bg-white/5 border-[#2bc196]/30 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <div>
@@ -553,10 +553,10 @@ export default function PublicProposal() {
                 value={counterForm.settlement_days} 
                 onValueChange={(v) => setCounterForm(prev => ({ ...prev, settlement_days: v }))}
               >
-                <SelectTrigger className="mt-2 bg-white/5 border-white/10 text-white rounded-xl">
+                <SelectTrigger className="mt-2 bg-white/5 border-[#2bc196]/30 text-white rounded-xl">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-white/10">
+                <SelectContent className="bg-[#002443] border-[#2bc196]/30">
                   <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
                   <SelectItem value="D+7">D+7</SelectItem>
                   <SelectItem value="D+15">D+15</SelectItem>
@@ -570,7 +570,7 @@ export default function PublicProposal() {
                 onChange={(e) => setCounterForm(prev => ({ ...prev, notes: e.target.value }))}
                 placeholder={t('publicProposal.notesPlaceholder')}
                 rows={3}
-                className="mt-2 bg-white/5 border-white/10 text-white placeholder:text-white/30 rounded-xl"
+                className="mt-2 bg-white/5 border-[#2bc196]/30 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
             <Button 
@@ -586,9 +586,9 @@ export default function PublicProposal() {
 
       {/* Reject Modal */}
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
-        <DialogContent className="bg-slate-900 border border-white/10 rounded-2xl max-w-md">
+        <DialogContent className="bg-[#002443] border border-[#2bc196]/30 rounded-2xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-white text-xl">{t('publicProposal.confirmReject')}</DialogTitle>
+            <DialogTitle className="text-[#2bc196] text-xl">{t('publicProposal.confirmReject')}</DialogTitle>
           </DialogHeader>
           <div className="pt-4">
             <p className="text-white/60 mb-6">
@@ -598,7 +598,7 @@ export default function PublicProposal() {
               <Button 
                 variant="outline" 
                 onClick={() => setRejectModalOpen(false)}
-                className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl py-5"
+                className="flex-1 bg-white/5 border-[#2bc196]/30 text-white hover:bg-[#2bc196]/10 rounded-xl py-5"
               >
                 {t('common.cancel')}
               </Button>
@@ -619,9 +619,9 @@ export default function PublicProposal() {
 
 function FeeItem({ label, value }) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-between hover:bg-white/[0.07] transition-colors">
+    <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 flex items-center justify-between hover:bg-[#2bc196]/10 transition-colors">
       <span className="text-white/60 text-sm">{label}</span>
-      <span className="text-white font-semibold">{value}</span>
+      <span className="text-[#5cf7cf] font-semibold">{value}</span>
     </div>
   );
 }
