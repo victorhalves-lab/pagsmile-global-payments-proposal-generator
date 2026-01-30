@@ -25,8 +25,31 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const location = useLocation();
   const { t } = useTranslation();
+
+  const isPublicPage = currentPageName === 'PublicProposal';
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (isPublicPage) {
+        setLoadingAuth(false);
+        return;
+      }
+
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        setLoadingAuth(false);
+      } catch (error) {
+        base44.auth.redirectToLogin(window.location.href);
+      }
+    };
+
+    checkAuth();
+  }, [isPublicPage]);
 
   const navigation = [
     { name: t('nav.dashboard'), page: 'Dashboard', icon: LayoutDashboard },
