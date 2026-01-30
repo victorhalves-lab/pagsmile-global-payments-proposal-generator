@@ -86,16 +86,16 @@ export default function QuestionnaireCenter() {
 
   const getStatusBadge = (status) => {
     const styles = {
-      leads: 'bg-gray-500/20 text-gray-300',
-      proposal_made: 'bg-blue-500/20 text-blue-400',
-      proposal_accepted: 'bg-green-500/20 text-green-400',
-      counter_proposal: 'bg-yellow-500/20 text-yellow-400',
-      proposal_lost: 'bg-red-500/20 text-red-400'
+      leads: 'bg-white/10 text-white/60 border-white/20',
+      proposal_made: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      proposal_accepted: 'bg-green-500/20 text-green-400 border-green-500/30',
+      counter_proposal: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      proposal_lost: 'bg-red-500/20 text-red-400 border-red-500/30'
     };
     return (
-      <Badge className={styles[status] || styles.leads}>
+      <span className={`${styles[status] || styles.leads} px-2.5 py-1 rounded-full text-xs font-medium border`}>
         {t(`questionnaire.status.${status}`) || t('questionnaire.status.leads')}
-      </Badge>
+      </span>
     );
   };
 
@@ -111,30 +111,28 @@ export default function QuestionnaireCenter() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">{t('questionnaire.title')}</h1>
-        <p className="text-white/60 mt-1">{t('questionnaire.subtitle')}</p>
+        <p className="text-white/50 mt-1">{t('questionnaire.subtitle')}</p>
       </div>
 
       <QuestionnaireFilters filters={filters} setFilters={setFilters} onExport={exportToCSV} />
 
       {questionnaires.length === 0 ? (
-        <Card className="bg-white/5 border-[#2bc196]/20">
-          <CardContent className="py-12 text-center">
-            <p className="text-white/60">{t('questionnaire.noQuestionnaires')}</p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 py-16 text-center">
+          <p className="text-white/50">{t('questionnaire.noQuestionnaires')}</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredQuestionnaires.map(q => (
-            <Card key={q.id} className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors">
-              <CardContent className="pt-6">
+            <div key={q.id} className="group rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-[#2bc196]/30 transition-all duration-300 overflow-hidden">
+              <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#2bc196]/20 rounded-full flex items-center justify-center">
+                    <div className="w-11 h-11 bg-[#2bc196]/10 rounded-xl flex items-center justify-center border border-[#2bc196]/20">
                       <Building2 className="h-5 w-5 text-[#2bc196]" />
                     </div>
                     <div>
                       <h3 className="text-white font-semibold">{q.company_name}</h3>
-                      <p className="text-white/60 text-sm flex items-center gap-1">
+                      <p className="text-white/50 text-sm flex items-center gap-1">
                         <User className="h-3 w-3" />
                         {q.contact_name}
                       </p>
@@ -143,40 +141,40 @@ export default function QuestionnaireCenter() {
                   {getStatusBadge(q.pipeline_status)}
                 </div>
 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-2.5 mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">{t('questionnaire.monthlyTPV')}:</span>
-                    <span className="text-white font-medium flex items-center gap-1">
-                      <DollarSign className="h-3 w-3 text-[#2bc196]" />
+                    <span className="text-white/50">{t('questionnaire.monthlyTPV')}:</span>
+                    <span className="text-[#2bc196] font-semibold flex items-center gap-1">
                       {formatCurrency(q.monthly_tpv)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">{t('questionnaire.avgTicket')}:</span>
-                    <span className="text-white">{formatCurrency(q.average_ticket)}</span>
+                    <span className="text-white/50">{t('questionnaire.avgTicket')}:</span>
+                    <span className="text-white/80">{formatCurrency(q.average_ticket)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">{t('questionnaire.monthlyTransactions')}:</span>
-                    <span className="text-white">{(q.monthly_transactions || 0).toLocaleString()}</span>
+                    <span className="text-white/50">{t('questionnaire.monthlyTransactions')}:</span>
+                    <span className="text-white/80">{(q.monthly_transactions || 0).toLocaleString()}</span>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-4 border-t border-white/10">
                   <Button 
                     size="sm"
+                    variant="ghost"
                     onClick={() => setSelectedQuestionnaire(q)}
-                    className="flex-1 bg-[#1a5a4c] hover:bg-[#2bc196] text-white"
+                    className="flex-1"
                   >
-                    <Eye className="h-4 w-4 mr-1" />
+                    <Eye className="h-4 w-4" />
                     {t('common.details')}
                   </Button>
                   {q.proposal_id ? (
                     <Link to={`${createPageUrl('ProposalCenter')}?id=${q.proposal_id}`} className="flex-1">
                       <Button 
                         size="sm"
-                        className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
+                        className="w-full"
                       >
-                        <Eye className="h-4 w-4 mr-1" />
+                        <Eye className="h-4 w-4" />
                         {t('proposal.viewProposal')}
                       </Button>
                     </Link>
@@ -184,24 +182,23 @@ export default function QuestionnaireCenter() {
                     <Link to={`${createPageUrl('ProposalCreation')}?questionnaireId=${q.id}`} className="flex-1">
                       <Button 
                         size="sm"
-                        className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443]"
+                        className="w-full"
                       >
-                        <FileText className="h-4 w-4 mr-1" />
+                        <FileText className="h-4 w-4" />
                         {t('questionnaire.generateProposal')}
                       </Button>
                     </Link>
                   )}
                   <Button 
-                    variant="ghost" 
-                    size="sm"
+                    variant="destructive" 
+                    size="icon"
                     onClick={() => deleteMutation.mutate(q.id)}
-                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}

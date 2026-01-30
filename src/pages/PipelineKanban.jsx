@@ -90,7 +90,7 @@ export default function PipelineKanban() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">{t('pipeline.title')}</h1>
-        <p className="text-white/60 mt-1">{t('pipeline.subtitle')}</p>
+        <p className="text-white/50 mt-1">{t('pipeline.subtitle')}</p>
       </div>
 
       {/* KPIs Globais */}
@@ -110,34 +110,34 @@ export default function PipelineKanban() {
             const metrics = getColumnMetrics(column.id);
             return (
               <div key={column.id} className="min-w-[280px]">
-                <Card className="bg-white/5 border-[#2bc196]/20">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
+                <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
+                  <div className="p-4 border-b border-white/10">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${column.color}`} />
-                        <CardTitle className="text-white text-sm">{column.title}</CardTitle>
+                        <div className={`w-2.5 h-2.5 rounded-full ${column.color}`} />
+                        <span className="text-white font-medium text-sm">{column.title}</span>
                       </div>
-                      <Badge className="bg-white/10 text-white">{metrics.count}</Badge>
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70 border border-white/10">{metrics.count}</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
-                      <div className="bg-white/5 rounded p-2">
-                        <p className="text-white/60">TPV</p>
-                        <p className="text-white font-medium">{formatCurrency(metrics.tpv)}</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-white/5 rounded-lg p-2.5 border border-white/5">
+                        <p className="text-white/50 text-[10px] uppercase tracking-wider">TPV</p>
+                        <p className="text-white font-semibold mt-0.5">{formatCurrency(metrics.tpv)}</p>
                       </div>
-                      <div className="bg-white/5 rounded p-2">
-                        <p className="text-white/60">Receita (1%)</p>
-                        <p className="text-[#2bc196] font-medium">{formatCurrency(metrics.revenue)}</p>
+                      <div className="bg-[#2bc196]/10 rounded-lg p-2.5 border border-[#2bc196]/20">
+                        <p className="text-[#2bc196]/70 text-[10px] uppercase tracking-wider">Receita (1%)</p>
+                        <p className="text-[#2bc196] font-semibold mt-0.5">{formatCurrency(metrics.revenue)}</p>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="pt-2">
+                  </div>
+                  <div className="p-3">
                     <Droppable droppableId={column.id}>
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.droppableProps}
-                          className={`min-h-[200px] space-y-2 transition-colors rounded-lg p-2 ${
-                            snapshot.isDraggingOver ? 'bg-[#2bc196]/10' : ''
+                          className={`min-h-[200px] space-y-2 transition-all rounded-xl p-2 ${
+                            snapshot.isDraggingOver ? 'bg-[#2bc196]/10 border-2 border-dashed border-[#2bc196]/30' : 'border-2 border-transparent'
                           }`}
                         >
                           {(groupedData[column.id] || []).map((item, index) => (
@@ -147,26 +147,26 @@ export default function PipelineKanban() {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  className={`bg-white/10 rounded-lg p-3 cursor-grab transition-all ${
-                                    snapshot.isDragging ? 'shadow-lg ring-2 ring-[#2bc196]' : ''
+                                  className={`bg-white/[0.06] hover:bg-white/[0.1] rounded-xl p-3 cursor-grab transition-all border border-white/10 ${
+                                    snapshot.isDragging ? 'shadow-xl shadow-[#2bc196]/20 ring-2 ring-[#2bc196] bg-[#002443]' : ''
                                   }`}
                                 >
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-8 h-8 bg-[#2bc196]/20 rounded-full flex items-center justify-center">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-9 h-9 bg-[#2bc196]/10 rounded-xl flex items-center justify-center border border-[#2bc196]/20">
                                       <Building2 className="h-4 w-4 text-[#2bc196]" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <p className="text-white font-medium text-sm truncate">
                                         {item.company_name}
                                       </p>
-                                      <p className="text-white/60 text-xs truncate">
+                                      <p className="text-white/50 text-xs truncate">
                                         {item.contact_name}
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center justify-between text-xs">
-                                    <span className="text-white/60">TPV:</span>
-                                    <span className="text-[#2bc196] font-medium">
+                                  <div className="flex items-center justify-between text-xs pt-2 border-t border-white/10">
+                                    <span className="text-white/50">TPV:</span>
+                                    <span className="text-[#2bc196] font-semibold">
                                       {formatCurrency(item.monthly_tpv)}
                                     </span>
                                   </div>
@@ -178,8 +178,8 @@ export default function PipelineKanban() {
                         </div>
                       )}
                     </Droppable>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
             );
           })}

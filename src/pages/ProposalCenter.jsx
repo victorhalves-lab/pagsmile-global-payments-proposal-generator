@@ -179,17 +179,17 @@ export default function ProposalCenter() {
 
   const getStatusBadge = (status) => {
     const config = {
-      sent: { icon: Clock, label: t('proposal.status.sent'), className: 'bg-blue-500/20 text-blue-400' },
-      accepted: { icon: CheckCircle, label: t('proposal.status.accepted'), className: 'bg-green-500/20 text-green-400' },
-      counter_proposal: { icon: AlertCircle, label: t('proposal.status.counter_proposal'), className: 'bg-yellow-500/20 text-yellow-400' },
-      rejected: { icon: XCircle, label: t('proposal.status.rejected'), className: 'bg-red-500/20 text-red-400' }
+      sent: { icon: Clock, label: t('proposal.status.sent'), className: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+      accepted: { icon: CheckCircle, label: t('proposal.status.accepted'), className: 'bg-green-500/20 text-green-400 border-green-500/30' },
+      counter_proposal: { icon: AlertCircle, label: t('proposal.status.counter_proposal'), className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+      rejected: { icon: XCircle, label: t('proposal.status.rejected'), className: 'bg-red-500/20 text-red-400 border-red-500/30' }
     };
     const { icon: Icon, label, className } = config[status] || config.sent;
     return (
-      <Badge className={`${className} flex items-center gap-1`}>
+      <span className={`${className} px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 border`}>
         <Icon className="h-3 w-3" />
         {label}
-      </Badge>
+      </span>
     );
   };
 
@@ -206,10 +206,10 @@ export default function ProposalCenter() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">{t('proposal.title')}</h1>
-          <p className="text-white/60 mt-1">{t('proposal.subtitle')}</p>
+          <p className="text-white/50 mt-1">{t('proposal.subtitle')}</p>
         </div>
         <Link to={createPageUrl('ProposalCreation')}>
-          <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
+          <Button>
             {t('proposal.newProposal')}
           </Button>
         </Link>
@@ -218,43 +218,41 @@ export default function ProposalCenter() {
       <ProposalFilters filters={filters} setFilters={setFilters} onExport={exportToCSV} />
 
       {proposals.length === 0 ? (
-        <Card className="bg-white/5 border-[#2bc196]/20">
-          <CardContent className="py-12 text-center">
-            <p className="text-white/60">{t('proposal.noProposals')}</p>
-            <Link to={createPageUrl('ProposalCreation')}>
-              <Button className="mt-4 bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
-                {t('proposal.createFirst')}
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 py-16 text-center">
+          <p className="text-white/50">{t('proposal.noProposals')}</p>
+          <Link to={createPageUrl('ProposalCreation')}>
+            <Button className="mt-4">
+              {t('proposal.createFirst')}
+            </Button>
+          </Link>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProposals.map(proposal => (
-            <Card 
+            <div 
               key={proposal.id} 
               id={`proposal-card-${proposal.id}`}
-              className="bg-white/5 border-[#2bc196]/20 hover:bg-white/10 transition-colors"
+              className="group rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-[#2bc196]/30 transition-all duration-300 overflow-hidden"
             >
-              <CardContent className="pt-6">
+              <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#2bc196]/20 rounded-full flex items-center justify-center">
+                    <div className="w-11 h-11 bg-[#2bc196]/10 rounded-xl flex items-center justify-center border border-[#2bc196]/20">
                       <Building2 className="h-5 w-5 text-[#2bc196]" />
                     </div>
                     <div>
                       <h3 className="text-white font-semibold">{proposal.client_name}</h3>
-                      <p className="text-white/60 text-sm">{proposal.contact_name}</p>
+                      <p className="text-white/50 text-sm">{proposal.contact_name}</p>
                     </div>
                   </div>
                   {getStatusBadge(proposal.status)}
                 </div>
 
                 {/* Taxas */}
-                <div className="bg-white/5 rounded-lg p-3 mb-4">
+                <div className="bg-[#2bc196]/10 rounded-xl p-3.5 mb-4 border border-[#2bc196]/20">
                   <div className="flex items-center justify-between">
                     <span className="text-white/60 text-sm">{t('proposal.finalRate')}:</span>
-                    <span className="text-[#2bc196] font-bold">
+                    <span className="text-[#2bc196] font-bold text-lg">
                       {formatPercentage(proposal.final_rate_percentage)} + {formatCurrency(proposal.final_fixed_fee)}
                     </span>
                   </div>
@@ -263,17 +261,17 @@ export default function ProposalCenter() {
                 {/* MCCs */}
                 {proposal.mccs && proposal.mccs.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-white/60 text-xs mb-1">{t('proposal.mccs')}:</p>
-                    <div className="flex flex-wrap gap-1">
+                    <p className="text-white/50 text-xs mb-2 uppercase tracking-wider">{t('proposal.mccs')}:</p>
+                    <div className="flex flex-wrap gap-1.5">
                       {proposal.mccs.slice(0, 5).map(mcc => (
-                        <Badge key={mcc} variant="outline" className="border-[#2bc196]/30 text-white/70 text-xs">
+                        <span key={mcc} className="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-mono">
                           {mcc}
-                        </Badge>
+                        </span>
                       ))}
                       {proposal.mccs.length > 5 && (
-                        <Badge className="bg-[#2bc196]/20 text-[#2bc196] text-xs">
+                        <span className="px-2 py-1 rounded-lg bg-[#2bc196]/10 border border-[#2bc196]/20 text-[#2bc196] text-xs">
                           +{proposal.mccs.length - 5}
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>
@@ -281,20 +279,20 @@ export default function ProposalCenter() {
 
                 {/* Validade */}
                 <div className="flex items-center justify-between text-sm mb-4">
-                  <span className="text-white/60">{t('common.validUntil')}:</span>
-                  <span className="text-white">
+                  <span className="text-white/50">{t('common.validUntil')}:</span>
+                  <span className="text-white/80">
                     {proposal.valid_until ? new Date(proposal.valid_until).toLocaleDateString('pt-BR') : '-'}
                   </span>
                 </div>
 
                 {/* Ações - Novo Layout */}
-                <div className="flex items-center gap-2 pt-2 border-t border-[#2bc196]/10">
+                <div className="flex items-center gap-2 pt-4 border-t border-white/10">
                   {/* Botão Ver Detalhes */}
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => setSelectedProposal(proposal)}
-                    className="flex-1 text-white/70 hover:text-white hover:bg-white/10 gap-2"
+                    className="flex-1 gap-2"
                   >
                     <Eye className="h-4 w-4" />
                     Detalhes
@@ -306,37 +304,37 @@ export default function ProposalCenter() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="flex-1 border-[#2bc196]/30 text-[#2bc196] hover:bg-[#2bc196]/20 gap-2"
+                        className="flex-1 gap-2"
                       >
                         <Share2 className="h-4 w-4" />
                         Compartilhar
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-[#002443] border-[#2bc196]/20">
+                    <DropdownMenuContent align="end" className="bg-[#001a30] border-[#2bc196]/20 shadow-xl shadow-black/50">
                       <DropdownMenuItem 
                         onClick={() => copyLink(proposal)}
-                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                        className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <Link2 className="h-4 w-4" />
                         Copiar Link Público
                       </DropdownMenuItem>
                       <Link to={`${createPageUrl('PublicProposal')}?token=${proposal.public_link_token}`} target="_blank">
-                        <DropdownMenuItem className="text-white hover:bg-white/10 cursor-pointer gap-2">
+                        <DropdownMenuItem className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2">
                           <ExternalLink className="h-4 w-4" />
                           Abrir Proposta
                         </DropdownMenuItem>
                       </Link>
-                      <DropdownMenuSeparator className="bg-[#2bc196]/20" />
+                      <DropdownMenuSeparator className="bg-white/10" />
                       <DropdownMenuItem 
                         onClick={() => downloadAsPNG(proposal)}
-                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                        className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <FileImage className="h-4 w-4" />
                         Baixar como PNG
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         onClick={() => downloadAsPDF(proposal)}
-                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                        className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <FileText className="h-4 w-4" />
                         Baixar como PDF
@@ -349,37 +347,36 @@ export default function ProposalCenter() {
                     <DropdownMenuTrigger asChild>
                       <Button 
                         variant="ghost" 
-                        size="icon" 
-                        className="text-white/60 hover:text-white hover:bg-white/10"
+                        size="icon"
                       >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-[#002443] border-[#2bc196]/20">
+                    <DropdownMenuContent align="end" className="bg-[#001a30] border-[#2bc196]/20 shadow-xl shadow-black/50">
                       <Link to={`${createPageUrl('ProposalCreation')}?editId=${proposal.id}`}>
-                        <DropdownMenuItem className="text-white hover:bg-white/10 cursor-pointer gap-2">
+                        <DropdownMenuItem className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2">
                           <Edit className="h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
                       </Link>
                       <DropdownMenuItem 
                         onClick={() => duplicateMutation.mutate(proposal)}
-                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                        className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <CopyPlus className="h-4 w-4" />
                         Duplicar
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         onClick={() => setHistoryProposal(proposal)}
-                        className="text-white hover:bg-white/10 cursor-pointer gap-2"
+                        className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <History className="h-4 w-4" />
                         Histórico
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="bg-[#2bc196]/20" />
+                      <DropdownMenuSeparator className="bg-white/10" />
                       <DropdownMenuItem 
                         onClick={() => deleteMutation.mutate(proposal.id)}
-                        className="text-red-400 hover:bg-red-500/10 cursor-pointer gap-2"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer gap-2"
                       >
                         <Trash2 className="h-4 w-4" />
                         Excluir
@@ -387,8 +384,8 @@ export default function ProposalCenter() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}

@@ -75,11 +75,11 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white">{t('dashboard.title')}</h1>
-          <p className="text-white/60 mt-1">{t('dashboard.subtitle')}</p>
+          <p className="text-white/50 mt-1">{t('dashboard.subtitle')}</p>
         </div>
         <Link to={createPageUrl('ProposalCreation')}>
-          <Button className="bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold">
-            <Plus className="h-5 w-5 mr-2" />
+          <Button>
+            <Plus className="h-5 w-5" />
             {t('proposal.newProposal')}
           </Button>
         </Link>
@@ -121,27 +121,27 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white/5 border-[#2bc196]/20">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
+          <div className="p-5 border-b border-white/10">
+            <h3 className="text-white font-semibold flex items-center gap-2">
               <FileText className="h-5 w-5 text-[#2bc196]" />
               {t('dashboard.recentProposals')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-5">
             {proposals.slice(0, 5).length > 0 ? (
               <div className="space-y-3">
                 {proposals.slice(0, 5).map(proposal => (
-                  <div key={proposal.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                  <div key={proposal.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     <div>
-                      <p className="text-white font-medium">{proposal.client_name}</p>
-                      <p className="text-white/60 text-sm">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
+                      <p className="text-white font-medium text-sm">{proposal.client_name}</p>
+                      <p className="text-white/50 text-xs mt-0.5">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      proposal.status === 'accepted' ? 'bg-green-500/20 text-green-400' :
-                      proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                      proposal.status === 'counter_proposal' ? 'bg-yellow-500/20 text-yellow-400' :
-                      'bg-blue-500/20 text-blue-400'
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                      proposal.status === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                      proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                      proposal.status === 'counter_proposal' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                      'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                     }`}>
                       {t(`proposal.status.${proposal.status}`)}
                     </span>
@@ -149,37 +149,37 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4">{t('proposal.noProposals')}</p>
+              <p className="text-white/40 text-center py-4 text-sm">{t('proposal.noProposals')}</p>
             )}
             <Link to={createPageUrl('ProposalCenter')}>
-              <Button variant="ghost" className="w-full mt-4 text-[#2bc196] hover:text-[#5cf7cf] hover:bg-[#2bc196]/10">
+              <Button variant="ghost" className="w-full mt-4">
                 {t('proposal.title')}
               </Button>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="bg-white/5 border-[#2bc196]/20">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
+          <div className="p-5 border-b border-white/10">
+            <h3 className="text-white font-semibold flex items-center gap-2">
               <ClipboardList className="h-5 w-5 text-[#2bc196]" />
               {t('dashboard.recentQuestionnaires')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-5">
             {questionnaires.slice(0, 5).length > 0 ? (
               <div className="space-y-3">
                 {questionnaires.slice(0, 5).map(q => (
-                  <div key={q.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                  <div key={q.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     <div>
-                      <p className="text-white font-medium">{q.company_name}</p>
-                      <p className="text-white/60 text-sm">TPV: {formatCurrency(q.monthly_tpv)}</p>
+                      <p className="text-white font-medium text-sm">{q.company_name}</p>
+                      <p className="text-white/50 text-xs mt-0.5">TPV: {formatCurrency(q.monthly_tpv)}</p>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      q.pipeline_status === 'proposal_accepted' ? 'bg-green-500/20 text-green-400' :
-                      q.pipeline_status === 'proposal_lost' ? 'bg-red-500/20 text-red-400' :
-                      q.pipeline_status === 'proposal_made' ? 'bg-blue-500/20 text-blue-400' :
-                      'bg-gray-500/20 text-gray-400'
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                      q.pipeline_status === 'proposal_accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                      q.pipeline_status === 'proposal_lost' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                      q.pipeline_status === 'proposal_made' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                      'bg-white/10 text-white/60 border border-white/20'
                     }`}>
                       {t(`questionnaire.status.${q.pipeline_status}`)}
                     </span>
@@ -187,42 +187,42 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-white/40 text-center py-4">{t('questionnaire.noQuestionnaires')}</p>
+              <p className="text-white/40 text-center py-4 text-sm">{t('questionnaire.noQuestionnaires')}</p>
             )}
             <Link to={createPageUrl('QuestionnaireCenter')}>
-              <Button variant="ghost" className="w-full mt-4 text-[#2bc196] hover:text-[#5cf7cf] hover:bg-[#2bc196]/10">
+              <Button variant="ghost" className="w-full mt-4">
                 {t('questionnaire.title')}
               </Button>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="bg-white/5 border-[#2bc196]/20">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+        <div className="rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden">
+          <div className="p-5 border-b border-white/10">
+            <h3 className="text-white font-semibold flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-[#2bc196]" />
               {t('common.actions')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+            </h3>
+          </div>
+          <div className="p-5 space-y-3">
             <Link to={createPageUrl('ProposalCreation')} className="block">
-              <Button className="w-full bg-[#2bc196] hover:bg-[#25a882] text-[#002443] font-semibold">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button className="w-full">
+                <Plus className="h-4 w-4" />
                 {t('nav.createProposal')}
               </Button>
             </Link>
             <Link to={createPageUrl('PipelineKanban')} className="block">
-              <Button className="w-full bg-[#1a7a5c] hover:bg-[#156b50] text-white font-semibold">
+              <Button variant="secondary" className="w-full">
                 {t('nav.pipeline')}
               </Button>
             </Link>
             <Link to={createPageUrl('InterchangeViewer')} className="block">
-              <Button className="w-full bg-[#0d5a42] hover:bg-[#0a4a36] text-white font-semibold">
+              <Button variant="outline" className="w-full">
                 {t('nav.interchangeRates')}
               </Button>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
