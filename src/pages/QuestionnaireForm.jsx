@@ -319,11 +319,10 @@ export default function QuestionnaireForm() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-medium">MCC (Merchant Category Code) *</Label>
+                  <Label className="text-gray-700 font-medium">MCC (Merchant Category Code)</Label>
                   <Select 
                     value={form.mcc} 
                     onValueChange={(v) => updateForm('mcc', v)}
-                    required
                   >
                     <SelectTrigger className="mt-1.5 h-12 border-gray-200">
                       <SelectValue placeholder="Select your MCC" />

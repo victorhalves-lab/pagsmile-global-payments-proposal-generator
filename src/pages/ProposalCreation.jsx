@@ -67,6 +67,8 @@ export default function ProposalCreation() {
         client_name: questionnaire.company_name || '',
         contact_name: questionnaire.contact_name || '',
         contact_email: questionnaire.contact_email || '',
+        // Pré-preencher MCC do questionário se existir
+        mccs: questionnaire.mcc ? [questionnaire.mcc] : prev.mccs,
         // Pré-preencher com taxas do parceiro atual se existirem
         settlement_days: questionnaire.expected_settlement_days || prev.settlement_days
       }));
