@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,12 +23,15 @@ import {
   Edit,
   CopyPlus,
   History,
-  ExternalLink
+  ExternalLink,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import ProposalFilters from '@/components/proposal/ProposalFilters';
 import ProposalHistory from '@/components/proposal/ProposalHistory';
+import ProposalDownloadContent from '@/components/proposal/ProposalDownloadContent';
+import { downloadProposalAsPNG, downloadProposalAsPDF } from '@/components/proposal/ProposalDownloadUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,12 +39,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 export default function ProposalCenter() {
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [historyProposal, setHistoryProposal] = useState(null);
+  const [downloadProposal, setDownloadProposal] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
@@ -134,44 +136,17 @@ export default function ProposalCenter() {
     toast.success('Link copiado para a área de transferência!');
   };
 
-  const downloadAsPNG = async (proposal) => {
-    const cardElement = document.getElementById(`proposal-card-${proposal.id}`);
-    if (!cardElement) return;
-    
-    toast.loading('Gerando imagem...');
-    const canvas = await html2canvas(cardElement, {
-      backgroundColor: '#002443',
-      scale: 2
-    });
-    toast.dismiss();
-    
-    const link = document.createElement('a');
-    link.download = `proposta-${proposal.client_name.replace(/\s+/g, '-')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    toast.success('Imagem baixada!');
-  };
-
-  const downloadAsPDF = async (proposal) => {
-    const cardElement = document.getElementById(`proposal-card-${proposal.id}`);
-    if (!cardElement) return;
-    
-    toast.loading('Gerando PDF...');
-    const canvas = await html2canvas(cardElement, {
-      backgroundColor: '#002443',
-      scale: 2
-    });
-    toast.dismiss();
-    
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-      unit: 'px',
-      format: [canvas.width, canvas.height]
-    });
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save(`proposta-${proposal.client_name.replace(/\s+/g, '-')}.pdf`);
-    toast.success('PDF baixado!');
+  const handleDownload = async (proposal, type) => {
+    setDownloadProposal(proposal);
+    // Wait for render
+    setTimeout(async () => {
+      if (type === 'png') {
+        await downloadProposalAsPNG(proposal);
+      } else {
+        await downloadProposalAsPDF(proposal);
+      }
+      setDownloadProposal(null);
+    }, 100);
   };
 
   const formatCurrency = (value) => `$${(value || 0).toFixed(2)}`;
@@ -326,18 +301,18 @@ export default function ProposalCenter() {
                       </Link>
                       <DropdownMenuSeparator className="bg-white/10" />
                       <DropdownMenuItem 
-                        onClick={() => downloadAsPNG(proposal)}
+                        onClick={() => handleDownload(proposal, 'png')}
                         className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <FileImage className="h-4 w-4" />
-                        Baixar como PNG
+                        Baixar como PNG (Completo)
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        onClick={() => downloadAsPDF(proposal)}
+                        onClick={() => handleDownload(proposal, 'pdf')}
                         className="text-white/80 hover:text-white hover:bg-[#2bc196]/10 cursor-pointer gap-2"
                       >
                         <FileText className="h-4 w-4" />
-                        Baixar como PDF
+                        Baixar como PDF (Completo)
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -502,6 +477,16 @@ export default function ProposalCenter() {
         open={!!historyProposal} 
         onOpenChange={() => setHistoryProposal(null)} 
       />
+
+      {/* Hidden element for download rendering */}
+      {downloadProposal && (
+        <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          <ProposalDownloadContent 
+            proposal={downloadProposal} 
+            language={downloadProposal.language || 'pt'} 
+          />
+        </div>
+      )}
     </div>
   );
 }
