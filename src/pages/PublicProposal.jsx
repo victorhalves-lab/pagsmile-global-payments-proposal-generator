@@ -144,7 +144,7 @@ export default function PublicProposal() {
             <div className="w-16 h-16 border-4 border-[#2bc196]/30 rounded-full animate-pulse"></div>
             <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-[#2bc196] rounded-full animate-spin"></div>
           </div>
-          <p className="text-white/60 text-sm">Loading proposal...</p>
+          <p className="text-white/60 text-sm">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -198,12 +198,12 @@ export default function PublicProposal() {
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2bc196]/10 border border-[#2bc196]/30 rounded-full mb-6">
               <Sparkles className="w-4 h-4 text-[#2bc196]" />
-              <span className="text-[#2bc196] text-sm font-medium">Pricing Proposal</span>
+              <span className="text-[#2bc196] text-sm font-medium">{t('publicProposal.pricingProposalBadge')}</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-[#2bc196] mb-3">
               {t('publicProposal.title')}
             </h1>
-            <p className="text-white/60 text-lg">Prepared for <span className="text-[#5cf7cf] font-medium">{proposal.client_name}</span></p>
+            <p className="text-white/60 text-lg">{t('publicProposal.preparedFor')} <span className="text-[#5cf7cf] font-medium">{proposal.client_name}</span></p>
           </motion.div>
 
           {/* Status Alerts */}
@@ -217,8 +217,8 @@ export default function PublicProposal() {
                 <Clock className="h-6 w-6 text-red-400" />
               </div>
               <div>
-                <p className="text-red-300 font-medium">This proposal has expired</p>
-                <p className="text-red-400/70 text-sm">Valid until {new Date(proposal.valid_until).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p className="text-red-300 font-medium">{t('publicProposal.proposalExpired')}</p>
+                <p className="text-red-400/70 text-sm">{t('publicProposal.validUntil')} {new Date(proposal.valid_until).toLocaleDateString(i18n.language === 'zh' ? 'zh-CN' : i18n.language === 'pt' ? 'pt-BR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
             </motion.div>
           )}
@@ -265,16 +265,16 @@ export default function PublicProposal() {
             <div className="bg-gradient-to-r from-[#2bc196]/10 to-[#5cf7cf]/5 border-b border-[#2bc196]/20 p-6 md:p-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <p className="text-[#2bc196]/70 text-sm mb-1">Proposal for</p>
+                  <p className="text-[#2bc196]/70 text-sm mb-1">{t('publicProposal.proposalFor')}</p>
                   <h2 className="text-2xl font-bold text-[#2bc196]">{proposal.client_name}</h2>
                   <p className="text-white/60 mt-1">{proposal.contact_name} • {proposal.contact_email}</p>
                 </div>
                 <div className="flex items-center gap-3 bg-[#2bc196]/10 rounded-2xl px-5 py-3 border border-[#2bc196]/30">
                   <Calendar className="w-5 h-5 text-[#2bc196]" />
                   <div>
-                    <p className="text-[#2bc196]/70 text-xs">Valid until</p>
+                    <p className="text-[#2bc196]/70 text-xs">{t('publicProposal.validUntil')}</p>
                     <p className={`font-semibold ${isExpired ? 'text-red-400' : 'text-white'}`}>
-                      {new Date(proposal.valid_until).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(proposal.valid_until).toLocaleDateString(i18n.language === 'zh' ? 'zh-CN' : i18n.language === 'pt' ? 'pt-BR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
                 </div>
@@ -311,16 +311,16 @@ export default function PublicProposal() {
                   <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
                     <Globe className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#2bc196]">Processing Countries</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.processingCountries')}</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
                     <span className="text-2xl mb-2 block">🇺🇸</span>
-                    <p className="text-white font-medium">USA</p>
+                    <p className="text-white font-medium">{t('publicProposal.usa')}</p>
                   </div>
                   <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
                     <span className="text-2xl mb-2 block">🇪🇺</span>
-                    <p className="text-white font-medium">EU</p>
+                    <p className="text-white font-medium">{t('publicProposal.eu')}</p>
                   </div>
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function PublicProposal() {
                   <FeeItem label={t('publicProposal.riskControlFee')} value={formatCurrency(proposal.risk_control_fee)} />
                   <FeeItem 
                     label={t('publicProposal.rollingReserve')} 
-                    value={`${proposal.rolling_reserve_percentage}% for ${proposal.rolling_reserve_days} days`} 
+                    value={`${proposal.rolling_reserve_percentage}% ${t('publicProposal.for')} ${proposal.rolling_reserve_days} ${t('publicProposal.days')}`} 
                   />
                 </div>
               </div>
@@ -409,12 +409,12 @@ export default function PublicProposal() {
                   <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
                     <Banknote className="w-5 h-5 text-[#2bc196]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#2bc196]">Settlement</h3>
+                  <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.settlementTitle')}</h3>
                 </div>
                 
                 <div className="bg-gradient-to-br from-[#2bc196]/5 to-[#5cf7cf]/5 border border-[#2bc196]/20 rounded-2xl p-6">
                   <p className="text-white/80 leading-relaxed mb-6">
-                    After deducting the fees from the payments processed for merchant's website, PAGSMILE will transfer the money to merchant's bank account. The sums received will be withheld the related fees.
+                    {t('publicProposal.settlementDescription')}
                   </p>
                   
                   <div className="space-y-4">
@@ -423,7 +423,7 @@ export default function PublicProposal() {
                         <div className="w-8 h-8 bg-[#2bc196]/20 rounded-lg flex items-center justify-center">
                           <ArrowRight className="w-4 h-4 text-[#2bc196]" />
                         </div>
-                        <span className="text-white/70">Settlement Period</span>
+                        <span className="text-white/70">{t('publicProposal.settlementPeriod')}</span>
                       </div>
                       <span className="text-[#5cf7cf] font-bold text-lg">{proposal.settlement_days}</span>
                     </div>
@@ -434,8 +434,8 @@ export default function PublicProposal() {
                           <RefreshCw className="w-4 h-4 text-[#2bc196]" />
                         </div>
                         <div>
-                          <span className="text-white/70">FX Markup</span>
-                          <p className="text-white/40 text-xs">When order or settlement currency is other than USD</p>
+                          <span className="text-white/70">{t('publicProposal.fxMarkup')}</span>
+                          <p className="text-white/40 text-xs">{t('publicProposal.fxMarkupDesc')}</p>
                         </div>
                       </div>
                       <span className="text-[#5cf7cf] font-bold text-lg">3%</span>
@@ -447,8 +447,8 @@ export default function PublicProposal() {
                           <Building2 className="w-4 h-4 text-[#2bc196]" />
                         </div>
                         <div>
-                          <span className="text-white/70">Wire Transfer Fee</span>
-                          <p className="text-white/40 text-xs">For each international settlement transfer</p>
+                          <span className="text-white/70">{t('publicProposal.wireTransferFee')}</span>
+                          <p className="text-white/40 text-xs">{t('publicProposal.wireTransferFeeDesc')}</p>
                         </div>
                       </div>
                       <span className="text-[#5cf7cf] font-bold text-lg">$50.00</span>
@@ -516,7 +516,7 @@ export default function PublicProposal() {
           >
             <div className="inline-flex items-center gap-2 text-[#2bc196]/60 text-sm">
               <Shield className="w-4 h-4" />
-              <span>Secure & Encrypted</span>
+              <span>{t('publicProposal.secureEncrypted')}</span>
             </div>
             <p className="text-[#2bc196]/40 text-sm mt-2">
               Pagsmile Limited • www.pagsmile.com
@@ -539,7 +539,7 @@ export default function PublicProposal() {
                 step="0.01"
                 value={counterForm.rate}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, rate: e.target.value }))}
-                placeholder="Ex: 3.50"
+                placeholder={t('publicProposal.ratePlaceholder')}
                 className="mt-2 bg-white/5 border-[#2bc196]/30 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
@@ -550,7 +550,7 @@ export default function PublicProposal() {
                 step="0.01"
                 value={counterForm.fixed_fee}
                 onChange={(e) => setCounterForm(prev => ({ ...prev, fixed_fee: e.target.value }))}
-                placeholder="Ex: 0.10"
+                placeholder={t('publicProposal.feePlaceholder')}
                 className="mt-2 bg-white/5 border-[#2bc196]/30 text-white placeholder:text-white/30 rounded-xl"
               />
             </div>
@@ -561,7 +561,7 @@ export default function PublicProposal() {
                 onValueChange={(v) => setCounterForm(prev => ({ ...prev, settlement_days: v }))}
               >
                 <SelectTrigger className="mt-2 bg-white/5 border-[#2bc196]/30 text-white rounded-xl">
-                  <SelectValue placeholder="Select..." />
+                  <SelectValue placeholder={t('publicProposal.selectPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#002443] border-[#2bc196]/30">
                   <SelectItem value="D+2/D+3">D+2 / D+3</SelectItem>
