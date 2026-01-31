@@ -330,8 +330,9 @@ const pt = {
     confirmRejectButton: "Confirmar Recusa",
     proposalAccepted: "Proposta aceita com sucesso!",
     proposalRejected: "Proposta recusada",
-    counterProposalSentSuccess: "Contraproposta enviada!"
-  },
+    counterProposalSentSuccess: "Contraproposta enviada!",
+    downloadPDF: "Baixar PDF"
+    },
   language: {
     select: "Idioma",
     pt: "Português",

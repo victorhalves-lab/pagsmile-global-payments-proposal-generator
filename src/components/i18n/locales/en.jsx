@@ -330,8 +330,9 @@ const en = {
     confirmRejectButton: "Confirm Rejection",
     proposalAccepted: "Proposal accepted successfully!",
     proposalRejected: "Proposal rejected",
-    counterProposalSentSuccess: "Counter proposal sent!"
-  },
+    counterProposalSentSuccess: "Counter proposal sent!",
+    downloadPDF: "Download PDF"
+    },
   language: {
     select: "Language",
     pt: "Português",
