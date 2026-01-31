@@ -21,6 +21,7 @@ export default function LanguageSelector({ className = '' }) {
         <SelectContent>
           <SelectItem value="pt">{t('language.pt')}</SelectItem>
           <SelectItem value="en">{t('language.en')}</SelectItem>
+          <SelectItem value="zh">{t('language.zh')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

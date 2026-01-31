@@ -30,6 +30,7 @@ import { useTranslation } from 'react-i18next';
 import '@/components/i18n/i18n';
 import { motion } from 'framer-motion';
 import i18n from '@/components/i18n/i18n';
+import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -184,11 +185,17 @@ export default function PublicProposal() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
-              alt="Pagsmile"
-              className="h-10 md:h-12 mx-auto mb-8"
-            />
+            <div className="flex items-center justify-between mb-8">
+              <div className="w-32"></div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
+                alt="Pagsmile"
+                className="h-10 md:h-12"
+              />
+              <div className="w-32 flex justify-end">
+                <LanguageSelector />
+              </div>
+            </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2bc196]/10 border border-[#2bc196]/30 rounded-full mb-6">
               <Sparkles className="w-4 h-4 text-[#2bc196]" />
               <span className="text-[#2bc196] text-sm font-medium">Pricing Proposal</span>
