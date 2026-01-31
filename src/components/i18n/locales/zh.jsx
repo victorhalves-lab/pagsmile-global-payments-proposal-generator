@@ -332,7 +332,8 @@ const zh = {
     confirmRejectButton: "确认拒绝",
     proposalAccepted: "报价已成功接受！",
     proposalRejected: "报价已拒绝",
-    counterProposalSentSuccess: "还价已发送！"
+    counterProposalSentSuccess: "还价已发送！",
+    downloadPDF: "下载PDF"
   },
   language: {
     select: "语言",
