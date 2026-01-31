@@ -23,7 +23,8 @@ import {
   Banknote,
   ArrowRight,
   Sparkles,
-  Calendar
+  Calendar,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +32,8 @@ import '@/components/i18n/i18n';
 import { motion } from 'framer-motion';
 import i18n from '@/components/i18n/i18n';
 import LanguageSelector from '@/components/i18n/LanguageSelector';
+import ProposalDownloadContent from '@/components/proposal/ProposalDownloadContent';
+import { downloadProposalAsPDF } from '@/components/proposal/ProposalDownloadUtils';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -40,6 +43,7 @@ export default function PublicProposal() {
 
   const [counterModalOpen, setCounterModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [counterForm, setCounterForm] = useState({
     rate: '',
     fixed_fee: '',
@@ -135,6 +139,15 @@ export default function PublicProposal() {
 
   const isExpired = proposal && new Date(proposal.valid_until) < new Date();
   const isAlreadyResponded = proposal && ['accepted', 'rejected', 'counter_proposal'].includes(proposal.status);
+
+  const handleDownloadPDF = async () => {
+    if (!proposal) return;
+    setIsDownloading(true);
+    setTimeout(async () => {
+      await downloadProposalAsPDF(proposal);
+      setIsDownloading(false);
+    }, 100);
+  };
 
   if (isLoading) {
     return (
@@ -478,34 +491,44 @@ export default function PublicProposal() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              className="space-y-4"
             >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button 
+                  onClick={handleAccept}
+                  disabled={updateMutation.isPending}
+                  className="bg-gradient-to-r from-[#2bc196] to-[#25a882] hover:from-[#5cf7cf] hover:to-[#2bc196] text-[#002443] py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-[#2bc196]/25 hover:shadow-[#2bc196]/40 transition-all"
+                >
+                  <CheckCircle className="h-5 w-5 mr-2" />
+                  {t('publicProposal.acceptProposal')}
+                </Button>
+                <Button 
+                  onClick={() => setCounterModalOpen(true)}
+                  disabled={updateMutation.isPending}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all"
+                >
+                  <RefreshCw className="h-5 w-5 mr-2" />
+                  {t('publicProposal.makeCounterProposal')}
+                </Button>
+                <Button 
+                  onClick={() => setRejectModalOpen(true)}
+                  disabled={updateMutation.isPending}
+                  className="bg-white/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 py-7 rounded-2xl text-lg font-semibold transition-all"
+                >
+                  <XCircle className="h-5 w-5 mr-2" />
+                  {t('publicProposal.rejectProposal')}
+                </Button>
+              </div>
               <Button 
-                onClick={handleAccept}
-                disabled={updateMutation.isPending}
-                className="bg-gradient-to-r from-[#2bc196] to-[#25a882] hover:from-[#5cf7cf] hover:to-[#2bc196] text-[#002443] py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-[#2bc196]/25 hover:shadow-[#2bc196]/40 transition-all"
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+                className="w-full bg-white/5 border border-[#2bc196]/30 text-[#2bc196] hover:bg-[#2bc196]/10 hover:border-[#2bc196]/50 py-5 rounded-2xl text-base font-medium transition-all"
               >
-                <CheckCircle className="h-5 w-5 mr-2" />
-                {t('publicProposal.acceptProposal')}
-              </Button>
-              <Button 
-                onClick={() => setCounterModalOpen(true)}
-                disabled={updateMutation.isPending}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all"
-              >
-                <RefreshCw className="h-5 w-5 mr-2" />
-                {t('publicProposal.makeCounterProposal')}
-              </Button>
-              <Button 
-                onClick={() => setRejectModalOpen(true)}
-                disabled={updateMutation.isPending}
-                className="bg-white/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 py-7 rounded-2xl text-lg font-semibold transition-all"
-              >
-                <XCircle className="h-5 w-5 mr-2" />
-                {t('publicProposal.rejectProposal')}
+                <Download className="h-5 w-5 mr-2" />
+                {t('publicProposal.downloadPDF')}
               </Button>
             </motion.div>
-          )}
+            )}
 
           {/* Footer */}
           <motion.div 
@@ -521,9 +544,38 @@ export default function PublicProposal() {
             <p className="text-[#2bc196]/40 text-sm mt-2">
               Pagsmile Limited • www.pagsmile.com
             </p>
-          </motion.div>
-        </div>
-      </div>
+            </motion.div>
+
+            {/* Download button for already responded proposals */}
+            {isAlreadyResponded && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex justify-center pb-8"
+            >
+              <Button 
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+                className="bg-white/5 border border-[#2bc196]/30 text-[#2bc196] hover:bg-[#2bc196]/10 hover:border-[#2bc196]/50 py-5 px-8 rounded-2xl text-base font-medium transition-all"
+              >
+                <Download className="h-5 w-5 mr-2" />
+                {t('publicProposal.downloadPDF')}
+              </Button>
+            </motion.div>
+            )}
+            </div>
+            </div>
+
+            {/* Hidden element for download rendering */}
+            {isDownloading && proposal && (
+            <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+            <ProposalDownloadContent 
+            proposal={proposal} 
+            language={i18n.language || 'pt'} 
+            />
+            </div>
+            )}
 
       {/* Counter Proposal Modal */}
       <Dialog open={counterModalOpen} onOpenChange={setCounterModalOpen}>
