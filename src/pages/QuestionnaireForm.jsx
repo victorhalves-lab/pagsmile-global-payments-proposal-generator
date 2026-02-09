@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { CheckCircle, AlertCircle, Building2, User, DollarSign, CreditCard, Percent, Clock, Send } from 'lucide-react';
 import OtherFeesInput from '@/components/questionnaire/OtherFeesInput';
+import { useTranslation } from 'react-i18next';
+import '@/components/i18n/i18n';
+import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 const COUNTRIES = [
   { code: '+1', name: 'USA', flag: '🇺🇸' },
@@ -99,6 +102,7 @@ function FormSection({ children, className = '' }) {
 }
 
 export default function QuestionnaireForm() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     contact_name: '',
@@ -172,15 +176,15 @@ export default function QuestionnaireForm() {
     e.preventDefault();
     
     if (!isCardTypeValid) {
-      alert('A soma de Crédito e Débito deve ser 100%');
+      alert(t('questionnaireForm.validation.cardTypeSum'));
       return;
     }
     if (!isBrandValid) {
-      alert('A soma das bandeiras deve ser 100%');
+      alert(t('questionnaireForm.validation.brandSum'));
       return;
     }
     if (form.has_current_partner === null) {
-      alert('Por favor, indique se você já possui um parceiro de pagamentos');
+      alert(t('questionnaireForm.validation.partnerRequired'));
       return;
     }
     
@@ -202,9 +206,9 @@ export default function QuestionnaireForm() {
           <div className="w-20 h-20 bg-gradient-to-br from-[#2bc196] to-[#25a882] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#2bc196]/30">
             <CheckCircle className="h-10 w-10 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-[#002443] mb-3">Thank You!</h2>
+          <h2 className="text-3xl font-bold text-[#002443] mb-3">{t('questionnaireForm.successTitle')}</h2>
           <p className="text-gray-600 text-lg">
-            Your questionnaire has been successfully submitted. Our team will contact you shortly with a customized proposal.
+            {t('questionnaireForm.successMessage')}
           </p>
         </div>
       </div>
@@ -215,22 +219,26 @@ export default function QuestionnaireForm() {
     <div className="min-h-screen bg-gradient-to-br from-[#002443] via-[#003366] to-[#002443]">
       {/* Header */}
       <div className="bg-[#002443]/50 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
+          <div className="w-32"></div>
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
             alt="Pagsmile"
-            className="h-10 mx-auto"
+            className="h-10"
           />
+          <div className="w-32 flex justify-end">
+            <LanguageSelector />
+          </div>
         </div>
       </div>
 
       {/* Hero Section */}
       <div className="max-w-4xl mx-auto px-4 py-12 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Payment Solutions <span className="text-[#2bc196]">Questionnaire</span>
+          {t('questionnaireForm.title')} <span className="text-[#2bc196]">{t('questionnaireForm.titleHighlight')}</span>
         </h1>
         <p className="text-white/70 text-lg max-w-2xl mx-auto">
-          Complete the form below so we can understand your business and create a customized payment proposal for you.
+          {t('questionnaireForm.subtitle')}
         </p>
       </div>
 
@@ -240,31 +248,31 @@ export default function QuestionnaireForm() {
           
           {/* Contact Information */}
           <FormSection>
-            <SectionHeader icon={User} title="Contact Information" subtitle="Tell us who we should contact" />
+            <SectionHeader icon={User} title={t('questionnaireForm.contactSection')} subtitle={t('questionnaireForm.contactSubtitle')} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label className="text-gray-700 font-medium">Full Name *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.fullName')} *</Label>
                 <Input 
                   value={form.contact_name}
                   onChange={(e) => updateForm('contact_name', e.target.value)}
                   required
                   className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                  placeholder="John Doe"
+                  placeholder={t('questionnaireForm.placeholders.fullName')}
                 />
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Email *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.email')} *</Label>
                 <Input 
                   type="email"
                   value={form.contact_email}
                   onChange={(e) => updateForm('contact_email', e.target.value)}
                   required
                   className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                  placeholder="john@company.com"
+                  placeholder={t('questionnaireForm.placeholders.email')}
                 />
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Phone *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.phone')} *</Label>
                 <div className="flex gap-2 mt-1.5">
                   <Select 
                     value={form.contact_phone_country_code} 
@@ -286,18 +294,18 @@ export default function QuestionnaireForm() {
                     onChange={(e) => updateForm('contact_phone', e.target.value)}
                     required
                     className="flex-1 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                    placeholder="(555) 123-4567"
+                    placeholder={t('questionnaireForm.placeholders.phone')}
                   />
                 </div>
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Role/Position *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.role')} *</Label>
                 <Input 
                   value={form.contact_role}
                   onChange={(e) => updateForm('contact_role', e.target.value)}
                   required
                   className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                  placeholder="CEO, CFO, etc."
+                  placeholder={t('questionnaireForm.placeholders.role')}
                 />
               </div>
             </div>
@@ -305,27 +313,27 @@ export default function QuestionnaireForm() {
 
           {/* Company Information */}
           <FormSection>
-            <SectionHeader icon={Building2} title="Company Information" subtitle="Tell us about your business" />
+            <SectionHeader icon={Building2} title={t('questionnaireForm.companySection')} subtitle={t('questionnaireForm.companySubtitle')} />
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-gray-700 font-medium">Company Name *</Label>
+                  <Label className="text-gray-700 font-medium">{t('questionnaireForm.companyName')} *</Label>
                   <Input 
                     value={form.company_name}
                     onChange={(e) => updateForm('company_name', e.target.value)}
                     required
                     className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                    placeholder="Your Company LLC"
+                    placeholder={t('questionnaireForm.placeholders.companyName')}
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-medium">MCC (Merchant Category Code)</Label>
+                  <Label className="text-gray-700 font-medium">{t('questionnaireForm.mcc')}</Label>
                   <Select 
                     value={form.mcc} 
                     onValueChange={(v) => updateForm('mcc', v)}
                   >
                     <SelectTrigger className="mt-1.5 h-12 border-gray-200">
-                      <SelectValue placeholder="Select your MCC" />
+                      <SelectValue placeholder={t('questionnaireForm.placeholders.mcc')} />
                     </SelectTrigger>
                     <SelectContent className="max-h-80">
                       {MCC_OPTIONS.map(mcc => (
@@ -339,35 +347,35 @@ export default function QuestionnaireForm() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-gray-700 font-medium">Business Type *</Label>
+                  <Label className="text-gray-700 font-medium">{t('questionnaireForm.businessType')} *</Label>
                   <Input 
                     value={form.business_type}
                     onChange={(e) => updateForm('business_type', e.target.value)}
                     required
                     className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                    placeholder="E-commerce, SaaS, etc."
+                    placeholder={t('questionnaireForm.placeholders.businessType')}
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-medium">Business Model *</Label>
+                  <Label className="text-gray-700 font-medium">{t('questionnaireForm.businessModel')} *</Label>
                   <Input 
                     value={form.business_model}
                     onChange={(e) => updateForm('business_model', e.target.value)}
                     required
                     className="mt-1.5 h-12 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                    placeholder="B2B, B2C, Marketplace, etc."
+                    placeholder={t('questionnaireForm.placeholders.businessModel')}
                   />
                 </div>
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Products/Services Description *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.products')} *</Label>
                 <Textarea 
                   value={form.products_services}
                   onChange={(e) => updateForm('products_services', e.target.value)}
                   required
                   rows={3}
                   className="mt-1.5 border-gray-200 focus:border-[#2bc196] focus:ring-[#2bc196]"
-                  placeholder="Describe your main products or services..."
+                  placeholder={t('questionnaireForm.placeholders.products')}
                 />
               </div>
             </div>
@@ -375,10 +383,10 @@ export default function QuestionnaireForm() {
 
           {/* Financial Information */}
           <FormSection>
-            <SectionHeader icon={DollarSign} title="Financial Information" subtitle="Help us understand your volume" />
+            <SectionHeader icon={DollarSign} title={t('questionnaireForm.financialSection')} subtitle={t('questionnaireForm.financialSubtitle')} />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <Label className="text-gray-700 font-medium">Estimated Monthly TPV (USD) *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.monthlyTPV')} *</Label>
                 <div className="relative mt-1.5">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                   <Input 
@@ -392,7 +400,7 @@ export default function QuestionnaireForm() {
                 </div>
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Average Ticket (USD) *</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.avgTicket')} *</Label>
                 <div className="relative mt-1.5">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                   <Input 
@@ -406,7 +414,7 @@ export default function QuestionnaireForm() {
                 </div>
               </div>
               <div>
-                <Label className="text-gray-700 font-medium">Monthly Transactions</Label>
+                <Label className="text-gray-700 font-medium">{t('questionnaireForm.monthlyTransactions')}</Label>
                 <Input 
                   value={monthlyTransactions.toLocaleString()}
                   disabled
@@ -418,12 +426,12 @@ export default function QuestionnaireForm() {
 
           {/* Transaction Split */}
           <FormSection>
-            <SectionHeader icon={CreditCard} title="Transaction Split" subtitle="How are your transactions distributed?" />
+            <SectionHeader icon={CreditCard} title={t('questionnaireForm.transactionSplit')} subtitle={t('questionnaireForm.transactionSplitSubtitle')} />
             
             {/* Card Type Split */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="font-semibold text-gray-800">By Card Type *</h4>
+                <h4 className="font-semibold text-gray-800">{t('questionnaireForm.byCardType')} *</h4>
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
                   isCardTypeValid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
                 }`}>
@@ -433,7 +441,7 @@ export default function QuestionnaireForm() {
               </div>
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-gray-600">Credit (%)</Label>
+                  <Label className="text-gray-600">{t('questionnaireForm.credit')} (%)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -446,7 +454,7 @@ export default function QuestionnaireForm() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-600">Debit (%)</Label>
+                  <Label className="text-gray-600">{t('questionnaireForm.debit')} (%)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -464,7 +472,7 @@ export default function QuestionnaireForm() {
             {/* Brand Split */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h4 className="font-semibold text-gray-800">By Card Brand *</h4>
+                <h4 className="font-semibold text-gray-800">{t('questionnaireForm.byCardBrand')} *</h4>
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
                   isBrandValid ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
                 }`}>
@@ -513,7 +521,7 @@ export default function QuestionnaireForm() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-600">Others (%)</Label>
+                  <Label className="text-gray-600">{t('questionnaireForm.others')} (%)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -531,10 +539,10 @@ export default function QuestionnaireForm() {
 
           {/* Current Partner */}
           <FormSection>
-            <SectionHeader icon={Percent} title="Current Payment Partner" subtitle="Do you currently have a payment processor?" />
+            <SectionHeader icon={Percent} title={t('questionnaireForm.partnerSection')} subtitle={t('questionnaireForm.partnerSubtitle')} />
             
             <div className="mb-6">
-              <Label className="text-gray-700 font-medium mb-3 block">Do you already have a payment partner? *</Label>
+              <Label className="text-gray-700 font-medium mb-3 block">{t('questionnaireForm.hasPartner')} *</Label>
               <div className="flex gap-4">
                 <Button
                   type="button"
@@ -545,7 +553,7 @@ export default function QuestionnaireForm() {
                       : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                   }`}
                 >
-                  Yes
+                  {t('common.yes')}
                 </Button>
                 <Button
                   type="button"
@@ -556,7 +564,7 @@ export default function QuestionnaireForm() {
                       : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                   }`}
                 >
-                  No
+                  {t('common.no')}
                 </Button>
               </div>
             </div>
@@ -565,7 +573,7 @@ export default function QuestionnaireForm() {
               <div className="bg-gray-50 rounded-xl p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <Label className="text-gray-700 font-medium">Current Rate (%) *</Label>
+                    <Label className="text-gray-700 font-medium">{t('questionnaireForm.currentRate')} *</Label>
                     <Input 
                       type="number"
                       step="0.01"
@@ -577,7 +585,7 @@ export default function QuestionnaireForm() {
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700 font-medium">Fixed Fee per Transaction (USD) *</Label>
+                    <Label className="text-gray-700 font-medium">{t('questionnaireForm.currentFee')} *</Label>
                     <div className="relative mt-1.5">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                       <Input 
@@ -594,7 +602,7 @@ export default function QuestionnaireForm() {
                 </div>
                 
                 <div className="pt-4 border-t border-gray-200">
-                  <Label className="text-gray-700 font-medium mb-3 block">Other Fees (optional)</Label>
+                  <Label className="text-gray-700 font-medium mb-3 block">{t('questionnaireForm.otherFees')}</Label>
                   <OtherFeesInput 
                     fees={form.other_current_fees}
                     onChange={(fees) => updateForm('other_current_fees', fees)}
@@ -606,15 +614,15 @@ export default function QuestionnaireForm() {
 
           {/* Settlement Days */}
           <FormSection>
-            <SectionHeader icon={Clock} title="Settlement Expectations" subtitle="When do you expect to receive funds?" />
+            <SectionHeader icon={Clock} title={t('questionnaireForm.settlementSection')} subtitle={t('questionnaireForm.settlementSubtitle')} />
             <div>
-              <Label className="text-gray-700 font-medium mb-3 block">Expected Settlement Days *</Label>
+              <Label className="text-gray-700 font-medium mb-3 block">{t('questionnaireForm.expectedSettlement')} *</Label>
               <div className="grid grid-cols-4 gap-3">
                 {[
-                  { value: 'D+1', label: 'D+1', sublabel: 'Express' },
-                  { value: 'D+2', label: 'D+2', sublabel: 'Fast' },
-                  { value: 'D+7', label: 'D+7', sublabel: 'Standard' },
-                  { value: 'D+15', label: 'D+15', sublabel: 'Extended' },
+                  { value: 'D+1', label: 'D+1', sublabel: t('questionnaireForm.settlement.express') },
+                  { value: 'D+2', label: 'D+2', sublabel: t('questionnaireForm.settlement.fast') },
+                  { value: 'D+7', label: 'D+7', sublabel: t('questionnaireForm.settlement.standard') },
+                  { value: 'D+15', label: 'D+15', sublabel: t('questionnaireForm.settlement.extended') },
                 ].map((option) => (
                   <Button
                     key={option.value}
@@ -645,12 +653,12 @@ export default function QuestionnaireForm() {
             {mutation.isPending ? (
               <span className="flex items-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Submitting...
+                {t('questionnaireForm.submitting')}
               </span>
             ) : (
               <span className="flex items-center gap-2">
                 <Send className="h-5 w-5" />
-                Submit Questionnaire
+                {t('questionnaireForm.submit')}
               </span>
             )}
           </Button>
