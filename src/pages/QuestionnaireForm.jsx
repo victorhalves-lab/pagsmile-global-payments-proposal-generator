@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { CheckCircle, AlertCircle, Building2, User, DollarSign, CreditCard, Percent, Clock, Send } from 'lucide-react';
 import OtherFeesInput from '@/components/questionnaire/OtherFeesInput';
+import TargetMarketsSelector from '@/components/questionnaire/TargetMarketsSelector';
 import { useTranslation } from 'react-i18next';
 import '@/components/i18n/i18n';
 import LanguageSelector from '@/components/i18n/LanguageSelector';
@@ -127,7 +128,8 @@ export default function QuestionnaireForm() {
     current_rate_percentage: '',
     current_fixed_fee: '',
     other_current_fees: [],
-    expected_settlement_days: ''
+    expected_settlement_days: '',
+    target_markets: []
   });
 
   const mutation = useMutation({
@@ -158,6 +160,7 @@ export default function QuestionnaireForm() {
         current_rate_percentage: data.current_rate_percentage ? parseFloat(data.current_rate_percentage) : null,
         current_fixed_fee: data.current_fixed_fee ? parseFloat(data.current_fixed_fee) : null,
         other_current_fees: processedOtherFees,
+        target_markets: data.target_markets || [],
         pipeline_status: 'leads'
       });
     },
@@ -379,6 +382,14 @@ export default function QuestionnaireForm() {
                 />
               </div>
             </div>
+          </FormSection>
+
+          {/* Target Markets */}
+          <FormSection>
+            <TargetMarketsSelector
+              selectedCountries={form.target_markets}
+              onChange={(markets) => updateForm('target_markets', markets)}
+            />
           </FormSection>
 
           {/* Financial Information */}

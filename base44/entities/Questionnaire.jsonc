@@ -1,0 +1,156 @@
+{
+  "name": "Questionnaire",
+  "type": "object",
+  "properties": {
+    "contact_name": {
+      "type": "string",
+      "description": "Nome da pessoa de contato"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "E-mail da pessoa de contato"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Telefone da pessoa de contato"
+    },
+    "contact_phone_country_code": {
+      "type": "string",
+      "description": "C\u00f3digo do pa\u00eds do telefone"
+    },
+    "contact_role": {
+      "type": "string",
+      "description": "Cargo da pessoa"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Nome da empresa"
+    },
+    "business_type": {
+      "type": "string",
+      "description": "Tipo de neg\u00f3cio"
+    },
+    "business_model": {
+      "type": "string",
+      "description": "Modelo de neg\u00f3cio"
+    },
+    "products_services": {
+      "type": "string",
+      "description": "Produtos/servi\u00e7os comercializados"
+    },
+    "mcc": {
+      "type": "string",
+      "description": "MCC (Merchant Category Code)"
+    },
+    "monthly_tpv": {
+      "type": "number",
+      "description": "TPV mensal estimado em USD"
+    },
+    "average_ticket": {
+      "type": "number",
+      "description": "Ticket m\u00e9dio em USD"
+    },
+    "monthly_transactions": {
+      "type": "number",
+      "description": "Volume mensal de transa\u00e7\u00f5es (calculado)"
+    },
+    "credit_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es de cr\u00e9dito"
+    },
+    "debit_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es de d\u00e9bito"
+    },
+    "visa_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es Visa"
+    },
+    "mastercard_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es Mastercard"
+    },
+    "amex_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es Amex"
+    },
+    "other_brands_percentage": {
+      "type": "number",
+      "description": "Porcentagem de transa\u00e7\u00f5es de outras bandeiras"
+    },
+    "has_current_partner": {
+      "type": "boolean",
+      "description": "Indica se j\u00e1 possui parceiro"
+    },
+    "current_rate_percentage": {
+      "type": "number",
+      "description": "Taxa percentual atual (se houver parceiro)"
+    },
+    "current_fixed_fee": {
+      "type": "number",
+      "description": "Tarifa fixa atual em USD (se houver parceiro)"
+    },
+    "other_current_fees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "fee_type": {
+            "type": "string",
+            "enum": [
+              "percentage",
+              "fixed_usd"
+            ]
+          }
+        }
+      },
+      "description": "Outras taxas do parceiro atual"
+    },
+    "expected_settlement_days": {
+      "type": "string",
+      "enum": [
+        "D+1",
+        "D+2",
+        "D+7",
+        "D+15"
+      ],
+      "description": "Prazo de recebimento esperado"
+    },
+    "target_markets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Pa\u00edses onde deseja transacionar"
+    },
+    "pipeline_status": {
+      "type": "string",
+      "enum": [
+        "leads",
+        "proposal_made",
+        "proposal_accepted",
+        "counter_proposal",
+        "proposal_lost"
+      ],
+      "default": "leads",
+      "description": "Status no pipeline"
+    },
+    "proposal_id": {
+      "type": "string",
+      "description": "ID da proposta vinculada"
+    }
+  },
+  "required": [
+    "contact_name",
+    "contact_email",
+    "company_name",
+    "monthly_tpv",
+    "average_ticket"
+  ]
+}
