@@ -203,10 +203,37 @@
     "doc_bank_statement_url": {
       "type": "string"
     },
-    "doc_directors_id_url": {
-      "type": "string"
+    "doc_ids": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Passaportes/IDs de todos os diretores e s\u00f3cios"
     },
-    "doc_ubos_id_url": {
+    "doc_address_proofs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Comprovantes de endere\u00e7o de todos os diretores e s\u00f3cios"
+    },
+    "doc_company_address_proof_url": {
       "type": "string"
     },
     "doc_pilot_llc_url": {

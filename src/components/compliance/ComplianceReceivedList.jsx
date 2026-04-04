@@ -183,8 +183,13 @@ export default function ComplianceReceivedList() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <DocLink label={t('compliance.corpDocuments')} url={selected.doc_corp_documents_url} />
                   <DocLink label={t('compliance.bankStatement')} url={selected.doc_bank_statement_url} />
-                  <DocLink label={t('compliance.directorsId')} url={selected.doc_directors_id_url} />
-                  <DocLink label={t('compliance.ubosId')} url={selected.doc_ubos_id_url} />
+                  {selected.doc_ids?.filter(d => d.file_url).map((d, i) => (
+                    <DocLink key={`id-${i}`} label={`ID: ${d.name || `#${i+1}`}`} url={d.file_url} />
+                  ))}
+                  {selected.doc_address_proofs?.filter(d => d.file_url).map((d, i) => (
+                    <DocLink key={`addr-${i}`} label={`${t('compliance.address')}: ${d.name || `#${i+1}`}`} url={d.file_url} />
+                  ))}
+                  <DocLink label={t('compliance.companyAddressProof')} url={selected.doc_company_address_proof_url} />
                   <DocLink label={t('compliance.pilotLlc')} url={selected.doc_pilot_llc_url} />
                   <DocLink label={t('compliance.license')} url={selected.doc_license_url} />
                   <DocLink label={t('compliance.ownershipChart')} url={selected.doc_ownership_chart_url} />
