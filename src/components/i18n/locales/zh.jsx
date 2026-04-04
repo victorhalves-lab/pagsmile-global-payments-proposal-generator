@@ -624,6 +624,8 @@ const zh = {
     payOutDesc: "发送付款",
     both: "两者",
     bothDesc: "收款和付款",
+    pmCreditCard: "信用卡",
+    pmCreditCardDesc: "Visa、Mastercard、Amex等",
     pmEwallet: "电子钱包",
     pmEwalletDesc: "Google Pay、Apple Pay等",
     pmBankTransfer: "银行转账",

@@ -622,6 +622,8 @@ const en = {
     payOutDesc: "Send payments",
     both: "Both",
     bothDesc: "Pay-in & Pay-out",
+    pmCreditCard: "Credit Card",
+    pmCreditCardDesc: "Visa, Mastercard, Amex, etc.",
     pmEwallet: "E-wallet",
     pmEwalletDesc: "Google Pay, Apple Pay, etc.",
     pmBankTransfer: "Bank Transfer",
