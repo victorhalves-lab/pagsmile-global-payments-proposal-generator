@@ -433,6 +433,15 @@ const pt = {
     counterProposalSentSuccess: "Contraproposta enviada!",
     downloadPDF: "Baixar PDF"
     },
+  proposalAccepted: {
+    badge: "Proposta Aceita",
+    title: "Obrigado!",
+    message: "Sua proposta foi aceita com sucesso! Agora precisamos avançar para a próxima etapa: o processo de compliance (KYC). Por favor, preencha o questionário abaixo para que possamos analisar o seu negócio e finalizar o onboarding.",
+    nextStepTitle: "Próximo passo: Questionário de Compliance",
+    nextStepDesc: "Este questionário é necessário para a análise KYC/AML do seu negócio. Precisamos de informações sobre a empresa, sócios, documentos e dados de compliance.",
+    startCompliance: "Preencher Questionário de Compliance",
+    disclaimer: "O questionário leva aproximadamente 15-20 minutos para ser preenchido. Tenha em mãos os documentos da empresa."
+  },
   compliance: {
     dashboardTitle: "Questionário de Compliance",
     dashboardSubtitle: "Compartilhe o link do formulário de compliance e visualize o questionário KYC",

@@ -435,6 +435,15 @@ const zh = {
     counterProposalSentSuccess: "还价已发送！",
     downloadPDF: "下载PDF"
   },
+  proposalAccepted: {
+    badge: "报价已接受",
+    title: "谢谢！",
+    message: "您的报价已成功接受！现在我们需要进入下一步：合规（KYC）流程。请填写以下问卷，以便我们分析您的业务并完成入驻。",
+    nextStepTitle: "下一步：合规问卷",
+    nextStepDesc: "此问卷是对您业务进行KYC/AML分析所必需的。我们需要关于公司、合伙人、文件和合规数据的信息。",
+    startCompliance: "填写合规问卷",
+    disclaimer: "问卷大约需要15-20分钟完成。请准备好公司文件。"
+  },
   compliance: {
     dashboardTitle: "合规问卷",
     dashboardSubtitle: "分享合规表单链接并预览KYC问卷",

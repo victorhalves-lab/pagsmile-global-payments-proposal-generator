@@ -34,6 +34,7 @@ import i18n from '@/components/i18n/i18n';
 import LanguageSelector from '@/components/i18n/LanguageSelector';
 import ProposalDownloadContent from '@/components/proposal/ProposalDownloadContent';
 import { downloadProposalAsPDF } from '@/components/proposal/ProposalDownloadUtils';
+import ProposalAcceptedScreen from '@/components/proposal/ProposalAcceptedScreen';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ export default function PublicProposal() {
   const [counterModalOpen, setCounterModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [justAccepted, setJustAccepted] = useState(false);
   const [counterForm, setCounterForm] = useState({
     rate: '',
     fixed_fee: '',
@@ -95,7 +97,7 @@ export default function PublicProposal() {
         pipeline_status: 'proposal_accepted'
       });
     }
-    toast.success(t('publicProposal.proposalAccepted'));
+    setJustAccepted(true);
   };
 
   const handleReject = async () => {
@@ -160,6 +162,17 @@ export default function PublicProposal() {
           <p className="text-white/60 text-sm">{t('common.loading')}</p>
         </div>
       </div>
+    );
+  }
+
+  // Show compliance screen after accepting
+  if (justAccepted && proposal) {
+    const complianceLink = `${window.location.origin}/ComplianceForm?token=${proposal.public_link_token}`;
+    return (
+      <ProposalAcceptedScreen
+        complianceLink={complianceLink}
+        clientName={proposal.client_name}
+      />
     );
   }
 
