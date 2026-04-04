@@ -212,7 +212,7 @@ export default function ComplianceForm() {
               </div>
               <div>
                 <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.onboardingProduct')}</label>
-                <Input value={form.onboarding_product_url} onChange={(e) => update('onboarding_product_url', e.target.value)} className={inputCls} />
+                <Input value={form.onboarding_product_url} onChange={(e) => update('onboarding_product_url', e.target.value)} className={inputCls} placeholder={t('compliance.onboardingProductPlaceholder')} />
               </div>
               <div>
                 <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.businessNatureLabel')}</label>
