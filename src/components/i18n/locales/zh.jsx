@@ -554,7 +554,7 @@ const zh = {
     successMessage: "您的合规问卷已成功提交。我们的团队将审查您的信息并尽快与您联系。",
     selectPlaceholder: "选择...",
     merchant: "商户",
-    masterMerchant: "主商户（需要PSP许可证）",
+    masterMerchant: "Gateway / 主商户（需要PSP许可证）",
     introducer: "介绍人",
     payIn: "收款",
     payOut: "付款",

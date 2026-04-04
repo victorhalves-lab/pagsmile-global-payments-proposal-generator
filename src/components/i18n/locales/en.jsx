@@ -552,7 +552,7 @@ const en = {
     successMessage: "Your compliance questionnaire has been successfully submitted. Our team will review your information and contact you shortly.",
     selectPlaceholder: "Select...",
     merchant: "Merchant",
-    masterMerchant: "Master Merchant (PSP License Required)",
+    masterMerchant: "Gateway / Master Merchant (PSP License Required)",
     introducer: "Introducer",
     payIn: "Pay-in",
     payOut: "Pay-out",

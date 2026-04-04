@@ -552,7 +552,7 @@ const pt = {
     successMessage: "Seu questionário de compliance foi submetido com sucesso. Nossa equipe irá revisar suas informações e entrar em contato em breve.",
     selectPlaceholder: "Selecionar...",
     merchant: "Merchant",
-    masterMerchant: "Master Merchant (Licença PSP Necessária)",
+    masterMerchant: "Gateway / Master Merchant (Licença PSP Necessária)",
     introducer: "Introducer",
     payIn: "Pay-in",
     payOut: "Pay-out",
