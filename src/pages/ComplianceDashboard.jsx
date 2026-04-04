@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy, CheckCircle, ExternalLink, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export default function ComplianceDashboard() {
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation();
 
   const complianceFormLink = `${window.location.origin}/ComplianceForm`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(complianceFormLink);
     setCopied(true);
-    toast.success('Compliance form link copied!');
+    toast.success(t('compliance.linkCopiedToast'));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -20,9 +22,9 @@ export default function ComplianceDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-white flex items-center gap-3">
           <ShieldCheck className="h-8 w-8 text-[#2bc196]" />
-          Compliance Questionnaire
+          {t('compliance.dashboardTitle')}
         </h1>
-        <p className="text-white/50 mt-1">Share the compliance form link and preview the KYC questionnaire</p>
+        <p className="text-white/50 mt-1">{t('compliance.dashboardSubtitle')}</p>
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
@@ -31,10 +33,8 @@ export default function ComplianceDashboard() {
             <ShieldCheck className="h-8 w-8 text-[#2bc196]" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-white">Compliance Form Link</h2>
-            <p className="text-white/50 mt-2 text-sm">
-              Share this link with clients to collect their KYC documentation, corporate information, and compliance questionnaire.
-            </p>
+            <h2 className="text-xl font-semibold text-white">{t('compliance.formLinkTitle')}</h2>
+            <p className="text-white/50 mt-2 text-sm">{t('compliance.formLinkDescription')}</p>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-3">
@@ -45,7 +45,7 @@ export default function ComplianceDashboard() {
             />
             <Button onClick={copyLink} variant="outline" size="sm" className="shrink-0">
               {copied ? <CheckCircle className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-              {copied ? 'Copied!' : 'Copy'}
+              {copied ? t('compliance.linkCopied') : t('compliance.copyLink')}
             </Button>
           </div>
 
@@ -54,17 +54,17 @@ export default function ComplianceDashboard() {
             className="bg-[#2bc196] hover:bg-[#2bc196]/90 text-[#002443]"
           >
             <ExternalLink className="h-4 w-4 mr-2" />
-            Preview Form
+            {t('compliance.previewForm')}
           </Button>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-left space-y-3">
-            <h3 className="text-white font-medium text-sm">KYC Documents Collected:</h3>
+            <h3 className="text-white font-medium text-sm">{t('compliance.kycDocumentsTitle')}</h3>
             <ol className="text-white/60 text-sm space-y-2 list-decimal list-inside">
-              <li>Full set of corporation documents (Certificate of Incorporation, Articles, Shareholder Register, Certificate of Incumbency)</li>
-              <li>Bank statement or signed bank reference letter</li>
-              <li>Passport/ID & Proof of Address — All Directors</li>
-              <li>Passport/ID & Proof of Address — All UBOs (≥25%)</li>
-              <li>DD Form (as aligned with our templates)</li>
+              <li>{t('compliance.kycDoc1')}</li>
+              <li>{t('compliance.kycDoc2')}</li>
+              <li>{t('compliance.kycDoc3')}</li>
+              <li>{t('compliance.kycDoc4')}</li>
+              <li>{t('compliance.kycDoc5')}</li>
             </ol>
           </div>
         </div>
