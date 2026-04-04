@@ -185,8 +185,7 @@ export default function ComplianceReceivedList() {
                   <DocLink label={t('compliance.bankStatement')} url={selected.doc_bank_statement_url} />
                   <DocLink label={t('compliance.directorsId')} url={selected.doc_directors_id_url} />
                   <DocLink label={t('compliance.ubosId')} url={selected.doc_ubos_id_url} />
-                  <DocLink label={t('compliance.ddForm')} url={selected.doc_dd_form_url} />
-                  <DocLink label={t('compliance.amlQuestionnaire')} url={selected.doc_aml_questionnaire_url} />
+                  <DocLink label={t('compliance.pilotLlc')} url={selected.doc_pilot_llc_url} />
                   <DocLink label={t('compliance.license')} url={selected.doc_license_url} />
                   <DocLink label={t('compliance.ownershipChart')} url={selected.doc_ownership_chart_url} />
                 </div>

@@ -209,10 +209,7 @@
     "doc_ubos_id_url": {
       "type": "string"
     },
-    "doc_dd_form_url": {
-      "type": "string"
-    },
-    "doc_aml_questionnaire_url": {
+    "doc_pilot_llc_url": {
       "type": "string"
     },
     "doc_license_url": {

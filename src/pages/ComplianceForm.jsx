@@ -42,7 +42,7 @@ const initialForm = {
   q_pagsmile_dealings: null, q_pagsmile_dealings_detail: '',
   q_value_exchange: null, q_value_exchange_detail: '',
   doc_corp_documents_url: '', doc_bank_statement_url: '', doc_directors_id_url: '',
-  doc_ubos_id_url: '', doc_dd_form_url: '', doc_aml_questionnaire_url: '',
+  doc_ubos_id_url: '', doc_pilot_llc_url: '',
   doc_license_url: '', doc_ownership_chart_url: '',
   certifier_name: '', certifier_job_title: '', certifier_email: '', certification_date: ''
 };
@@ -62,10 +62,9 @@ export default function ComplianceForm() {
 
   const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
-  const DOC_KEYS = [
+  const REQUIRED_DOC_KEYS = [
     'doc_corp_documents_url', 'doc_bank_statement_url', 'doc_directors_id_url',
-    'doc_ubos_id_url', 'doc_dd_form_url', 'doc_aml_questionnaire_url',
-    'doc_license_url', 'doc_ownership_chart_url'
+    'doc_ubos_id_url'
   ];
 
   const handleSubmit = (e) => {
@@ -78,8 +77,8 @@ export default function ComplianceForm() {
       return;
     }
 
-    // Validate all documents uploaded
-    const missingDocs = DOC_KEYS.some(k => !form[k]);
+    // Validate required documents uploaded
+    const missingDocs = REQUIRED_DOC_KEYS.some(k => !form[k]);
     if (missingDocs) {
       toast.error(t('compliance.validationDocuments'));
       return;
@@ -353,8 +352,7 @@ export default function ComplianceForm() {
               <FileUploadField label={t('compliance.docBankLabel')} description={t('compliance.docBankDesc')} value={form.doc_bank_statement_url} onChange={(v) => update('doc_bank_statement_url', v)} />
               <FileUploadField label={t('compliance.docDirectorsLabel')} value={form.doc_directors_id_url} onChange={(v) => update('doc_directors_id_url', v)} />
               <FileUploadField label={t('compliance.docUbosLabel')} value={form.doc_ubos_id_url} onChange={(v) => update('doc_ubos_id_url', v)} />
-              <FileUploadField label={t('compliance.docDdLabel')} value={form.doc_dd_form_url} onChange={(v) => update('doc_dd_form_url', v)} />
-              <FileUploadField label={t('compliance.docAmlLabel')} value={form.doc_aml_questionnaire_url} onChange={(v) => update('doc_aml_questionnaire_url', v)} />
+              <FileUploadField label={t('compliance.docPilotLabel')} value={form.doc_pilot_llc_url} onChange={(v) => update('doc_pilot_llc_url', v)} />
               <FileUploadField label={t('compliance.docLicenseLabel')} value={form.doc_license_url} onChange={(v) => update('doc_license_url', v)} />
               <FileUploadField label={t('compliance.docOwnershipLabel')} value={form.doc_ownership_chart_url} onChange={(v) => update('doc_ownership_chart_url', v)} />
             </div>
