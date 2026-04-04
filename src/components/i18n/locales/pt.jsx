@@ -562,6 +562,8 @@ const pt = {
     certifierName: "Nome do Certificador *",
     certifierJobTitle: "Cargo *",
     certifierEmail: "Endereço de E-mail *",
+    validationQuestions: "Por favor, responda todas as perguntas de compliance antes de enviar.",
+    validationDocuments: "Por favor, faça upload de todos os documentos obrigatórios antes de enviar.",
     submitButton: "Enviar Questionário",
     submitting: "Enviando...",
     successTitle: "Obrigado!",

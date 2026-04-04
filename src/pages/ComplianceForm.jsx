@@ -9,6 +9,7 @@ import {
   Globe, Phone, CheckCircle, Loader2, AlertTriangle, Send,
   Store, Network, ArrowLeftRight, ArrowDownToLine, ArrowUpFromLine, ArrowRightLeft
 } from 'lucide-react';
+import { toast } from 'sonner';
 import ComplianceFormSection from '@/components/compliance/ComplianceFormSection';
 import FileUploadField from '@/components/compliance/FileUploadField';
 import ComplianceYesNo from '@/components/compliance/ComplianceYesNo';
@@ -61,8 +62,29 @@ export default function ComplianceForm() {
 
   const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
+  const DOC_KEYS = [
+    'doc_corp_documents_url', 'doc_bank_statement_url', 'doc_directors_id_url',
+    'doc_ubos_id_url', 'doc_dd_form_url', 'doc_aml_questionnaire_url',
+    'doc_license_url', 'doc_ownership_chart_url'
+  ];
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate all compliance questions answered
+    const unansweredQuestions = Q_KEYS.some(k => form[k] === null);
+    if (unansweredQuestions) {
+      toast.error(t('compliance.validationQuestions'));
+      return;
+    }
+
+    // Validate all documents uploaded
+    const missingDocs = DOC_KEYS.some(k => !form[k]);
+    if (missingDocs) {
+      toast.error(t('compliance.validationDocuments'));
+      return;
+    }
+
     const payload = {
       ...form,
       estimated_monthly_volume_usd: parseFloat(form.estimated_monthly_volume_usd) || 0,

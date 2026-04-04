@@ -564,6 +564,8 @@ const zh = {
     certifierName: "认证人姓名 *",
     certifierJobTitle: "职位 *",
     certifierEmail: "电子邮箱 *",
+    validationQuestions: "请在提交前回答所有合规问题。",
+    validationDocuments: "请在提交前上传所有必需文件。",
     submitButton: "提交问卷",
     submitting: "提交中...",
     successTitle: "谢谢！",

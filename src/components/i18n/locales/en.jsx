@@ -562,6 +562,8 @@ const en = {
     certifierName: "Certifier's Name *",
     certifierJobTitle: "Job Title *",
     certifierEmail: "E-mail Address *",
+    validationQuestions: "Please answer all compliance questions before submitting.",
+    validationDocuments: "Please upload all required documents before submitting.",
     submitButton: "Submit Questionnaire",
     submitting: "Submitting...",
     successTitle: "Thank You!",
