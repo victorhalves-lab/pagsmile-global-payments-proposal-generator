@@ -15,7 +15,8 @@ import {
   Calculator,
   BookOpen,
   Loader2,
-  ShieldCheck
+  ShieldCheck,
+  ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -26,6 +27,9 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [complianceOpen, setComplianceOpen] = useState(
+    currentPageName === 'ComplianceDashboard' || currentPageName === 'ComplianceReceived'
+  );
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const location = useLocation();
@@ -61,7 +65,11 @@ export default function Layout({ children, currentPageName }) {
     { name: t('nav.revenueSimulator'), page: 'RevenueSimulator', icon: Calculator },
     { name: t('nav.interchangeRates'), page: 'InterchangeViewer', icon: Table2 },
     { name: t('nav.howItWorks'), page: 'HowItWorks', icon: BookOpen },
-    { name: t('nav.compliance'), page: 'ComplianceDashboard', icon: ShieldCheck },
+  ];
+
+  const complianceSubItems = [
+    { name: t('nav.complianceForm'), page: 'ComplianceDashboard' },
+    { name: t('nav.complianceReceived'), page: 'ComplianceReceived' },
   ];
 
   const questionnaireLink = `${window.location.origin}${createPageUrl('QuestionnaireForm')}`;
@@ -148,6 +156,47 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               );
             })}
+
+            {/* Compliance expandable section */}
+            <div>
+              <button
+                onClick={() => setComplianceOpen(!complianceOpen)}
+                className={`
+                  w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                  ${complianceOpen || currentPageName === 'ComplianceDashboard' || currentPageName === 'ComplianceReceived'
+                    ? 'text-[#2bc196] bg-[#2bc196]/10'
+                    : 'text-white/60 hover:bg-white/5 hover:text-white'
+                  }
+                `}
+              >
+                <ShieldCheck className="h-5 w-5 opacity-70" />
+                <span className="font-medium flex-1 text-left">{t('nav.compliance')}</span>
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${complianceOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {complianceOpen && (
+                <div className="ml-4 mt-1 space-y-1 border-l border-white/10 pl-4">
+                  {complianceSubItems.map((sub) => {
+                    const isSubActive = currentPageName === sub.page;
+                    return (
+                      <Link
+                        key={sub.page}
+                        to={createPageUrl(sub.page)}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`
+                          flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
+                          ${isSubActive
+                            ? 'bg-[#2bc196] text-[#002443] shadow-lg shadow-[#2bc196]/20'
+                            : 'text-white/50 hover:bg-white/5 hover:text-white'
+                          }
+                        `}
+                      >
+                        <span className="font-medium">{sub.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Language Selector */}

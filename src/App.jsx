@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ComplianceForm from './pages/ComplianceForm';
 import ComplianceDashboard from './pages/ComplianceDashboard';
+import ComplianceReceived from './pages/ComplianceReceived';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -64,6 +65,11 @@ const AuthenticatedApp = () => {
       <Route path="/ComplianceDashboard" element={
         <LayoutWrapper currentPageName="ComplianceDashboard">
           <ComplianceDashboard />
+        </LayoutWrapper>
+      } />
+      <Route path="/ComplianceReceived" element={
+        <LayoutWrapper currentPageName="ComplianceReceived">
+          <ComplianceReceived />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

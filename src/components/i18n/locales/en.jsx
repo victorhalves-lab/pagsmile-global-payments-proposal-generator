@@ -38,7 +38,9 @@ const en = {
     questionnaireLink: "Questionnaire Link",
     copyLink: "Copy Link",
     howItWorks: "How It Works",
-    compliance: "Compliance"
+    compliance: "Compliance",
+    complianceForm: "Compliance Questionnaire",
+    complianceReceived: "Received Questionnaires"
   },
   dashboard: {
     title: "Dashboard",

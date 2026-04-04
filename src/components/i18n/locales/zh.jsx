@@ -38,7 +38,9 @@ const zh = {
     questionnaireLink: "问卷链接",
     copyLink: "复制链接",
     howItWorks: "使用指南",
-    compliance: "合规管理"
+    compliance: "合规管理",
+    complianceForm: "合规问卷",
+    complianceReceived: "已收问卷"
   },
   dashboard: {
     title: "仪表板",

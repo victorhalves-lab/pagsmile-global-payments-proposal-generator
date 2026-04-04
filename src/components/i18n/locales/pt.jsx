@@ -38,7 +38,9 @@ const pt = {
     questionnaireLink: "Link do Questionário",
     copyLink: "Copiar Link",
     howItWorks: "Como Funciona",
-    compliance: "Compliance"
+    compliance: "Compliance",
+    complianceForm: "Questionário Compliance",
+    complianceReceived: "Questionários Recebidos"
   },
   dashboard: {
     title: "Dashboard",
