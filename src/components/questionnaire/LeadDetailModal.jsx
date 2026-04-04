@@ -6,6 +6,23 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import DetailField from '@/components/compliance/detail/DetailField';
 
+const COUNTRY_NAMES = {
+  us: 'United States', ar: 'Argentina', bo: 'Bolivia', br: 'Brazil', cl: 'Chile',
+  co: 'Colombia', ec: 'Ecuador', mx: 'Mexico', py: 'Paraguay', pe: 'Peru',
+  uy: 'Uruguay', ve: 'Venezuela', de: 'Germany', at: 'Austria', be: 'Belgium',
+  es: 'Spain', fr: 'France', nl: 'Netherlands', it: 'Italy', pt: 'Portugal',
+  gb: 'United Kingdom', se: 'Sweden', ch: 'Switzerland', cn: 'China', in: 'India',
+  jp: 'Japan', kr: 'South Korea', sg: 'Singapore', hk: 'Hong Kong', ae: 'United Arab Emirates'
+};
+
+const COUNTRY_FLAGS = {
+  us: '🇺🇸', ar: '🇦🇷', bo: '🇧🇴', br: '🇧🇷', cl: '🇨🇱', co: '🇨🇴', ec: '🇪🇨',
+  mx: '🇲🇽', py: '🇵🇾', pe: '🇵🇪', uy: '🇺🇾', ve: '🇻🇪', de: '🇩🇪', at: '🇦🇹',
+  be: '🇧🇪', es: '🇪🇸', fr: '🇫🇷', nl: '🇳🇱', it: '🇮🇹', pt: '🇵🇹', gb: '🇬🇧',
+  se: '🇸🇪', ch: '🇨🇭', cn: '🇨🇳', in: '🇮🇳', jp: '🇯🇵', kr: '🇰🇷', sg: '🇸🇬',
+  hk: '🇭🇰', ae: '🇦🇪'
+};
+
 const STATUS_STYLES = {
   leads: 'bg-white/10 text-white/60 border-white/20',
   proposal_made: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -259,7 +276,9 @@ export default function LeadDetailModal({ data, open, onClose }) {
                   {data.target_markets?.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {data.target_markets.map((m, i) => (
-                        <Badge key={i} className="bg-[#2bc196]/10 text-[#2bc196] border border-[#2bc196]/20 text-xs px-3 py-1">{m}</Badge>
+                        <Badge key={i} className="bg-[#2bc196]/10 text-[#2bc196] border border-[#2bc196]/20 text-xs px-3 py-1.5">
+                          {COUNTRY_FLAGS[m] || ''} {COUNTRY_NAMES[m] || m.toUpperCase()}
+                        </Badge>
                       ))}
                     </div>
                   ) : (
