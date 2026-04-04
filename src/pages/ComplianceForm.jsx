@@ -134,21 +134,21 @@ export default function ComplianceForm() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <SelectionButton
                   label={t('compliance.merchant')}
-                  description="Standard merchant account"
+                  description={t('compliance.merchantDesc')}
                   icon={Store}
                   selected={form.applying_for === 'Merchant'}
                   onClick={() => update('applying_for', 'Merchant')}
                 />
                 <SelectionButton
-                  label="Gateway / Master Merchant"
-                  description="PSP License Required"
+                  label={t('compliance.masterMerchantShort')}
+                  description={t('compliance.masterMerchantDesc')}
                   icon={Network}
                   selected={form.applying_for === 'Master Merchant (PSP License Required)'}
                   onClick={() => update('applying_for', 'Master Merchant (PSP License Required)')}
                 />
                 <SelectionButton
                   label={t('compliance.introducer')}
-                  description="Referral partner"
+                  description={t('compliance.introducerDesc')}
                   icon={ArrowLeftRight}
                   selected={form.applying_for === 'Introducer'}
                   onClick={() => update('applying_for', 'Introducer')}
@@ -162,21 +162,21 @@ export default function ComplianceForm() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <SelectionButton
                   label={t('compliance.payIn')}
-                  description="Receive payments"
+                  description={t('compliance.payInDesc')}
                   icon={ArrowDownToLine}
                   selected={form.payment_direction === 'Pay-in'}
                   onClick={() => update('payment_direction', 'Pay-in')}
                 />
                 <SelectionButton
                   label={t('compliance.payOut')}
-                  description="Send payments"
+                  description={t('compliance.payOutDesc')}
                   icon={ArrowUpFromLine}
                   selected={form.payment_direction === 'Pay-out'}
                   onClick={() => update('payment_direction', 'Pay-out')}
                 />
                 <SelectionButton
                   label={t('compliance.both')}
-                  description="Pay-in & Pay-out"
+                  description={t('compliance.bothDesc')}
                   icon={ArrowRightLeft}
                   selected={form.payment_direction === 'Both'}
                   onClick={() => update('payment_direction', 'Both')}
