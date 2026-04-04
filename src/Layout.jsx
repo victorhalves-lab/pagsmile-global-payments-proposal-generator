@@ -14,7 +14,8 @@ import {
   CheckCircle,
   Calculator,
   BookOpen,
-  Loader2
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -30,7 +31,7 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const isPublicPage = currentPageName === 'PublicProposal' || currentPageName === 'QuestionnaireForm';
+  const isPublicPage = currentPageName === 'PublicProposal' || currentPageName === 'QuestionnaireForm' || currentPageName === 'ComplianceForm';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -60,6 +61,7 @@ export default function Layout({ children, currentPageName }) {
     { name: t('nav.revenueSimulator'), page: 'RevenueSimulator', icon: Calculator },
     { name: t('nav.interchangeRates'), page: 'InterchangeViewer', icon: Table2 },
     { name: t('nav.howItWorks'), page: 'HowItWorks', icon: BookOpen },
+    { name: t('nav.compliance'), page: 'ComplianceDashboard', icon: ShieldCheck },
   ];
 
   const questionnaireLink = `${window.location.origin}${createPageUrl('QuestionnaireForm')}`;

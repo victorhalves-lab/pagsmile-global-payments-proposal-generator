@@ -37,7 +37,8 @@ const pt = {
     interchangeRates: "Taxas Interchange",
     questionnaireLink: "Link do Questionário",
     copyLink: "Copiar Link",
-    howItWorks: "Como Funciona"
+    howItWorks: "Como Funciona",
+    compliance: "Compliance"
   },
   dashboard: {
     title: "Dashboard",

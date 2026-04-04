@@ -37,7 +37,8 @@ const en = {
     interchangeRates: "Interchange Rates",
     questionnaireLink: "Questionnaire Link",
     copyLink: "Copy Link",
-    howItWorks: "How It Works"
+    howItWorks: "How It Works",
+    compliance: "Compliance"
   },
   dashboard: {
     title: "Dashboard",

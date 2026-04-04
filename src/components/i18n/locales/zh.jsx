@@ -37,7 +37,8 @@ const zh = {
     interchangeRates: "交换费率",
     questionnaireLink: "问卷链接",
     copyLink: "复制链接",
-    howItWorks: "使用指南"
+    howItWorks: "使用指南",
+    compliance: "合规管理"
   },
   dashboard: {
     title: "仪表板",
