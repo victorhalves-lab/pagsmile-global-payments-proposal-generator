@@ -58,6 +58,7 @@ export default function Layout({ children, currentPageName }) {
 
   const navigation = [
     { name: t('nav.dashboard'), page: 'Dashboard', icon: LayoutDashboard },
+    { name: t('nav.leadQuestionnaire'), page: 'LeadQuestionnaireDashboard', icon: ClipboardList, highlight: true },
     { name: t('nav.createProposal'), page: 'ProposalCreation', icon: FileText },
     { name: t('nav.proposalCenter'), page: 'ProposalCenter', icon: ClipboardList },
     { name: t('nav.questionnaires'), page: 'QuestionnaireCenter', icon: ClipboardList },
@@ -147,7 +148,9 @@ export default function Layout({ children, currentPageName }) {
                     flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                     ${isActive 
                       ? 'bg-[#2bc196] text-[#002443] shadow-lg shadow-[#2bc196]/20' 
-                      : 'text-white/60 hover:bg-white/5 hover:text-white'
+                      : item.highlight
+                        ? 'text-[#2bc196] bg-[#2bc196]/5 border border-[#2bc196]/20 hover:bg-[#2bc196]/10'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white'
                     }
                   `}
                 >
@@ -204,19 +207,7 @@ export default function Layout({ children, currentPageName }) {
             <LanguageSelector />
           </div>
 
-          {/* Questionnaire Link */}
-          <div className="p-4 border-t border-white/10">
-            <p className="text-white/40 text-xs mb-2 uppercase tracking-wider">{t('nav.questionnaireLink')}:</p>
-            <Button
-              onClick={copyQuestionnaireLink}
-              variant="outline"
-              size="sm"
-              className="w-full justify-start"
-            >
-              {copied ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              <span className="truncate">{t('nav.copyLink')}</span>
-            </Button>
-          </div>
+          {/* Questionnaire Link - now available via LeadQuestionnaireDashboard */}
         </div>
       </aside>
 

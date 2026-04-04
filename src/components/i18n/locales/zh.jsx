@@ -40,7 +40,22 @@ const zh = {
     howItWorks: "使用指南",
     compliance: "合规管理",
     complianceForm: "合规问卷",
-    complianceReceived: "已收问卷"
+    complianceReceived: "已收问卷",
+    leadQuestionnaire: "潜在客户问卷",
+    linkCopied: "链接已复制！"
+  },
+  leadDashboard: {
+    title: "潜在客户问卷",
+    subtitle: "与潜在客户分享问卷链接以收集其业务信息",
+    linkTitle: "潜在客户问卷链接",
+    linkDescription: "将此链接发送给潜在客户。他们将填写包含业务数据、交易量和支付需求的表单。",
+    previewForm: "预览表单",
+    whatCollects: "收集的信息：",
+    collect1: "联系方式（姓名、电子邮件、电话、职位）",
+    collect2: "公司信息（名称、类型、商业模式、产品）",
+    collect3: "财务数据（月交易量、平均单价、交易分布）",
+    collect4: "当前支付合作伙伴详情（如适用）",
+    collect5: "目标市场和结算预期"
   },
   dashboard: {
     title: "仪表板",

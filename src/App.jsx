@@ -10,6 +10,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ComplianceForm from './pages/ComplianceForm';
 import ComplianceDashboard from './pages/ComplianceDashboard';
 import ComplianceReceived from './pages/ComplianceReceived';
+import LeadQuestionnaireDashboard from './pages/LeadQuestionnaireDashboard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -62,6 +63,11 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/ComplianceForm" element={<ComplianceForm />} />
+      <Route path="/LeadQuestionnaireDashboard" element={
+        <LayoutWrapper currentPageName="LeadQuestionnaireDashboard">
+          <LeadQuestionnaireDashboard />
+        </LayoutWrapper>
+      } />
       <Route path="/ComplianceDashboard" element={
         <LayoutWrapper currentPageName="ComplianceDashboard">
           <ComplianceDashboard />

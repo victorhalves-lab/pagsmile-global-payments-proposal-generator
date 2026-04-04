@@ -40,7 +40,22 @@ const en = {
     howItWorks: "How It Works",
     compliance: "Compliance",
     complianceForm: "Compliance Questionnaire",
-    complianceReceived: "Received Questionnaires"
+    complianceReceived: "Received Questionnaires",
+    leadQuestionnaire: "Lead Questionnaire",
+    linkCopied: "Link copied!"
+  },
+  leadDashboard: {
+    title: "Lead Questionnaire",
+    subtitle: "Share the lead questionnaire link with potential clients to collect their business information",
+    linkTitle: "Lead Questionnaire Link",
+    linkDescription: "Send this link to potential clients. They will fill out a form with their business data, transaction volumes and payment needs.",
+    previewForm: "Preview Form",
+    whatCollects: "Information Collected:",
+    collect1: "Contact details (name, email, phone, role)",
+    collect2: "Company information (name, type, business model, products)",
+    collect3: "Financial data (monthly TPV, average ticket, transaction split)",
+    collect4: "Current payment partner details (if applicable)",
+    collect5: "Target markets and settlement expectations"
   },
   dashboard: {
     title: "Dashboard",
