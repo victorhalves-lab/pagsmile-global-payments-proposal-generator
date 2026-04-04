@@ -26,6 +26,7 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [complianceOpen, setComplianceOpen] = useState(
     currentPageName === 'ComplianceDashboard' || currentPageName === 'ComplianceReceived'
@@ -120,23 +121,33 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-[#002443] border-r border-[#2bc196]/20
-        transform transition-transform duration-200 ease-in-out
+        fixed inset-y-0 left-0 z-40 bg-[#002443] border-r border-[#2bc196]/20
+        transform transition-all duration-200 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
+        ${sidebarCollapsed ? 'w-16' : 'w-64'}
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-6 border-b border-[#2bc196]/20">
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
-              alt="Pagsmile"
-              className="h-10 w-auto"
-            />
+          {/* Logo + Collapse */}
+          <div className="p-4 border-b border-[#2bc196]/20 flex items-center justify-between">
+            {!sidebarCollapsed && (
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68351d4d439cb9574d90dc86/807e8736c_Logo-modo-escuro.png"
+                alt="Pagsmile"
+                className="h-8 w-auto"
+              />
+            )}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:bg-white/5 hover:text-white transition-all"
+              title={sidebarCollapsed ? 'Expandir menu' : 'Recolher menu'}
+            >
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${sidebarCollapsed ? '-rotate-90' : 'rotate-90'}`} />
+            </button>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1.5">
+          {/* Navigation - scrollable */}
+          <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = currentPageName === item.page;
               return (
@@ -144,8 +155,10 @@ export default function Layout({ children, currentPageName }) {
                   key={item.page}
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
+                  title={sidebarCollapsed ? item.name : undefined}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                    flex items-center gap-3 rounded-xl transition-all duration-200
+                    ${sidebarCollapsed ? 'px-0 py-2.5 justify-center' : 'px-3 py-2.5'}
                     ${isActive 
                       ? 'bg-[#2bc196] text-[#002443] shadow-lg shadow-[#2bc196]/20' 
                       : item.highlight
@@ -154,8 +167,8 @@ export default function Layout({ children, currentPageName }) {
                     }
                   `}
                 >
-                  <item.icon className={`h-5 w-5 ${isActive ? '' : 'opacity-70'}`} />
-                  <span className="font-medium">{item.name}</span>
+                  <item.icon className={`h-5 w-5 shrink-0 ${isActive ? '' : 'opacity-70'}`} />
+                  {!sidebarCollapsed && <span className="font-medium text-sm">{item.name}</span>}
                 </Link>
               );
             })}
@@ -163,21 +176,27 @@ export default function Layout({ children, currentPageName }) {
             {/* Compliance expandable section */}
             <div>
               <button
-                onClick={() => setComplianceOpen(!complianceOpen)}
+                onClick={() => sidebarCollapsed ? null : setComplianceOpen(!complianceOpen)}
+                title={sidebarCollapsed ? t('nav.compliance') : undefined}
                 className={`
-                  w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                  w-full flex items-center gap-3 rounded-xl transition-all duration-200
+                  ${sidebarCollapsed ? 'px-0 py-2.5 justify-center' : 'px-3 py-2.5'}
                   ${complianceOpen || currentPageName === 'ComplianceDashboard' || currentPageName === 'ComplianceReceived'
                     ? 'text-[#2bc196] bg-[#2bc196]/10'
                     : 'text-white/60 hover:bg-white/5 hover:text-white'
                   }
                 `}
               >
-                <ShieldCheck className="h-5 w-5 opacity-70" />
-                <span className="font-medium flex-1 text-left">{t('nav.compliance')}</span>
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${complianceOpen ? 'rotate-180' : ''}`} />
+                <ShieldCheck className="h-5 w-5 opacity-70 shrink-0" />
+                {!sidebarCollapsed && (
+                  <>
+                    <span className="font-medium text-sm flex-1 text-left">{t('nav.compliance')}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${complianceOpen ? 'rotate-180' : ''}`} />
+                  </>
+                )}
               </button>
-              {complianceOpen && (
-                <div className="ml-4 mt-1 space-y-1 border-l border-white/10 pl-4">
+              {complianceOpen && !sidebarCollapsed && (
+                <div className="ml-4 mt-1 space-y-0.5 border-l border-white/10 pl-3">
                   {complianceSubItems.map((sub) => {
                     const isSubActive = currentPageName === sub.page;
                     return (
@@ -186,7 +205,7 @@ export default function Layout({ children, currentPageName }) {
                         to={createPageUrl(sub.page)}
                         onClick={() => setSidebarOpen(false)}
                         className={`
-                          flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-all duration-200
+                          flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all duration-200
                           ${isSubActive
                             ? 'bg-[#2bc196] text-[#002443] shadow-lg shadow-[#2bc196]/20'
                             : 'text-white/50 hover:bg-white/5 hover:text-white'
@@ -203,16 +222,16 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Language Selector */}
-          <div className="p-4 border-t border-[#2bc196]/20">
-            <LanguageSelector />
-          </div>
-
-          {/* Questionnaire Link - now available via LeadQuestionnaireDashboard */}
+          {!sidebarCollapsed && (
+            <div className="p-3 border-t border-[#2bc196]/20">
+              <LanguageSelector />
+            </div>
+          )}
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="lg:pl-64 min-h-screen">
+      <main className={`min-h-screen transition-all duration-200 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'}`}>
         <div className="p-6 lg:p-8">
           {children}
         </div>
