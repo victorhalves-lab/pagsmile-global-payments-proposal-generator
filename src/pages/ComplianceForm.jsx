@@ -14,6 +14,7 @@ import ComplianceFormSection from '@/components/compliance/ComplianceFormSection
 import FileUploadField from '@/components/compliance/FileUploadField';
 import MultiPersonDocUpload from '@/components/compliance/MultiPersonDocUpload';
 import ComplianceYesNo from '@/components/compliance/ComplianceYesNo';
+import CurrencyInput from '@/components/compliance/CurrencyInput';
 import DynamicPersonList from '@/components/compliance/DynamicPersonList';
 import SelectionButton from '@/components/compliance/SelectionButton';
 import RegionSelector from '@/components/compliance/RegionSelector';
@@ -54,6 +55,7 @@ const initialForm = {
 export default function ComplianceForm() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [directorsSameAsUbos, setDirectorsSameAsUbos] = useState(false);
   const { t } = useTranslation();
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -95,6 +97,8 @@ export default function ComplianceForm() {
       estimated_monthly_volume_usd: parseFloat(form.estimated_monthly_volume_usd) || 0,
       estimated_avg_transaction_usd: parseFloat(form.estimated_avg_transaction_usd) || 0,
       years_in_business: parseFloat(form.years_in_business) || 0,
+      directors: directorsSameAsUbos ? [] : form.directors,
+      directors_same_as_ubos: directorsSameAsUbos,
       status: 'submitted',
       public_link_token: token || '',
       certification_date: form.certification_date || new Date().toISOString().split('T')[0],
@@ -214,11 +218,13 @@ export default function ComplianceForm() {
             {/* Company Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.legalBusinessName')}</label>
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.legalBusinessName')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.legalBusinessNameHelp')}</p>
                 <Input value={form.legal_business_name} onChange={(e) => update('legal_business_name', e.target.value)} className={inputCls} required />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.tradeNameDba')}</label>
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.tradeNameDba')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.tradeNameDbaHelp')}</p>
                 <Input value={form.trade_name_dba} onChange={(e) => update('trade_name_dba', e.target.value)} className={inputCls} />
               </div>
               <div className="md:col-span-2">
@@ -242,32 +248,38 @@ export default function ComplianceForm() {
                 <Input value={form.onboarding_product_url} onChange={(e) => update('onboarding_product_url', e.target.value)} className={inputCls} placeholder={t('compliance.onboardingProductPlaceholder')} />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.businessNatureLabel')}</label>
-                <Input value={form.business_nature} onChange={(e) => update('business_nature', e.target.value)} className={inputCls} required />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.businessNatureLabel')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.businessNatureHelp')}</p>
+                <Input value={form.business_nature} onChange={(e) => update('business_nature', e.target.value)} className={inputCls} placeholder={t('compliance.businessNaturePlaceholder')} required />
               </div>
               <div className="md:col-span-2">
                 <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.regulatoryLicenses')}</label>
                 <Textarea value={form.regulatory_licenses} onChange={(e) => update('regulatory_licenses', e.target.value)} className={inputCls + " h-20 py-3"} placeholder={t('compliance.regulatoryPlaceholder')} />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.estMonthlyVolume')}</label>
-                <Input type="number" value={form.estimated_monthly_volume_usd} onChange={(e) => update('estimated_monthly_volume_usd', e.target.value)} className={inputCls} placeholder="0" />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.estMonthlyVolume')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.estMonthlyVolumeHelp')}</p>
+                <CurrencyInput value={form.estimated_monthly_volume_usd} onChange={(v) => update('estimated_monthly_volume_usd', v)} className={inputCls} />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.estAvgTransaction')}</label>
-                <Input type="number" value={form.estimated_avg_transaction_usd} onChange={(e) => update('estimated_avg_transaction_usd', e.target.value)} className={inputCls} placeholder="0" />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.estAvgTransaction')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.estAvgTransactionHelp')}</p>
+                <CurrencyInput value={form.estimated_avg_transaction_usd} onChange={(v) => update('estimated_avg_transaction_usd', v)} className={inputCls} />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.countriesOperate')}</label>
-                <Input value={form.countries_of_operation} onChange={(e) => update('countries_of_operation', e.target.value)} className={inputCls} />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.countriesOperate')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.countriesOperateHelp')}</p>
+                <Input value={form.countries_of_operation} onChange={(e) => update('countries_of_operation', e.target.value)} className={inputCls} placeholder={t('compliance.countriesOperatePlaceholder')} />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.yearsInBusinessLabel')}</label>
-                <Input type="number" value={form.years_in_business} onChange={(e) => update('years_in_business', e.target.value)} className={inputCls} placeholder="0" />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.yearsInBusinessLabel')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.yearsInBusinessHelp')}</p>
+                <Input type="number" min="0" value={form.years_in_business} onChange={(e) => update('years_in_business', e.target.value)} className={inputCls} placeholder="0" />
               </div>
               <div>
-                <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.taxRegNumber')}</label>
-                <Input value={form.tax_registration_number} onChange={(e) => update('tax_registration_number', e.target.value)} className={inputCls} />
+                <label className="text-white/50 text-xs font-medium mb-1 block">{t('compliance.taxRegNumber')}</label>
+                <p className="text-white/25 text-[10px] mb-1.5">{t('compliance.taxRegNumberHelp')}</p>
+                <Input value={form.tax_registration_number} onChange={(e) => update('tax_registration_number', e.target.value)} className={inputCls} placeholder={t('compliance.taxRegNumberPlaceholder')} />
               </div>
               <div>
                 <label className="text-white/50 text-xs font-medium mb-1.5 block">{t('compliance.companyTypeLabel')}</label>
@@ -276,14 +288,42 @@ export default function ComplianceForm() {
             </div>
           </ComplianceFormSection>
 
-          {/* 2 — UBOs */}
+          {/* 2 — UBOs / Sócios e Beneficiários Finais */}
           <ComplianceFormSection icon={Users} title={t('compliance.ubosSection')} subtitle={t('compliance.ubosSubtitle')} step="2">
+            <p className="text-white/30 text-xs mb-4 leading-relaxed">{t('compliance.ubosHelp')}</p>
             <DynamicPersonList items={form.ubos} onChange={(v) => update('ubos', v)} type="ubo" />
           </ComplianceFormSection>
 
           {/* 3 — Directors */}
           <ComplianceFormSection icon={UserCheck} title={t('compliance.directorsSection')} subtitle={t('compliance.directorsSubtitle')} step="3">
-            <DynamicPersonList items={form.directors} onChange={(v) => update('directors', v)} type="director" />
+            <div className="mb-4">
+              <label
+                className="flex items-center gap-3 cursor-pointer group p-3 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-[#2bc196]/30 transition-all"
+                onClick={() => {
+                  const next = !directorsSameAsUbos;
+                  setDirectorsSameAsUbos(next);
+                  if (next) {
+                    update('directors', []);
+                  } else {
+                    update('directors', [{ job_title: '', first_name: '', last_name: '' }]);
+                  }
+                }}
+              >
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${directorsSameAsUbos ? 'bg-[#2bc196] border-[#2bc196]' : 'border-white/20'}`}>
+                  {directorsSameAsUbos && <CheckCircle className="h-3.5 w-3.5 text-white" />}
+                </div>
+                <div>
+                  <span className="text-white/80 text-sm font-medium">{t('compliance.directorsSameAsUbos')}</span>
+                  <p className="text-white/30 text-xs mt-0.5">{t('compliance.directorsSameAsUbosHelp')}</p>
+                </div>
+              </label>
+            </div>
+            {!directorsSameAsUbos && (
+              <>
+                <p className="text-white/30 text-xs mb-4 leading-relaxed">{t('compliance.directorsHelp')}</p>
+                <DynamicPersonList items={form.directors} onChange={(v) => update('directors', v)} type="director" />
+              </>
+            )}
           </ComplianceFormSection>
 
           {/* 4 — Contacts */}

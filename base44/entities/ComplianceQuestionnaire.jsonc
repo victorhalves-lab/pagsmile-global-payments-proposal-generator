@@ -125,6 +125,11 @@
         }
       }
     },
+    "directors_same_as_ubos": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se os diretores s\u00e3o os mesmos s\u00f3cios/benefici\u00e1rios finais"
+    },
     "accounting_contact_name": {
       "type": "string"
     },

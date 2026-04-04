@@ -129,8 +129,8 @@ export default function ComplianceReceivedList() {
                 <DetailRow label={t('compliance.businessNature')} value={selected.business_nature} />
                 <DetailRow label={t('compliance.companyType')} value={selected.company_type} />
                 <DetailRow label={t('compliance.website')} value={selected.corporate_website} />
-                <DetailRow label={t('compliance.monthlyVolume')} value={selected.estimated_monthly_volume_usd?.toLocaleString()} />
-                <DetailRow label={t('compliance.avgTransaction')} value={selected.estimated_avg_transaction_usd?.toLocaleString()} />
+                <DetailRow label={t('compliance.monthlyVolume')} value={selected.estimated_monthly_volume_usd ? `US$ ${selected.estimated_monthly_volume_usd.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : null} />
+                <DetailRow label={t('compliance.avgTransaction')} value={selected.estimated_avg_transaction_usd ? `US$ ${selected.estimated_avg_transaction_usd.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : null} />
                 <DetailRow label={t('compliance.yearsInBusiness')} value={selected.years_in_business} />
                 <DetailRow label={t('compliance.taxRegistration')} value={selected.tax_registration_number} />
                 <DetailRow label={t('compliance.applyingFor')} value={selected.applying_for} />
@@ -147,7 +147,11 @@ export default function ComplianceReceivedList() {
                 </DetailSection>
               )}
 
-              {selected.directors?.length > 0 && (
+              {selected.directors_same_as_ubos ? (
+                <DetailSection title={t('compliance.directorsTitle')}>
+                  <div className="text-sm text-white/50 italic">{t('compliance.directorsSameAsUbos')}</div>
+                </DetailSection>
+              ) : selected.directors?.length > 0 ? (
                 <DetailSection title={t('compliance.directorsTitle')}>
                   {selected.directors.map((d, i) => (
                     <div key={i} className="text-sm text-white/70 border-b border-white/5 pb-1 mb-1">
@@ -155,7 +159,7 @@ export default function ComplianceReceivedList() {
                     </div>
                   ))}
                 </DetailSection>
-              )}
+              ) : null}
 
               <DetailSection title={t('compliance.contacts')}>
                 <DetailRow label={t('compliance.accounting')} value={`${selected.accounting_contact_name || ''} — ${selected.accounting_contact_email || ''}`} />
