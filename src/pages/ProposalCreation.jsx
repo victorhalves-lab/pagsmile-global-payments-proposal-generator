@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Calculator, FileText, Link as LinkIcon, Download, Table2, Languages } from 'lucide-react';
+import { Calculator, FileText, Link as LinkIcon, Download, Table2, Languages, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
   INTERCHANGE_SUMMARY, 
@@ -22,6 +22,7 @@ import {
   MASTERCARD_INTERCHANGE_RATES
 } from '@/components/interchange/InterchangeData';
 import InterchangeSelector from '@/components/interchange/InterchangeSelector';
+import ProposalCountrySelector from '@/components/proposal/ProposalCountrySelector';
 
 export default function ProposalCreation() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function ProposalCreation() {
     contact_email: '',
     language: 'en',
     mccs: [],
+    target_markets: [],
     markup_percentage: 0,
     fixed_fee_per_transaction: 0,
     setup_fee: 0,
@@ -70,6 +72,8 @@ export default function ProposalCreation() {
         contact_email: questionnaire.contact_email || '',
         // Pré-preencher MCC do questionário se existir
         mccs: questionnaire.mcc ? [questionnaire.mcc] : prev.mccs,
+        // Pré-preencher mercados alvo do questionário se existirem
+        target_markets: questionnaire.target_markets?.length > 0 ? questionnaire.target_markets : prev.target_markets,
         // Pré-preencher com taxas do parceiro atual se existirem
         settlement_days: questionnaire.expected_settlement_days || prev.settlement_days
       }));
@@ -307,6 +311,30 @@ export default function ProposalCreation() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Países de Operação */}
+          <Card className="bg-white/5 border-[#2bc196]/20">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-[#2bc196]" />
+                  Países de Operação
+                </span>
+                <Badge className="bg-[#2bc196]/20 text-[#2bc196]">
+                  {form.target_markets.length} selecionado(s)
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-white/60 text-sm mb-4">
+                Selecione os países onde o cliente irá operar com esta proposta.
+              </p>
+              <ProposalCountrySelector
+                selectedCountries={form.target_markets}
+                onChange={(markets) => updateForm('target_markets', markets)}
+              />
             </CardContent>
           </Card>
 

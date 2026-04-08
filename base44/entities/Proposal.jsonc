@@ -1,0 +1,174 @@
+{
+  "name": "Proposal",
+  "type": "object",
+  "properties": {
+    "questionnaire_id": {
+      "type": "string",
+      "description": "ID do question\u00e1rio de origem"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Nome do cliente/empresa"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Nome do contato"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Email do contato"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "pt",
+        "zh"
+      ],
+      "default": "en",
+      "description": "Idioma da proposta"
+    },
+    "mccs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista dos MCCs selecionados"
+    },
+    "target_markets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Pa\u00edses de opera\u00e7\u00e3o selecionados para a proposta"
+    },
+    "base_cost_percentage": {
+      "type": "number",
+      "default": 0.5,
+      "description": "Custo base Pagsmile (fixo 0.5%)"
+    },
+    "selected_interchange_type": {
+      "type": "string",
+      "enum": [
+        "visa_low",
+        "visa_avg",
+        "visa_high",
+        "master_low",
+        "master_avg",
+        "master_high",
+        "combined_low",
+        "combined_avg",
+        "combined_high",
+        "custom"
+      ],
+      "description": "Tipo de sele\u00e7\u00e3o de interc\u00e2mbio"
+    },
+    "interchange_percentage": {
+      "type": "number",
+      "description": "Taxa percentual de interchange selecionada"
+    },
+    "interchange_fixed": {
+      "type": "number",
+      "description": "Tarifa fixa de interchange selecionada"
+    },
+    "markup_percentage": {
+      "type": "number",
+      "description": "Markup percentual Pagsmile"
+    },
+    "fixed_fee_per_transaction": {
+      "type": "number",
+      "description": "Tarifa fixa por transa\u00e7\u00e3o (Gateway Fee) em centavos USD"
+    },
+    "final_rate_percentage": {
+      "type": "number",
+      "description": "Taxa percentual final"
+    },
+    "final_fixed_fee": {
+      "type": "number",
+      "description": "Tarifa fixa final"
+    },
+    "setup_fee": {
+      "type": "number",
+      "description": "Setup Fee em USD"
+    },
+    "refund_fee": {
+      "type": "number",
+      "description": "Refund Fee em USD"
+    },
+    "chargeback_fee": {
+      "type": "number",
+      "description": "Chargeback Fee em USD"
+    },
+    "risk_control_fee": {
+      "type": "number",
+      "description": "Risk Control Fee em USD"
+    },
+    "rolling_reserve_percentage": {
+      "type": "number",
+      "description": "Rolling Reserve percentual"
+    },
+    "rolling_reserve_days": {
+      "type": "number",
+      "description": "Rolling Reserve dias"
+    },
+    "settlement_days": {
+      "type": "string",
+      "description": "Prazo de recebimento"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de validade da proposta"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "accepted",
+        "counter_proposal",
+        "rejected"
+      ],
+      "default": "sent",
+      "description": "Status da proposta"
+    },
+    "public_link_token": {
+      "type": "string",
+      "description": "Token \u00fanico para link p\u00fablico"
+    },
+    "counter_proposal_rate": {
+      "type": "number",
+      "description": "Taxa da contraproposta"
+    },
+    "counter_proposal_fixed_fee": {
+      "type": "number",
+      "description": "Fee fixo da contraproposta"
+    },
+    "counter_proposal_settlement_days": {
+      "type": "string",
+      "description": "Prazo da contraproposta"
+    },
+    "counter_proposal_notes": {
+      "type": "string",
+      "description": "Notas da contraproposta"
+    },
+    "version": {
+      "type": "number",
+      "default": 1,
+      "description": "Vers\u00e3o da proposta"
+    },
+    "parent_proposal_id": {
+      "type": "string",
+      "description": "ID da proposta original (para versionamento)"
+    },
+    "change_notes": {
+      "type": "string",
+      "description": "Notas sobre altera\u00e7\u00f5es nesta vers\u00e3o"
+    }
+  },
+  "required": [
+    "client_name",
+    "contact_name",
+    "contact_email",
+    "mccs"
+  ]
+}
