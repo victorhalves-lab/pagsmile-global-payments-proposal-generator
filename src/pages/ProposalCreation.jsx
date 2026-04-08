@@ -22,13 +22,15 @@ import {
   MASTERCARD_INTERCHANGE_RATES
 } from '@/components/interchange/InterchangeData';
 import InterchangeSelector from '@/components/interchange/InterchangeSelector';
-import ProposalCountrySelector from '@/components/proposal/ProposalCountrySelector';
+import RegionSelector from '@/components/compliance/RegionSelector';
 
 export default function ProposalCreation() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const questionnaireId = urlParams.get('questionnaireId');
+  const editId = urlParams.get('editId');
+  const isEditing = !!editId;
 
   const [form, setForm] = useState({
     client_name: '',
@@ -56,11 +58,48 @@ export default function ProposalCreation() {
 
 
 
+  // Carregar proposta existente para edição
+  const { data: existingProposal } = useQuery({
+    queryKey: ['proposal-edit', editId],
+    queryFn: () => base44.entities.Proposal.get(editId),
+    enabled: !!editId
+  });
+
+  useEffect(() => {
+    if (existingProposal) {
+      setForm({
+        client_name: existingProposal.client_name || '',
+        contact_name: existingProposal.contact_name || '',
+        contact_email: existingProposal.contact_email || '',
+        language: existingProposal.language || 'en',
+        mccs: existingProposal.mccs || [],
+        target_markets: existingProposal.target_markets || [],
+        markup_percentage: existingProposal.markup_percentage || 0,
+        fixed_fee_per_transaction: existingProposal.fixed_fee_per_transaction || 0,
+        setup_fee: existingProposal.setup_fee || 0,
+        refund_fee: existingProposal.refund_fee ?? 1,
+        chargeback_fee: existingProposal.chargeback_fee ?? 15,
+        risk_control_fee: existingProposal.risk_control_fee ?? 0.1,
+        rolling_reserve_percentage: existingProposal.rolling_reserve_percentage ?? 8,
+        rolling_reserve_days: existingProposal.rolling_reserve_days ?? 180,
+        settlement_days: existingProposal.settlement_days || 'D+7',
+        selected_interchange_type: existingProposal.selected_interchange_type || 'combined_avg'
+      });
+      // Se era custom, restaurar os valores de interchange custom
+      if (existingProposal.selected_interchange_type === 'custom') {
+        setCustomInterchange({
+          percentage: existingProposal.interchange_percentage || 0,
+          fixed: existingProposal.interchange_fixed || 0
+        });
+      }
+    }
+  }, [existingProposal]);
+
   // Carregar dados do questionário se vier de um
   const { data: questionnaire } = useQuery({
     queryKey: ['questionnaire', questionnaireId],
     queryFn: () => base44.entities.Questionnaire.get(questionnaireId),
-    enabled: !!questionnaireId
+    enabled: !!questionnaireId && !isEditing
   });
 
   useEffect(() => {
@@ -152,39 +191,49 @@ export default function ProposalCreation() {
 
 
 
-  const createMutation = useMutation({
+  const saveMutation = useMutation({
     mutationFn: async (data) => {
-      const token = crypto.randomUUID();
-      const validUntil = new Date();
-      validUntil.setDate(validUntil.getDate() + 15);
-
-      const proposal = await base44.entities.Proposal.create({
+      const commonData = {
         ...data,
-        questionnaire_id: questionnaireId || null,
         base_cost_percentage: 0.5,
         interchange_percentage: selectedInterchange.percentage,
         interchange_fixed: selectedInterchange.fixed,
         final_rate_percentage: finalRate,
         final_fixed_fee: finalFixedFee,
-        valid_until: validUntil.toISOString().split('T')[0],
-        status: 'sent',
-        public_link_token: token
-      });
+      };
 
-      // Atualizar questionário se existir
-      if (questionnaireId) {
-        await base44.entities.Questionnaire.update(questionnaireId, {
-          proposal_id: proposal.id,
-          pipeline_status: 'proposal_made'
+      if (isEditing) {
+        // Atualizar proposta existente mantendo token e link
+        await base44.entities.Proposal.update(editId, commonData);
+        return existingProposal;
+      } else {
+        // Criar nova proposta
+        const token = crypto.randomUUID();
+        const validUntil = new Date();
+        validUntil.setDate(validUntil.getDate() + 15);
+
+        const proposal = await base44.entities.Proposal.create({
+          ...commonData,
+          questionnaire_id: questionnaireId || null,
+          valid_until: validUntil.toISOString().split('T')[0],
+          status: 'sent',
+          public_link_token: token
         });
-      }
 
-      return proposal;
+        if (questionnaireId) {
+          await base44.entities.Questionnaire.update(questionnaireId, {
+            proposal_id: proposal.id,
+            pipeline_status: 'proposal_made'
+          });
+        }
+
+        return proposal;
+      }
     },
-    onSuccess: (proposal) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] });
       queryClient.invalidateQueries({ queryKey: ['questionnaires'] });
-      toast.success('Proposta criada com sucesso!');
+      toast.success(isEditing ? 'Proposta atualizada com sucesso!' : 'Proposta criada com sucesso!');
       navigate(`${createPageUrl('ProposalCenter')}`);
     }
   });
@@ -198,7 +247,7 @@ export default function ProposalCreation() {
       toast.error('Selecione pelo menos um MCC');
       return;
     }
-    createMutation.mutate(form);
+    saveMutation.mutate(form);
   };
 
   const formatPercentage = (value) => `${value.toFixed(2)}%`;
@@ -214,9 +263,11 @@ export default function ProposalCreation() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">
-          {questionnaireId ? 'Criar Proposta a partir do Questionário' : 'Criar Nova Proposta'}
+          {isEditing ? 'Editar Proposta' : questionnaireId ? 'Criar Proposta a partir do Questionário' : 'Criar Nova Proposta'}
         </h1>
-        <p className="text-white/60 mt-1">Configure as taxas e gere uma proposta para o cliente</p>
+        <p className="text-white/60 mt-1">
+          {isEditing ? 'Edite os dados da proposta. O link público será mantido.' : 'Configure as taxas e gere uma proposta para o cliente'}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -331,8 +382,8 @@ export default function ProposalCreation() {
               <p className="text-white/60 text-sm mb-4">
                 Selecione os países onde o cliente irá operar com esta proposta.
               </p>
-              <ProposalCountrySelector
-                selectedCountries={form.target_markets}
+              <RegionSelector
+                selected={form.target_markets}
                 onChange={(markets) => updateForm('target_markets', markets)}
               />
             </CardContent>
@@ -657,10 +708,13 @@ export default function ProposalCreation() {
               {/* Botão de Gerar */}
               <Button 
                 onClick={handleSubmit}
-                disabled={createMutation.isPending}
+                disabled={saveMutation.isPending}
                 className="w-full bg-[#2bc196] hover:bg-[#5cf7cf] text-[#002443] font-semibold py-6"
               >
-                {createMutation.isPending ? 'Criando...' : 'Gerar Proposta'}
+                {saveMutation.isPending 
+                  ? (isEditing ? 'Salvando...' : 'Criando...') 
+                  : (isEditing ? 'Salvar Alterações' : 'Gerar Proposta')
+                }
               </Button>
             </CardContent>
           </Card>
