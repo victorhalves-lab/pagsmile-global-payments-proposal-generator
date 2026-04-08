@@ -1,0 +1,36 @@
+// Mapa centralizado de códigos de país → nome e bandeira
+// Usado por RegionSelector, TargetMarketsSelector e PublicProposal
+const COUNTRY_MAP = {
+  us: { flag: '🇺🇸', name: 'United States', nameKey: 'targetMarkets.countries.us' },
+  ar: { flag: '🇦🇷', name: 'Argentina', nameKey: 'targetMarkets.countries.ar' },
+  bo: { flag: '🇧🇴', name: 'Bolivia', nameKey: 'targetMarkets.countries.bo' },
+  br: { flag: '🇧🇷', name: 'Brazil', nameKey: 'targetMarkets.countries.br' },
+  cl: { flag: '🇨🇱', name: 'Chile', nameKey: 'targetMarkets.countries.cl' },
+  co: { flag: '🇨🇴', name: 'Colombia', nameKey: 'targetMarkets.countries.co' },
+  ec: { flag: '🇪🇨', name: 'Ecuador', nameKey: 'targetMarkets.countries.ec' },
+  mx: { flag: '🇲🇽', name: 'Mexico', nameKey: 'targetMarkets.countries.mx' },
+  py: { flag: '🇵🇾', name: 'Paraguay', nameKey: 'targetMarkets.countries.py' },
+  pe: { flag: '🇵🇪', name: 'Peru', nameKey: 'targetMarkets.countries.pe' },
+  uy: { flag: '🇺🇾', name: 'Uruguay', nameKey: 'targetMarkets.countries.uy' },
+  ve: { flag: '🇻🇪', name: 'Venezuela', nameKey: 'targetMarkets.countries.ve' },
+  de: { flag: '🇩🇪', name: 'Germany', nameKey: 'targetMarkets.countries.de' },
+  at: { flag: '🇦🇹', name: 'Austria', nameKey: 'targetMarkets.countries.at' },
+  be: { flag: '🇧🇪', name: 'Belgium', nameKey: 'targetMarkets.countries.be' },
+  es: { flag: '🇪🇸', name: 'Spain', nameKey: 'targetMarkets.countries.es' },
+  fr: { flag: '🇫🇷', name: 'France', nameKey: 'targetMarkets.countries.fr' },
+  nl: { flag: '🇳🇱', name: 'Netherlands', nameKey: 'targetMarkets.countries.nl' },
+  it: { flag: '🇮🇹', name: 'Italy', nameKey: 'targetMarkets.countries.it' },
+  pt: { flag: '🇵🇹', name: 'Portugal', nameKey: 'targetMarkets.countries.pt' },
+  gb: { flag: '🇬🇧', name: 'United Kingdom', nameKey: 'targetMarkets.countries.gb' },
+  se: { flag: '🇸🇪', name: 'Sweden', nameKey: 'targetMarkets.countries.se' },
+  ch: { flag: '🇨🇭', name: 'Switzerland', nameKey: 'targetMarkets.countries.ch' },
+  cn: { flag: '🇨🇳', name: 'China', nameKey: 'targetMarkets.countries.cn' },
+  in: { flag: '🇮🇳', name: 'India', nameKey: 'targetMarkets.countries.in' },
+  jp: { flag: '🇯🇵', name: 'Japan', nameKey: 'targetMarkets.countries.jp' },
+  kr: { flag: '🇰🇷', name: 'South Korea', nameKey: 'targetMarkets.countries.kr' },
+  sg: { flag: '🇸🇬', name: 'Singapore', nameKey: 'targetMarkets.countries.sg' },
+  hk: { flag: '🇭🇰', name: 'Hong Kong', nameKey: 'targetMarkets.countries.hk' },
+  ae: { flag: '🇦🇪', name: 'UAE', nameKey: 'targetMarkets.countries.ae' },
+};
+
+export default COUNTRY_MAP;

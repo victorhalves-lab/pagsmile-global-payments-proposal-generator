@@ -35,6 +35,7 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 import ProposalDownloadContent from '@/components/proposal/ProposalDownloadContent';
 import { downloadProposalAsPDF } from '@/components/proposal/ProposalDownloadUtils';
 import ProposalAcceptedScreen from '@/components/proposal/ProposalAcceptedScreen';
+import COUNTRY_MAP from '@/components/shared/countryMap';
 
 export default function PublicProposal() {
   const { t } = useTranslation();
@@ -332,24 +333,28 @@ export default function PublicProposal() {
               )}
 
               {/* Processing Countries Section */}
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-[#2bc196]" />
+              {proposal.target_markets && proposal.target_markets.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 bg-[#2bc196]/20 rounded-xl flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-[#2bc196]" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.processingCountries')}</h3>
                   </div>
-                  <h3 className="text-xl font-semibold text-[#2bc196]">{t('publicProposal.processingCountries')}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {proposal.target_markets.map(code => {
+                      const country = COUNTRY_MAP[code];
+                      if (!country) return null;
+                      return (
+                        <div key={code} className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
+                          <span className="text-2xl mb-2 block">{country.flag}</span>
+                          <p className="text-white font-medium">{t(country.nameKey, country.name)}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
-                    <span className="text-2xl mb-2 block">🇺🇸</span>
-                    <p className="text-white font-medium">{t('publicProposal.usa')}</p>
-                  </div>
-                  <div className="bg-[#2bc196]/5 border border-[#2bc196]/20 rounded-xl p-4 text-center hover:bg-[#2bc196]/10 transition-colors">
-                    <span className="text-2xl mb-2 block">🇪🇺</span>
-                    <p className="text-white font-medium">{t('publicProposal.eu')}</p>
-                  </div>
-                </div>
-              </div>
+              )}
 
               {/* Payment Processing Fee */}
               <div>
