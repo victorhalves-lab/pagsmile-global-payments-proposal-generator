@@ -54,13 +54,14 @@ export default function PublicProposal() {
     notes: ''
   });
 
-  const { data: proposals = [], isLoading } = useQuery({
+  const { data: proposal, isLoading } = useQuery({
     queryKey: ['public-proposal', token],
-    queryFn: () => base44.entities.Proposal.filter({ public_link_token: token }),
+    queryFn: async () => {
+      const res = await base44.functions.invoke('publicProposal', { action: 'get', token });
+      return res.data?.proposal || null;
+    },
     enabled: !!token
   });
-
-  const proposal = proposals[0];
 
   React.useEffect(() => {
     if (proposal && proposal.id) {
@@ -80,59 +81,32 @@ export default function PublicProposal() {
     }
   }, [proposal?.id, proposal?.language]);
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Proposal.update(id, data),
+  const respondMutation = useMutation({
+    mutationFn: (data) => base44.functions.invoke('publicProposal', { action: 'respond', token, data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['public-proposal', token] });
     }
   });
 
   const handleAccept = async () => {
-    await updateMutation.mutateAsync({
-      id: proposal.id,
-      data: { status: 'accepted' }
-    });
-    
-    if (proposal.questionnaire_id) {
-      await base44.entities.Questionnaire.update(proposal.questionnaire_id, {
-        pipeline_status: 'proposal_accepted'
-      });
-    }
+    await respondMutation.mutateAsync({ status: 'accepted' });
     setJustAccepted(true);
   };
 
   const handleReject = async () => {
-    await updateMutation.mutateAsync({
-      id: proposal.id,
-      data: { status: 'rejected' }
-    });
-    
-    if (proposal.questionnaire_id) {
-      await base44.entities.Questionnaire.update(proposal.questionnaire_id, {
-        pipeline_status: 'proposal_lost'
-      });
-    }
+    await respondMutation.mutateAsync({ status: 'rejected' });
     setRejectModalOpen(false);
     toast.success(t('publicProposal.proposalRejected'));
   };
 
   const handleCounterProposal = async () => {
-    await updateMutation.mutateAsync({
-      id: proposal.id,
-      data: {
-        status: 'counter_proposal',
-        counter_proposal_rate: parseFloat(counterForm.rate) || 0,
-        counter_proposal_fixed_fee: parseFloat(counterForm.fixed_fee) || 0,
-        counter_proposal_settlement_days: counterForm.settlement_days,
-        counter_proposal_notes: counterForm.notes
-      }
+    await respondMutation.mutateAsync({
+      status: 'counter_proposal',
+      counter_proposal_rate: parseFloat(counterForm.rate) || 0,
+      counter_proposal_fixed_fee: parseFloat(counterForm.fixed_fee) || 0,
+      counter_proposal_settlement_days: counterForm.settlement_days,
+      counter_proposal_notes: counterForm.notes
     });
-    
-    if (proposal.questionnaire_id) {
-      await base44.entities.Questionnaire.update(proposal.questionnaire_id, {
-        pipeline_status: 'counter_proposal'
-      });
-    }
     setCounterModalOpen(false);
     toast.success(t('publicProposal.counterProposalSentSuccess'));
   };
@@ -514,7 +488,7 @@ export default function PublicProposal() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Button 
                   onClick={handleAccept}
-                  disabled={updateMutation.isPending}
+                  disabled={respondMutation.isPending}
                   className="bg-gradient-to-r from-[#2bc196] to-[#25a882] hover:from-[#5cf7cf] hover:to-[#2bc196] text-[#002443] py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-[#2bc196]/25 hover:shadow-[#2bc196]/40 transition-all"
                 >
                   <CheckCircle className="h-5 w-5 mr-2" />
@@ -522,7 +496,7 @@ export default function PublicProposal() {
                 </Button>
                 <Button 
                   onClick={() => setCounterModalOpen(true)}
-                  disabled={updateMutation.isPending}
+                  disabled={respondMutation.isPending}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-7 rounded-2xl text-lg font-semibold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all"
                 >
                   <RefreshCw className="h-5 w-5 mr-2" />
@@ -530,7 +504,7 @@ export default function PublicProposal() {
                 </Button>
                 <Button 
                   onClick={() => setRejectModalOpen(true)}
-                  disabled={updateMutation.isPending}
+                  disabled={respondMutation.isPending}
                   className="bg-white/5 border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 py-7 rounded-2xl text-lg font-semibold transition-all"
                 >
                   <XCircle className="h-5 w-5 mr-2" />
@@ -652,7 +626,7 @@ export default function PublicProposal() {
             </div>
             <Button 
               onClick={handleCounterProposal}
-              disabled={updateMutation.isPending}
+              disabled={respondMutation.isPending}
               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 rounded-xl font-semibold"
             >
               {t('publicProposal.sendCounterProposal')}
@@ -681,7 +655,7 @@ export default function PublicProposal() {
               </Button>
               <Button 
                 onClick={handleReject}
-                disabled={updateMutation.isPending}
+                disabled={respondMutation.isPending}
                 className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl py-5"
               >
                 {t('publicProposal.confirmRejectButton')}
