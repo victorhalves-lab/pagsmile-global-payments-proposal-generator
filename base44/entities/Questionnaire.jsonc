@@ -152,5 +152,15 @@
     "company_name",
     "monthly_tpv",
     "average_ticket"
-  ]
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {},
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }
