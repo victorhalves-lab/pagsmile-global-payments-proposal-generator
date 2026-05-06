@@ -1,0 +1,71 @@
+{
+  "name": "InterchangeRate",
+  "type": "object",
+  "properties": {
+    "brand": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard"
+      ],
+      "description": "Bandeira do cart\u00e3o"
+    },
+    "program_name": {
+      "type": "string",
+      "description": "Nome do programa de interc\u00e2mbio"
+    },
+    "card_type": {
+      "type": "string",
+      "description": "Tipo de cart\u00e3o"
+    },
+    "rate_percentage": {
+      "type": "number",
+      "description": "Taxa percentual"
+    },
+    "rate_fixed": {
+      "type": "number",
+      "description": "Tarifa fixa em USD"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "card_not_present"
+      ],
+      "default": "card_not_present",
+      "description": "Categoria da transa\u00e7\u00e3o"
+    },
+    "details": {
+      "type": "string",
+      "description": "Detalhes adicionais"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indica se est\u00e1 ativa"
+    }
+  },
+  "required": [
+    "brand",
+    "program_name",
+    "rate_percentage",
+    "rate_fixed"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
