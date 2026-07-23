@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Building2, FileText, Calendar, Globe, DollarSign, Users, UserCheck, Phone, MapPin, ShieldCheck, Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Building2, FileText, Calendar, Globe, DollarSign, Users, UserCheck, Phone, MapPin, ShieldCheck, Send, Download, Loader2 } from 'lucide-react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import DetailField from './DetailField';
 import SectionHeader from './SectionHeader';
 import DocumentsTab from './DocumentsTab';
+import ComplianceDownloadContent from '../ComplianceDownloadContent';
+import { downloadComplianceAsPDF } from '../ComplianceDownloadUtils';
 
 const STATUS_COLORS = {
   pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/20',
@@ -69,9 +72,22 @@ const SIDEBAR_TABS = [
 
 export default function ComplianceDetailModal({ data, open, onClose }) {
   const [activeTab, setActiveTab] = useState('company');
+  const [isDownloading, setIsDownloading] = useState(false);
   const { t } = useTranslation();
 
   if (!data) return null;
+
+  const handleDownloadPDF = async () => {
+    if (!data) return;
+    setIsDownloading(true);
+    try {
+      // Allow hidden content to render before capture
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await downloadComplianceAsPDF(data);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const statusLabel = (s) => t(`compliance.status${s?.charAt(0).toUpperCase()}${s?.slice(1)?.replace('_', '')}`) || s;
 
@@ -83,11 +99,11 @@ export default function ComplianceDetailModal({ data, open, onClose }) {
         {/* Header */}
         <div className="border-b border-white/[0.06] px-6 py-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#2bc196]/15 flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-[#2bc196]" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-white font-bold text-lg">{data.legal_business_name}</h2>
+          <div className="w-12 h-12 rounded-xl bg-[#2bc196]/15 flex items-center justify-center">
+            <Building2 className="h-6 w-6 text-[#2bc196]" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-white font-bold text-lg">{data.legal_business_name || 'Unnamed'}</h2>
               <div className="flex items-center gap-3 mt-1">
                 <Badge className={`text-[10px] border ${STATUS_COLORS[data.status] || STATUS_COLORS.pending}`}>
                   {statusLabel(data.status)}
@@ -101,6 +117,20 @@ export default function ComplianceDetailModal({ data, open, onClose }) {
                 <span className="text-white/30 text-xs flex items-center gap-1"><Calendar className="h-3 w-3" /> {moment(data.created_date).format('DD/MM/YYYY')}</span>
               </div>
             </div>
+            <Button
+              onClick={handleDownloadPDF}
+              disabled={isDownloading}
+              variant="ghost"
+              size="sm"
+              className="text-[#2bc196] hover:text-[#2bc196]/80 hover:bg-[#2bc196]/10"
+            >
+              {isDownloading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
+              {isDownloading ? 'Generating...' : 'Download PDF'}
+            </Button>
           </div>
         </div>
 
@@ -270,6 +300,13 @@ export default function ComplianceDetailModal({ data, open, onClose }) {
             {activeTab === 'docs' && <DocumentsTab data={data} />}
           </div>
         </div>
+
+        {/* Hidden element for PDF rendering */}
+        {isDownloading && (
+          <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+            <ComplianceDownloadContent data={data} />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
