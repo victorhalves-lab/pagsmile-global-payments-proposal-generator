@@ -1,9 +1,10 @@
-import React from 'react';
-import { FileText, ExternalLink, Download, User, Building2, Shield, FileCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileText, ExternalLink, Download, User, Building2, Shield, FileCheck, Loader2, FolderArchive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
 import SectionHeader from './SectionHeader';
+import { downloadComplianceDocsAsZip } from '../ComplianceDocsZipUtils';
 
 function DocCard({ icon: Icon, label, sublabel, url, status }) {
   if (!url) return null;
@@ -45,28 +46,30 @@ function EmptyDoc({ label }) {
 
 export default function DocumentsTab({ data }) {
   const { t } = useTranslation();
+  const [isZipping, setIsZipping] = useState(false);
 
   // Collect all documents for download
   const allDocs = [];
-  if (data.doc_corp_documents_url) allDocs.push({ label: t('compliance.corpDocuments'), url: data.doc_corp_documents_url });
-  if (data.doc_bank_statement_url) allDocs.push({ label: t('compliance.bankStatement'), url: data.doc_bank_statement_url });
-  data.doc_ids?.filter(d => d.file_url).forEach((d, i) => allDocs.push({ label: `ID: ${d.name || `#${i+1}`}`, url: d.file_url }));
-  data.doc_address_proofs?.filter(d => d.file_url).forEach((d, i) => allDocs.push({ label: `Endereço: ${d.name || `#${i+1}`}`, url: d.file_url }));
-  if (data.doc_company_address_proof_url) allDocs.push({ label: t('compliance.companyAddressProof'), url: data.doc_company_address_proof_url });
-  if (data.doc_pilot_llc_url) allDocs.push({ label: t('compliance.pilotLlc'), url: data.doc_pilot_llc_url });
-  if (data.doc_license_url) allDocs.push({ label: t('compliance.license'), url: data.doc_license_url });
-  if (data.doc_ownership_chart_url) allDocs.push({ label: t('compliance.ownershipChart'), url: data.doc_ownership_chart_url });
+  if (data.doc_corp_documents_url) allDocs.push({ label: 'Corporate Documents', url: data.doc_corp_documents_url });
+  if (data.doc_bank_statement_url) allDocs.push({ label: 'Bank Statement', url: data.doc_bank_statement_url });
+  data.doc_ids?.filter(d => d.file_url).forEach((d, i) => allDocs.push({ label: `ID - ${d.name || `Person-${i+1}`}`, url: d.file_url }));
+  data.doc_address_proofs?.filter(d => d.file_url).forEach((d, i) => allDocs.push({ label: `Address Proof - ${d.name || `Person-${i+1}`}`, url: d.file_url }));
+  if (data.doc_company_address_proof_url) allDocs.push({ label: 'Company Address Proof', url: data.doc_company_address_proof_url });
+  if (data.doc_pilot_llc_url) allDocs.push({ label: 'Pilot LLC', url: data.doc_pilot_llc_url });
+  if (data.doc_license_url) allDocs.push({ label: 'License', url: data.doc_license_url });
+  if (data.doc_ownership_chart_url) allDocs.push({ label: 'Ownership Chart', url: data.doc_ownership_chart_url });
 
-  const handleDownloadAll = () => {
-    allDocs.forEach((doc, i) => {
-      setTimeout(() => {
-        const a = document.createElement('a');
-        a.href = doc.url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.click();
-      }, i * 300);
-    });
+  const handleDownloadZip = async () => {
+    const safeName = (data.legal_business_name || 'compliance').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '');
+    setIsZipping(true);
+    try {
+      await downloadComplianceDocsAsZip(allDocs, {
+        zipName: `compliance-docs-${safeName}`,
+        toastLabel: 'documents'
+      });
+    } finally {
+      setIsZipping(false);
+    }
   };
 
   return (
@@ -79,16 +82,26 @@ export default function DocumentsTab({ data }) {
           </div>
           <div>
             <p className="text-white font-medium text-sm">{allDocs.length} documentos enviados</p>
-            <p className="text-white/30 text-xs">Clique para abrir individualmente ou baixe todos</p>
+            <p className="text-white/30 text-xs">Baixe todos em ZIP ou abra individualmente</p>
           </div>
         </div>
         {allDocs.length > 0 && (
           <Button
-            onClick={handleDownloadAll}
+            onClick={handleDownloadZip}
+            disabled={isZipping}
             className="bg-[#2bc196] hover:bg-[#2bc196]/80 text-[#002443] font-semibold text-xs px-4"
           >
-            <Download className="h-3.5 w-3.5 mr-2" />
-            Abrir Todos
+            {isZipping ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
+                Zipping...
+              </>
+            ) : (
+              <>
+                <FolderArchive className="h-3.5 w-3.5 mr-2" />
+                Download ZIP
+              </>
+            )}
           </Button>
         )}
       </div>
