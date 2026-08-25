@@ -20,7 +20,8 @@ import {
   Eye,
   Trash2,
   TrendingUp,
-  Layers
+  Layers,
+  ShieldCheck
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -61,6 +62,8 @@ export default function HowItWorks() {
             <a href="#pipeline" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.pipelineKanban.title')}</a>
             <a href="#simulador" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.revenueSimulator.title')}</a>
             <a href="#interchange" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.interchangeTable.title')}</a>
+            <a href="#lead-dashboard" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.leadDashboard.title')}</a>
+            <a href="#compliance" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.compliance.title')}</a>
             <a href="#dicas" className="text-white/80 hover:text-[#2bc196] transition-colors p-2 rounded hover:bg-white/5">{t('howItWorks.tips.title')}</a>
           </div>
         </CardContent>
@@ -93,17 +96,17 @@ export default function HowItWorks() {
             <h3 className="text-white font-bold text-lg mt-6">{t('howItWorks.overview.structure')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
               <div className="bg-white/5 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-[#2bc196]">8</div>
+                <div className="text-3xl font-bold text-[#2bc196]">11</div>
                 <div className="text-white font-medium">{t('howItWorks.overview.mainPages')}</div>
                 <div className="text-white/50 text-sm mt-1">{t('howItWorks.overview.mainPagesDesc')}</div>
               </div>
               <div className="bg-white/5 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-[#2bc196]">3</div>
+                <div className="text-3xl font-bold text-[#2bc196]">4</div>
                 <div className="text-white font-medium">{t('howItWorks.overview.dataEntities')}</div>
                 <div className="text-white/50 text-sm mt-1">{t('howItWorks.overview.dataEntitiesDesc')}</div>
               </div>
               <div className="bg-white/5 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-[#2bc196]">2</div>
+                <div className="text-3xl font-bold text-[#2bc196]">3</div>
                 <div className="text-white font-medium">{t('howItWorks.overview.supportedLanguages')}</div>
                 <div className="text-white/50 text-sm mt-1">{t('howItWorks.overview.supportedLanguagesDesc')}</div>
               </div>
@@ -450,6 +453,34 @@ export default function HowItWorks() {
                 <li><strong>{t('howItWorks.dashboard.quickActionsList.pipeline')}</strong> {t('howItWorks.dashboard.quickActionsList.pipelineDesc')}</li>
                 <li><strong>{t('howItWorks.dashboard.quickActionsList.interchange')}</strong> {t('howItWorks.dashboard.quickActionsList.interchangeDesc')}</li>
               </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ==================== PÁGINA: LEAD QUESTIONNAIRE DASHBOARD ==================== */}
+      <Card id="lead-dashboard" className="bg-white/5 border-[#2bc196]/20">
+        <CardHeader>
+          <CardTitle className="text-[#2bc196] flex items-center gap-3 text-2xl">
+            <ClipboardList className="h-7 w-7" />
+            {t('howItWorks.leadDashboard.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-white/5 p-4 rounded-lg">
+            <p className="text-white/60 text-sm"><strong className="text-white">{t('howItWorks.leadDashboard.path')}</strong> {t('howItWorks.leadDashboard.pathDesc')}</p>
+            <p className="text-white/60 text-sm mt-1"><strong className="text-white">{t('howItWorks.leadDashboard.purpose')}</strong> {t('howItWorks.leadDashboard.purposeDesc')}</p>
+          </div>
+
+          <h3 className="text-white font-bold text-lg">{t('howItWorks.leadDashboard.features')}</h3>
+          <div className="space-y-4">
+            <div className="bg-white/5 p-4 rounded-lg">
+              <h4 className="text-[#2bc196] font-semibold">{t('howItWorks.leadDashboard.linkGeneration')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.leadDashboard.linkGenerationDesc')}</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-lg">
+              <h4 className="text-[#2bc196] font-semibold">{t('howItWorks.leadDashboard.quickAccess')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.leadDashboard.quickAccessDesc')}</p>
             </div>
           </div>
         </CardContent>
@@ -821,6 +852,63 @@ export default function HowItWorks() {
               <p className="text-white/50 text-xs mt-2">{t('howItWorks.publicProposal.rejectButtonDesc')}</p>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* ==================== PÁGINA: COMPLIANCE ==================== */}
+      <Card id="compliance" className="bg-white/5 border-[#2bc196]/20">
+        <CardHeader>
+          <CardTitle className="text-[#2bc196] flex items-center gap-3 text-2xl">
+            <ShieldCheck className="h-7 w-7" />
+            {t('howItWorks.compliance.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-white/5 p-4 rounded-lg">
+            <p className="text-white/60 text-sm"><strong className="text-white">{t('howItWorks.compliance.path')}</strong> {t('howItWorks.compliance.pathDesc')}</p>
+            <p className="text-white/60 text-sm mt-1"><strong className="text-white">{t('howItWorks.compliance.purpose')}</strong> {t('howItWorks.compliance.purposeDesc')}</p>
+          </div>
+
+          <h3 className="text-white font-bold text-lg">{t('howItWorks.compliance.workflow')}</h3>
+          <p className="text-white/70">{t('howItWorks.compliance.workflowDesc')}</p>
+          <ol className="text-white/60 text-sm mt-2 space-y-2 list-decimal list-inside ml-4">
+            <li>{t('howItWorks.compliance.workflowList.item1')}</li>
+            <li>{t('howItWorks.compliance.workflowList.item2')}</li>
+            <li>{t('howItWorks.compliance.workflowList.item3')}</li>
+            <li>{t('howItWorks.compliance.workflowList.item4')}</li>
+          </ol>
+
+          <h3 className="text-white font-bold text-lg mt-6">{t('howItWorks.compliance.dashboardTitle')}</h3>
+          <p className="text-white/70">{t('howItWorks.compliance.dashboardDesc')}</p>
+
+          <h3 className="text-white font-bold text-lg mt-6">{t('howItWorks.compliance.formTitle')}</h3>
+          <p className="text-white/70">{t('howItWorks.compliance.formDesc')}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-white/5 p-4 rounded-lg border-l-4 border-[#2bc196]">
+              <h4 className="text-[#2bc196] font-semibold">{t('howItWorks.compliance.formSections.business')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.compliance.formSections.businessDesc')}</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-lg border-l-4 border-blue-400">
+              <h4 className="text-blue-400 font-semibold">{t('howItWorks.compliance.formSections.people')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.compliance.formSections.peopleDesc')}</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-lg border-l-4 border-yellow-400">
+              <h4 className="text-yellow-400 font-semibold">{t('howItWorks.compliance.formSections.risk')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.compliance.formSections.riskDesc')}</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-lg border-l-4 border-purple-400">
+              <h4 className="text-purple-400 font-semibold">{t('howItWorks.compliance.formSections.documents')}</h4>
+              <p className="text-white/60 text-sm mt-2">{t('howItWorks.compliance.formSections.documentsDesc')}</p>
+            </div>
+          </div>
+
+          <h3 className="text-white font-bold text-lg mt-6">{t('howItWorks.compliance.receivedTitle')}</h3>
+          <p className="text-white/70">{t('howItWorks.compliance.receivedDesc')}</p>
+          <ul className="text-white/60 text-sm mt-2 space-y-1 list-disc list-inside ml-4">
+            <li>{t('howItWorks.compliance.receivedList.item1')}</li>
+            <li>{t('howItWorks.compliance.receivedList.item2')}</li>
+            <li>{t('howItWorks.compliance.receivedList.item3')}</li>
+          </ul>
         </CardContent>
       </Card>
 

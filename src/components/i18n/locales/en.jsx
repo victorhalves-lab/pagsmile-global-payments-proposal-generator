@@ -717,11 +717,11 @@ const en = {
       problemSolution: "With the Pagsmile Pricing Tool, this entire process is automated, centralized and traceable.",
       structure: "1.3 Platform Structure",
       mainPages: "Main Pages",
-      mainPagesDesc: "Dashboard, Questionnaires, Proposals, Pipeline, Simulator, Interchange, Public Form, Public Proposal",
+      mainPagesDesc: "Dashboard, Lead Dashboard, Questionnaires, Proposals, Pipeline, Simulator, Interchange, Compliance, Public Form, Public Proposal",
       dataEntities: "Data Entities",
-      dataEntitiesDesc: "Questionnaire (leads), Proposal (proposals), InterchangeRate (rates)",
+      dataEntitiesDesc: "Questionnaire (leads), Proposal (proposals), InterchangeRate (rates), ComplianceQuestionnaire (KYC)",
       supportedLanguages: "Supported Languages",
-      supportedLanguagesDesc: "Portuguese (BR) and English (US)",
+      supportedLanguagesDesc: "Portuguese (BR), English (US), and Chinese (CN)",
       concepts: "1.4 Fundamental Concepts",
       tpvTitle: "TPV (Total Payment Volume)",
       tpvDesc: "Total volume of payments processed monthly by the merchant. It is the main indicator of client size and the basis for revenue calculation.",
@@ -879,6 +879,18 @@ const en = {
         interchange: "Interchange Rates:",
         interchangeDesc: "Checks the complete interchange table"
       }
+    },
+    leadDashboard: {
+      title: "Page: Lead Questionnaire Dashboard",
+      path: "Access path:",
+      pathDesc: "Side menu → Lead Questionnaire (highlighted button)",
+      purpose: "Purpose:",
+      purposeDesc: "Central hub for lead generation, providing quick access to the public questionnaire link and lead management tools.",
+      features: "Key Features",
+      linkGeneration: "🔗 Questionnaire Link Generation",
+      linkGenerationDesc: "One-click copy of the public questionnaire URL to share with potential clients via email, WhatsApp, LinkedIn, or embed in landing pages. The link is public and requires no login.",
+      quickAccess: "⚡ Quick Access",
+      quickAccessDesc: "Direct navigation to create proposals, view the sales pipeline, and manage received questionnaires — all from a single dashboard."
     },
     questionnaireForm: {
       title: "4. Page: Questionnaire Form (Public)",
@@ -1174,6 +1186,42 @@ const en = {
       rejectButton: "Reject Proposal",
       rejectButtonDesc: "Opens confirmation modal: \"Are you sure? This action cannot be undone.\" Confirms and updates status to \"rejected\"."
     },
+    compliance: {
+      title: "Page: Compliance Management",
+      path: "Access path:",
+      pathDesc: "Side menu → Compliance (expandable section) → Compliance Dashboard / Compliance Received",
+      purpose: "Purpose:",
+      purposeDesc: "Manage the KYC/AML compliance process for merchants who have accepted proposals, collecting required documentation and risk assessment information.",
+      workflow: "Compliance Workflow",
+      workflowDesc: "The compliance process follows these steps:",
+      workflowList: {
+        item1: "A proposal is accepted by the merchant on the Public Proposal page",
+        item2: "A compliance questionnaire link is generated and sent to the merchant",
+        item3: "The merchant fills out the compliance form and uploads required documents",
+        item4: "The compliance team reviews submissions in the Compliance Received page"
+      },
+      dashboardTitle: "Compliance Dashboard",
+      dashboardDesc: "Overview of all compliance questionnaires with their status (pending, submitted, in review, approved, rejected). Allows generating compliance links for accepted proposals and tracking progress.",
+      formTitle: "Compliance Form (Public)",
+      formDesc: "The public compliance form collects detailed KYC information divided into sections:",
+      formSections: {
+        business: "Business Information",
+        businessDesc: "Legal business name, trade name, registered address, country, website, business nature, regulatory licenses, estimated volumes, and countries of operation.",
+        people: "UBOs and Directors",
+        peopleDesc: "Ultimate Beneficial Owners (name, nationality, address, ownership %) and Directors (job title, first name, last name). Supports multiple entries with dynamic add/remove.",
+        risk: "Risk Assessment",
+        riskDesc: "Sanctions list screening, PEP (Politically Exposed Persons) check, sanctioned country/ownership screening, and previous dealings with Pagsmile.",
+        documents: "Document Upload",
+        documentsDesc: "Corporate documents, bank statements, IDs/passports of all directors and UBOs, address proofs, company address proof, pilot LLC agreement, licenses, and ownership chart."
+      },
+      receivedTitle: "Compliance Received",
+      receivedDesc: "List of all submitted compliance questionnaires with detailed review capabilities:",
+      receivedList: {
+        item1: "View all submitted information in organized tabs (Company, People, Risk, Documents)",
+        item2: "Download individual documents or bulk download all documents as a ZIP file",
+        item3: "Generate compliance PDF reports in English for regulatory purposes"
+      }
+    },
     pipelineKanban: {
       title: "9. Page: Pipeline Kanban",
       path: "Access path:",
@@ -1329,7 +1377,7 @@ const en = {
       tip8: "Use history:",
       tip8Desc: "Check version history to understand the evolution of a negotiation."
     },
-    footer: "Pagsmile Pricing Tool - Documentation v2.0 | Last updated: January 2026"
+    footer: "Pagsmile Pricing Tool - Documentation v3.0 | Last updated: August 2026"
   }
 };
 
