@@ -200,7 +200,7 @@ export default function PipelineKanban() {
                           <p className="text-white font-semibold">{formatCurrency(metrics.tpv)}</p>
                         </div>
                         <div className="flex-1 bg-[#2bc196]/10 rounded-lg px-3 py-2 border border-[#2bc196]/20">
-                          <p className="text-[#2bc196]/60 text-[10px] uppercase tracking-wider">Receita</p>
+                          <p className="text-[#2bc196]/60 text-[10px] uppercase tracking-wider">{t('pipeline.revenue')}</p>
                           <p className="text-[#2bc196] font-semibold">{formatCurrency(metrics.revenue)}</p>
                         </div>
                       </div>
@@ -244,12 +244,12 @@ export default function PipelineKanban() {
                                     <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.08]">
                                       {item.type === 'proposal' ? (
                                         <>
-                                          <span className="text-white/40">Taxa:</span>
+                                          <span className="text-white/40">{t('pipeline.rate')}:</span>
                                           <span className="text-blue-400 font-semibold">{item.final_rate?.toFixed(2)}% + ${item.final_fixed_fee?.toFixed(2)}</span>
                                         </>
                                       ) : (
                                         <>
-                                          <span className="text-white/40">TPV:</span>
+                                          <span className="text-white/40">{t('pipeline.totalTPV')}:</span>
                                           <span className="text-[#2bc196] font-semibold">{formatCurrency(item.monthly_tpv)}</span>
                                         </>
                                       )}
@@ -261,7 +261,7 @@ export default function PipelineKanban() {
                             {provided.placeholder}
                             {(groupedData[column.id] || []).length === 0 && (
                               <div className="flex items-center justify-center h-24 text-white/20 text-xs">
-                                Arraste cards aqui
+                                {t('pipeline.dragCardsHere')}
                               </div>
                             )}
                           </div>

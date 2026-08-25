@@ -97,7 +97,7 @@ export default function RevenueSimulator() {
 
   // Dados para o gráfico de projeção anual
   const projectionData = useMemo(() => {
-    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const months = t('simulator.months', { returnObjects: true }) || ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
     let accumulated = 0;
     return months.map((month, index) => {
       // Simular crescimento de 5% ao mês
@@ -114,11 +114,11 @@ export default function RevenueSimulator() {
 
   // Dados para breakdown de custos
   const costBreakdown = useMemo(() => [
-    { name: 'Interchange', valor: calculations.interchangeCost, fill: '#ef4444' },
-    { name: 'Custo Base', valor: calculations.baseCostAmount, fill: '#f59e0b' },
-    { name: 'Chargebacks', valor: calculations.chargebackCost, fill: '#8b5cf6' },
-    { name: 'Refunds', valor: calculations.refundCost, fill: '#3b82f6' }
-  ], [calculations]);
+    { name: t('simulator.interchangeCost'), valor: calculations.interchangeCost, fill: '#ef4444' },
+    { name: t('simulator.baseCostLabel'), valor: calculations.baseCostAmount, fill: '#f59e0b' },
+    { name: t('simulator.chargebacks'), valor: calculations.chargebackCost, fill: '#8b5cf6' },
+    { name: t('simulator.refunds'), valor: calculations.refundCost, fill: '#3b82f6' }
+  ], [calculations, t]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -146,12 +146,12 @@ export default function RevenueSimulator() {
             <CardHeader>
               <CardTitle className="text-white text-lg flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-[#2bc196]" />
-                Volume
+                {t('simulator.volume')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-white/80">TPV Mensal (USD)</Label>
+                <Label className="text-white/80">{t('simulator.monthlyTPV')}</Label>
                 <Input
                   type="number"
                   value={params.monthlyTPV}
@@ -167,7 +167,7 @@ export default function RevenueSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-white/80">Ticket Médio (USD)</Label>
+                <Label className="text-white/80">{t('simulator.avgTicket')}</Label>
                 <Input
                   type="number"
                   value={params.averageTicket}
@@ -176,8 +176,8 @@ export default function RevenueSimulator() {
                 />
               </div>
               <div className="bg-white/5 rounded p-3">
-                <p className="text-white/60 text-sm">Transações Estimadas</p>
-                <p className="text-white text-xl font-bold">{calculations.monthlyTransactions.toLocaleString()}/mês</p>
+                <p className="text-white/60 text-sm">{t('simulator.estimatedTransactions')}</p>
+                <p className="text-white text-xl font-bold">{calculations.monthlyTransactions.toLocaleString()}{t('simulator.perMonth')}</p>
               </div>
             </CardContent>
           </Card>
@@ -186,12 +186,12 @@ export default function RevenueSimulator() {
             <CardHeader>
               <CardTitle className="text-white text-lg flex items-center gap-2">
                 <Percent className="h-5 w-5 text-[#2bc196]" />
-                Taxas
+                {t('simulator.rates')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-white/80">Taxa Cobrada (%)</Label>
+                <Label className="text-white/80">{t('simulator.chargedRate')}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -208,7 +208,7 @@ export default function RevenueSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-white/80">Fee Fixo (USD)</Label>
+                <Label className="text-white/80">{t('simulator.fixedFee')}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -218,7 +218,7 @@ export default function RevenueSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-white/80">Interchange (%)</Label>
+                <Label className="text-white/80">{t('simulator.interchangePct')}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -228,7 +228,7 @@ export default function RevenueSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-white/80">Custo Base Pagsmile (%)</Label>
+                <Label className="text-white/80">{t('simulator.baseCostPct')}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -244,13 +244,13 @@ export default function RevenueSimulator() {
             <CardHeader>
               <CardTitle className="text-white text-lg flex items-center gap-2">
                 <CreditCard className="h-5 w-5 text-[#2bc196]" />
-                Chargebacks & Refunds
+                {t('simulator.chargebacksRefunds')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-white/80 text-xs">Chargeback Rate (%)</Label>
+                  <Label className="text-white/80 text-xs">{t('simulator.chargebackRate')}</Label>
                   <Input
                     type="number"
                     step="0.1"
@@ -260,7 +260,7 @@ export default function RevenueSimulator() {
                   />
                 </div>
                 <div>
-                  <Label className="text-white/80 text-xs">Chargeback Fee (USD)</Label>
+                  <Label className="text-white/80 text-xs">{t('simulator.chargebackFee')}</Label>
                   <Input
                     type="number"
                     value={params.chargebackFee}
@@ -271,7 +271,7 @@ export default function RevenueSimulator() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-white/80 text-xs">Refund Rate (%)</Label>
+                  <Label className="text-white/80 text-xs">{t('simulator.refundRate')}</Label>
                   <Input
                     type="number"
                     step="0.1"
@@ -281,7 +281,7 @@ export default function RevenueSimulator() {
                   />
                 </div>
                 <div>
-                  <Label className="text-white/80 text-xs">Refund Fee (USD)</Label>
+                  <Label className="text-white/80 text-xs">{t('simulator.refundFee')}</Label>
                   <Input
                     type="number"
                     value={params.refundFee}
@@ -300,30 +300,30 @@ export default function RevenueSimulator() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="bg-gradient-to-br from-[#2bc196]/20 to-[#002443] border-[#2bc196]/40">
               <CardContent className="pt-4">
-                <p className="text-white/60 text-sm">Receita Bruta</p>
+                <p className="text-white/60 text-sm">{t('simulator.grossRevenue')}</p>
                 <p className="text-white text-2xl font-bold">{formatCurrency(calculations.grossRevenue)}</p>
-                <p className="text-white/40 text-xs">mensal</p>
+                <p className="text-white/40 text-xs">{t('simulator.perMonth')}</p>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-red-500/20 to-[#002443] border-red-500/40">
               <CardContent className="pt-4">
-                <p className="text-white/60 text-sm">Custos Totais</p>
+                <p className="text-white/60 text-sm">{t('simulator.totalCosts')}</p>
                 <p className="text-white text-2xl font-bold">{formatCurrency(calculations.totalCosts)}</p>
-                <p className="text-white/40 text-xs">mensal</p>
+                <p className="text-white/40 text-xs">{t('simulator.perMonth')}</p>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-green-500/20 to-[#002443] border-green-500/40">
               <CardContent className="pt-4">
-                <p className="text-white/60 text-sm">Receita Líquida</p>
+                <p className="text-white/60 text-sm">{t('simulator.netRevenue')}</p>
                 <p className="text-[#2bc196] text-2xl font-bold">{formatCurrency(calculations.netRevenue)}</p>
-                <p className="text-white/40 text-xs">mensal</p>
+                <p className="text-white/40 text-xs">{t('simulator.perMonth')}</p>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-purple-500/20 to-[#002443] border-purple-500/40">
               <CardContent className="pt-4">
-                <p className="text-white/60 text-sm">Margem</p>
+                <p className="text-white/60 text-sm">{t('simulator.margin')}</p>
                 <p className="text-white text-2xl font-bold">{calculations.marginPercentage.toFixed(1)}%</p>
-                <p className="text-white/40 text-xs">da receita bruta</p>
+                <p className="text-white/40 text-xs">{t('simulator.ofGrossRevenue')}</p>
               </CardContent>
             </Card>
           </div>
@@ -336,7 +336,7 @@ export default function RevenueSimulator() {
                   <PiggyBank className="h-7 w-7 text-[#002443]" />
                 </div>
                 <div>
-                  <p className="text-white/80">Projeção de Receita Líquida Anual</p>
+                  <p className="text-white/80">{t('simulator.annualNetProjection')}</p>
                   <p className="text-[#2bc196] text-4xl font-bold">{formatCurrency(calculations.annualNetRevenue)}</p>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function RevenueSimulator() {
           {/* Gráfico de Projeção */}
           <Card className="bg-white/5 border-[#2bc196]/20">
             <CardHeader>
-              <CardTitle className="text-white">Projeção Anual (com 5% de crescimento/mês)</CardTitle>
+              <CardTitle className="text-white">{t('simulator.annualProjectionTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[250px]">
@@ -367,7 +367,7 @@ export default function RevenueSimulator() {
                       stroke="#2bc196" 
                       fill="#2bc196" 
                       fillOpacity={0.3}
-                      name="Receita Mensal"
+                      name={t('simulator.monthlyRevenueChart')}
                     />
                     <Area 
                       type="monotone" 
@@ -375,7 +375,7 @@ export default function RevenueSimulator() {
                       stroke="#5cf7cf" 
                       fill="#5cf7cf" 
                       fillOpacity={0.1}
-                      name="Acumulado"
+                      name={t('simulator.accumulated')}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -386,7 +386,7 @@ export default function RevenueSimulator() {
           {/* Breakdown de Custos */}
           <Card className="bg-white/5 border-[#2bc196]/20">
             <CardHeader>
-              <CardTitle className="text-white">Breakdown de Custos</CardTitle>
+              <CardTitle className="text-white">{t('simulator.costBreakdown')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[200px]">

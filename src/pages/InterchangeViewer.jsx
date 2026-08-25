@@ -25,17 +25,17 @@ export default function InterchangeViewer() {
       <CardContent>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 bg-green-500/10 rounded-lg">
-            <p className="text-green-400 text-xs font-medium mb-1">MENOR</p>
+            <p className="text-green-400 text-xs font-medium mb-1">{t('interchange.lowest')}</p>
             <p className="text-white font-bold">{formatPercentage(low.percentage)}</p>
             <p className="text-white/60 text-sm">{formatFixed(low.fixed)}</p>
           </div>
           <div className="text-center p-3 bg-yellow-500/10 rounded-lg">
-            <p className="text-yellow-400 text-xs font-medium mb-1">MÉDIA</p>
+            <p className="text-yellow-400 text-xs font-medium mb-1">{t('interchange.average')}</p>
             <p className="text-white font-bold">{formatPercentage(avg.percentage)}</p>
             <p className="text-white/60 text-sm">{formatFixed(avg.fixed)}</p>
           </div>
           <div className="text-center p-3 bg-red-500/10 rounded-lg">
-            <p className="text-red-400 text-xs font-medium mb-1">MAIOR</p>
+            <p className="text-red-400 text-xs font-medium mb-1">{t('interchange.highest')}</p>
             <p className="text-white font-bold">{formatPercentage(high.percentage)}</p>
             <p className="text-white/60 text-sm">{formatFixed(high.fixed)}</p>
           </div>
@@ -49,10 +49,10 @@ export default function InterchangeViewer() {
       <Table>
         <TableHeader>
           <TableRow className="border-[#2bc196]/20">
-            <TableHead className="text-white/60">Programa</TableHead>
-            <TableHead className="text-white/60">Tipo de Cartão</TableHead>
-            <TableHead className="text-white/60 text-right">Taxa (%)</TableHead>
-            <TableHead className="text-white/60 text-right">Fixo (USD)</TableHead>
+            <TableHead className="text-white/60">{t('interchange.program')}</TableHead>
+            <TableHead className="text-white/60">{t('interchange.cardType')}</TableHead>
+            <TableHead className="text-white/60 text-right">{t('interchange.ratePercentage')}</TableHead>
+            <TableHead className="text-white/60 text-right">{t('interchange.rateFixed')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -86,19 +86,19 @@ export default function InterchangeViewer() {
             value="summary" 
             className="data-[state=active]:bg-[#2bc196] data-[state=active]:text-[#002443] text-white"
           >
-            Resumo
+            {t('interchange.tabSummary')}
           </TabsTrigger>
           <TabsTrigger 
             value="visa" 
             className="data-[state=active]:bg-[#2bc196] data-[state=active]:text-[#002443] text-white"
           >
-            Visa
+            {t('interchange.tabVisa')}
           </TabsTrigger>
           <TabsTrigger 
             value="mastercard" 
             className="data-[state=active]:bg-[#2bc196] data-[state=active]:text-[#002443] text-white"
           >
-            Mastercard
+            {t('interchange.tabMastercard')}
           </TabsTrigger>
         </TabsList>
 
@@ -119,7 +119,7 @@ export default function InterchangeViewer() {
               color="text-orange-400"
             />
             <SummaryCard 
-              title="Combinado (Visa + Master)" 
+              title={t('interchange.combined')} 
               low={INTERCHANGE_SUMMARY.combined.low}
               avg={INTERCHANGE_SUMMARY.combined.avg}
               high={INTERCHANGE_SUMMARY.combined.high}
@@ -129,13 +129,13 @@ export default function InterchangeViewer() {
 
           <Card className="mt-6 bg-white/5 border-[#2bc196]/20">
             <CardHeader>
-              <CardTitle className="text-white">Legenda</CardTitle>
+              <CardTitle className="text-white">{t('interchange.legend')}</CardTitle>
             </CardHeader>
             <CardContent className="text-white/70 space-y-2">
-              <p><span className="text-green-400 font-medium">Menor:</span> A taxa mais baixa disponível para cada bandeira.</p>
-              <p><span className="text-yellow-400 font-medium">Média:</span> A média de todas as taxas de cada bandeira.</p>
-              <p><span className="text-red-400 font-medium">Maior:</span> A taxa mais alta disponível para cada bandeira.</p>
-              <p className="pt-2 border-t border-white/10"><span className="text-[#2bc196] font-medium">Combinado:</span> Média ponderada entre Visa e Mastercard para cada categoria (menor, média, maior).</p>
+              <p><span className="text-green-400 font-medium">{t('interchange.legendLowest')}</span> {t('interchange.legendLowestDesc')}</p>
+              <p><span className="text-yellow-400 font-medium">{t('interchange.legendAverage')}</span> {t('interchange.legendAverageDesc')}</p>
+              <p><span className="text-red-400 font-medium">{t('interchange.legendHighest')}</span> {t('interchange.legendHighestDesc')}</p>
+              <p className="pt-2 border-t border-white/10"><span className="text-[#2bc196] font-medium">{t('interchange.legendCombined')}</span> {t('interchange.legendCombinedDesc')}</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -145,7 +145,7 @@ export default function InterchangeViewer() {
             <CardHeader>
               <CardTitle className="text-blue-400 flex items-center gap-2">
                 <span className="text-2xl">💳</span>
-                Tabela Completa - Visa (Card Not Present)
+                {t('interchange.fullTable')} - Visa {t('interchange.cardNotPresent')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -159,7 +159,7 @@ export default function InterchangeViewer() {
             <CardHeader>
               <CardTitle className="text-orange-400 flex items-center gap-2">
                 <span className="text-2xl">💳</span>
-                Tabela Completa - Mastercard (Card Not Present)
+                {t('interchange.fullTable')} - Mastercard {t('interchange.cardNotPresent')}
               </CardTitle>
             </CardHeader>
             <CardContent>
