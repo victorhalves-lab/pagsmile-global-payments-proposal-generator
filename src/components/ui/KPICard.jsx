@@ -12,8 +12,8 @@ export default function KPICard({ title, value, icon: Icon, trend, trendUp, acce
       <div className="relative p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <p className="text-white/40 text-[11px] font-semibold uppercase tracking-widest truncate">{title}</p>
-            <p className="text-2xl font-bold text-white mt-2.5 truncate tracking-tight">{value}</p>
+            <p className="text-white/40 text-[11px] font-semibold uppercase tracking-widest break-words leading-tight">{title}</p>
+            <p className="text-xl sm:text-2xl font-bold text-white mt-2.5 break-all leading-tight tracking-tight">{value}</p>
             {trend && (
               <div className={`flex items-center gap-1.5 mt-2.5 text-xs font-semibold ${trendUp ? 'text-[#2bc196]' : 'text-red-400'}`}>
                 <span className="text-sm">{trendUp ? '↑' : '↓'}</span>

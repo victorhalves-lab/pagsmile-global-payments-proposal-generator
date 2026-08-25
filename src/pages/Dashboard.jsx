@@ -134,10 +134,10 @@ export default function Dashboard() {
             {proposals.slice(0, 5).length > 0 ? (
               <div className="space-y-2.5">
                 {proposals.slice(0, 5).map(proposal => (
-                  <div key={proposal.id} className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
-                    <div>
-                      <p className="text-white font-medium text-sm">{proposal.client_name}</p>
-                      <p className="text-white/40 text-xs mt-1 font-mono">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
+                  <div key={proposal.id} className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-medium text-sm truncate">{proposal.client_name}</p>
+                      <p className="text-white/40 text-xs mt-1 font-mono break-all">{proposal.final_rate_percentage?.toFixed(2)}% + ${proposal.final_fixed_fee?.toFixed(2)}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide ${
                       proposal.status === 'accepted' ? 'bg-green-500/15 text-green-400 border border-green-500/25' :
@@ -174,10 +174,10 @@ export default function Dashboard() {
             {questionnaires.slice(0, 5).length > 0 ? (
               <div className="space-y-2.5">
                 {questionnaires.slice(0, 5).map(q => (
-                  <div key={q.id} className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
-                    <div>
-                      <p className="text-white font-medium text-sm">{q.company_name}</p>
-                      <p className="text-white/40 text-xs mt-1 font-mono">TPV: {formatCurrency(q.monthly_tpv)}</p>
+                  <div key={q.id} className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/10 transition-all duration-300">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-medium text-sm truncate">{q.company_name}</p>
+                      <p className="text-white/40 text-xs mt-1 font-mono break-all">TPV: {formatCurrency(q.monthly_tpv)}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wide ${
                       q.pipeline_status === 'proposal_accepted' ? 'bg-green-500/15 text-green-400 border border-green-500/25' :

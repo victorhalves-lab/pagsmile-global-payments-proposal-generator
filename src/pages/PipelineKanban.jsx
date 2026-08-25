@@ -195,13 +195,13 @@ export default function PipelineKanban() {
                         <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/[0.08] text-white/70">{metrics.count}</span>
                       </div>
                       <div className="flex gap-2 text-xs">
-                        <div className="flex-1 bg-white/[0.04] rounded-lg px-3 py-2 border border-white/[0.05]">
+                        <div className="flex-1 min-w-0 bg-white/[0.04] rounded-lg px-3 py-2 border border-white/[0.05]">
                           <p className="text-white/40 text-[10px] uppercase tracking-wider">TPV</p>
-                          <p className="text-white font-semibold">{formatCurrency(metrics.tpv)}</p>
+                          <p className="text-white font-semibold text-sm break-all leading-tight">{formatCurrency(metrics.tpv)}</p>
                         </div>
-                        <div className="flex-1 bg-[#2bc196]/10 rounded-lg px-3 py-2 border border-[#2bc196]/20">
+                        <div className="flex-1 min-w-0 bg-[#2bc196]/10 rounded-lg px-3 py-2 border border-[#2bc196]/20">
                           <p className="text-[#2bc196]/60 text-[10px] uppercase tracking-wider">{t('pipeline.revenue')}</p>
-                          <p className="text-[#2bc196] font-semibold">{formatCurrency(metrics.revenue)}</p>
+                          <p className="text-[#2bc196] font-semibold text-sm break-all leading-tight">{formatCurrency(metrics.revenue)}</p>
                         </div>
                       </div>
                     </div>
